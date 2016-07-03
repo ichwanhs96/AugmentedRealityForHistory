@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/overlayView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.OverlayActivity">
+
+    <informatika.com.augmentedrealityforhistory.views.CameraSurfaceView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <informatika.com.augmentedrealityforhistory.views.DrawView
+        android:id="@+id/drawView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="93dp"
+            android:id="@+id/navArrow"
+            android:src="@drawable/arrow"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true" />
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:id="@+id/compassImage"
+            android:src="@drawable/compass_arrow"
+            android:layout_alignParentTop="true"
+            android:layout_alignEnd="@+id/navArrow" />
+
+    </RelativeLayout>
+
+</RelativeLayout>
