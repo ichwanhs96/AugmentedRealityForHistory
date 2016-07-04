@@ -12,8 +12,6 @@ public class DrawThread extends Thread {
     private DrawView drawView;
     private OverlayActivity overlayActivity;
     private boolean running = false;
-    private int PosX = 200;
-    private int PosY = 200;
 
     public DrawThread(String id, DrawView view, OverlayActivity overlayActivity) {
         this.id = id;
@@ -42,21 +40,5 @@ public class DrawThread extends Thread {
                 e.printStackTrace();
             }
         }
-    }
-
-    public int getPosX() {
-        return PosX;
-    }
-
-    public void setPosX(int posX) {
-        PosX = posX;
-    }
-
-    public int getPosY() {
-        return PosY;
-    }
-
-    public void setPosY(int posY) {
-        PosY = posY;
     }
 }

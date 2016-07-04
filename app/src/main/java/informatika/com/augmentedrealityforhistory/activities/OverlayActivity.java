@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -35,15 +36,18 @@ import informatika.com.augmentedrealityforhistory.views.DrawThread;
 import informatika.com.augmentedrealityforhistory.views.DrawView;
 import informatika.com.augmentedrealityforhistory.R;
 
+import static java.lang.Math.abs;
+
 /**
  * Created by Ichwan Haryo Sembodo on 07/06/2016.
  */
 
 public class OverlayActivity extends AppCompatActivity implements View.OnTouchListener, SensorEventListener, LocationListener {
+    //map thread for drawing
     public Map<String, DrawThread> drawThreads;
+    //map for positioning rect
     public Map<String, CustomRect> customRects;
     public List<Response> responseList;
-    public List<Location> poiLocations;
     private DrawView drawView;
 
     //sensor
@@ -66,6 +70,11 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
 
     //target location
     private Location targetLocation;
+    private int targetPositionInList;
+
+    //screen width and height
+    private int screenWidth;
+    private int screenHeight;
 
     //image view
     private ImageView navArrow;
@@ -75,31 +84,24 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        //screen width and height
+        DisplayMetrics displaymetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        screenHeight = displaymetrics.heightPixels;
+        screenWidth = displaymetrics.widthPixels;
+
+        Log.d("screen resolution", "width:"+screenWidth+", height:"+screenHeight);
+
         drawThreads = new HashMap<>();
         customRects = new HashMap<>();
 
         responseList = new ArrayList<Response>();
-        responseList.add(new Response("1"));
-        responseList.add(new Response("2"));
-        int i = 10;
+        responseList.add(new Response("1", -6.891814, 107.610263));
+        responseList.add(new Response("2", -7.562740, 110.865483));
+        responseList.add(new Response("3", -7.758048, 110.377622));
         for(Response response :responseList){
-            customRects.put(response.getId(),new CustomRect(i,i));
-            i += i;
+            customRects.put(response.getId(),new CustomRect(-1,-1));
         }
-
-        poiLocations = new ArrayList<Location>();
-        Location itbLocation = new Location("");
-        Location unsLocation = new Location("");
-        Location ugmLocation = new Location("");
-        itbLocation.setLatitude(-6.891814);
-        itbLocation.setLongitude(107.610263);
-        unsLocation.setLatitude(-7.562740);
-        unsLocation.setLongitude(110.865483);
-        ugmLocation.setLatitude(-7.758048);
-        ugmLocation.setLongitude(110.377622);
-        poiLocations.add(itbLocation);
-        poiLocations.add(unsLocation);
-        poiLocations.add(ugmLocation);
 
         setContentView(R.layout.activity_overlay);
 
@@ -214,18 +216,19 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
                 azimuthInDegress += 360.0f;
             }
 
-            //Set the field
-            String bearingText = "N";
-
-            if ( (360 >= azimuthInDegress && azimuthInDegress >= 337.5) || (0 <= azimuthInDegress && azimuthInDegress <= 22.5) ) bearingText = "N";
-            else if (azimuthInDegress > 22.5 && azimuthInDegress < 67.5) bearingText = "NE";
-            else if (azimuthInDegress >= 67.5 && azimuthInDegress <= 112.5) bearingText = "E";
-            else if (azimuthInDegress > 112.5 && azimuthInDegress < 157.5) bearingText = "SE";
-            else if (azimuthInDegress >= 157.5 && azimuthInDegress <= 202.5) bearingText = "S";
-            else if (azimuthInDegress > 202.5 && azimuthInDegress < 247.5) bearingText = "SW";
-            else if (azimuthInDegress >= 247.5 && azimuthInDegress <= 292.5) bearingText = "W";
-            else if (azimuthInDegress > 292.5 && azimuthInDegress < 337.5) bearingText = "NW";
-            else bearingText = "?";
+            //direction
+//            //Set the field
+//            String bearingText = "N";
+//
+//            if ( (360 >= azimuthInDegress && azimuthInDegress >= 337.5) || (0 <= azimuthInDegress && azimuthInDegress <= 22.5) ) bearingText = "N";
+//            else if (azimuthInDegress > 22.5 && azimuthInDegress < 67.5) bearingText = "NE";
+//            else if (azimuthInDegress >= 67.5 && azimuthInDegress <= 112.5) bearingText = "E";
+//            else if (azimuthInDegress > 112.5 && azimuthInDegress < 157.5) bearingText = "SE";
+//            else if (azimuthInDegress >= 157.5 && azimuthInDegress <= 202.5) bearingText = "S";
+//            else if (azimuthInDegress > 202.5 && azimuthInDegress < 247.5) bearingText = "SW";
+//            else if (azimuthInDegress >= 247.5 && azimuthInDegress <= 292.5) bearingText = "W";
+//            else if (azimuthInDegress > 292.5 && azimuthInDegress < 337.5) bearingText = "NW";
+//            else bearingText = "?";
 
             compassImage.setRotation(-azimuthInDegress);
 
@@ -237,6 +240,28 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
                 }
                 //This is where we choose to point it
                 float direction = bearTo - azimuthInDegress;
+                //marker still inside screen 45 degree till 135 degree
+                if(direction >= 45 && direction <= 135){
+                    //positioning rect here.
+                    float x = 0f;
+                    float y = 0f;
+                    float ratio = 0f;
+                    float absoluteValue = Math.abs((int)direction-90);
+                    if(direction >= 45 && direction <= 90){
+                        ratio = 1-(absoluteValue/45);
+                        x = ratio*screenWidth;
+                        y = ratio*screenHeight;
+                    } else if(direction <= 135 && direction >= 90){
+                        ratio = 1-(absoluteValue/135);
+                        x = ratio*screenHeight;
+                        y = ratio*screenHeight;
+                    }
+                    Log.d("ratio", String.valueOf(ratio));
+                    Log.d("rect position", "x:"+x+", y:"+y);
+                    customRects.get(responseList.get(targetPositionInList).getId()).setX((int)x);
+                    customRects.get(responseList.get(targetPositionInList).getId()).setY((int)y);
+                    customRects.get(responseList.get(targetPositionInList).getId()).setRect();
+                }
                 navArrow.setRotation(direction);
             }
         }
@@ -294,16 +319,17 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
             float tmp = 0f;
             int target = 0;
             int iterator = 0;
-            for(Location location : overlayActivity.poiLocations){
+            for(Response response : overlayActivity.responseList){
                 Log.d("device location", "lat :" + overlayActivity.deviceLocation.getLatitude() + ", long :"+ overlayActivity.deviceLocation.getLongitude());
-                tmp = overlayActivity.deviceLocation.distanceTo(location);
+                tmp = overlayActivity.deviceLocation.distanceTo(response.getLocation());
                 if(distanceInMeters < tmp){
                     distanceInMeters = tmp;
                     target = iterator;
                 }
                 iterator++;
             }
-            overlayActivity.targetLocation = overlayActivity.poiLocations.get(target);
+            overlayActivity.targetLocation = overlayActivity.responseList.get(target).getLocation();
+            overlayActivity.targetPositionInList = target;
             return "success";
         }
     }

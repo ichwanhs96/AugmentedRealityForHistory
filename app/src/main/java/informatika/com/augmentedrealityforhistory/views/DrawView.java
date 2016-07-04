@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PixelFormat;
+import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.SurfaceHolder;
@@ -91,7 +92,7 @@ public class DrawView extends SurfaceView {
     protected void drawSomething(Canvas canvas, String id) {
         int x = overlayActivity.customRects.get(id).getX();
         int y = overlayActivity.customRects.get(id).getY();
-        canvas.drawColor(Color.TRANSPARENT);
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
         if(x >= 0 && y >= 0){
             canvas.drawBitmap(bmpIcon,
                     null, overlayActivity.customRects.get(id).getRect(), null);
