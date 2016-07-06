@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -13,6 +14,7 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +27,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,7 +54,9 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
     //map for positioning rect
     public Map<String, CustomRect> customRects;
     public List<Response> responseList;
+    public Map<String, ImageView> markers;
     private DrawView drawView;
+    private RelativeLayout overlayViewInsideRelativeLayout;
 
     //sensor
     private SensorManager mSensorManager;
@@ -107,20 +112,40 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
 
         drawThreads = new HashMap<>();
         customRects = new HashMap<>();
+        markers = new HashMap<>();
 
         responseList = new ArrayList<Response>();
         responseList.add(new Response("1", -6.891814, 107.610263));
         responseList.add(new Response("2", -7.562740, 110.865483));
         responseList.add(new Response("3", -7.758048, 110.377622));
-        for(Response response :responseList){
-            customRects.put(response.getId(),new CustomRect(-1,-1));
-        }
 
         setContentView(R.layout.activity_overlay);
 
-
         drawView = (DrawView) findViewById(R.id.drawView);
         drawView.setOnTouchListener(this);
+
+        overlayViewInsideRelativeLayout = (RelativeLayout) findViewById(R.id.overlayViewInsideRelativeLayout);
+        for(Response response :responseList){
+            customRects.put(response.getId(),new CustomRect(-1,-1));
+            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(50, 50);
+            ImageView iv = new ImageView(this);
+            iv.setImageResource(R.drawable.marker);
+            iv.setVisibility(View.GONE);
+            iv.setLayoutParams(layoutParams);
+            iv.setRotation(90);
+            markers.put(response.getId(), iv);
+            overlayViewInsideRelativeLayout.addView(iv);
+        }
+//        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+//        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_END);
+//        layoutParams.height = 50;
+//        layoutParams.width = 50;
+//        ImageView iv = new ImageView(this);
+//        iv.setImageResource(R.drawable.marker);
+//        iv.setVisibility(View.VISIBLE);
+//        iv.setLayoutParams(layoutParams);
+//        overlayViewInsideRelativeLayout.addView(iv);
 
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -161,7 +186,7 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
         }
 
         navArrow = (ImageView) findViewById(R.id.navArrow);
-        compassImage = (ImageView) findViewById(R.id.compassImage);
+        //compassImage = (ImageView) findViewById(R.id.compassImage);
     }
 
 
@@ -229,7 +254,7 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
                 azimuthInDegress += 360.0f;
             }
 
-            compassImage.setRotation(-azimuthInDegress);
+            //compassImage.setRotation(-azimuthInDegress);
 
             if(deviceLocation != null && targetLocation != null) {
                 // Store the bearingTo in the bearTo variable
@@ -249,13 +274,19 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
                     float absoluteValue = Math.abs((int)directionForMarker-0);
                     ratio = 1-(absoluteValue/45);
                     if(directionForMarker >= -45 && directionForMarker <= 0){
-                        x = ratio*(screenWidth/2);
-                        y = (screenHeight/2);
+                        x = (screenWidth/2);
+                        y = ratio*(screenHeight/2);
                     } else if(directionForMarker <= 45 && directionForMarker >= 0){
                         ratio = 1 - ratio;
-                        x = ratio*(screenWidth/2) + (screenWidth/2);
-                        y = (screenHeight/2);
+                        x = (screenWidth/2);
+                        y = ratio*(screenHeight/2) + (screenHeight/2);
                     }
+
+                    markers.get(responseList.get(targetPositionInList).getId()).setVisibility(View.VISIBLE);
+                    markers.get(responseList.get(targetPositionInList).getId()).setX(x);
+                    markers.get(responseList.get(targetPositionInList).getId()).setY(y);
+                    Log.d("marker position", "x:"+markers.get(responseList.get(targetPositionInList).getId()).getX()+", y:"+markers.get(responseList.get(targetPositionInList).getId()).getY());
+
                     customRects.get(responseList.get(targetPositionInList).getId()).setX((int)x);
                     customRects.get(responseList.get(targetPositionInList).getId()).setY((int)y);
                     customRects.get(responseList.get(targetPositionInList).getId()).setRect();

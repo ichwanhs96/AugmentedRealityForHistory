@@ -25,15 +25,6 @@
             android:layout_height="93dp"
             android:id="@+id/navArrow"
             android:src="@drawable/arrow"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true" />
-
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@+id/compassImage"
-            android:src="@drawable/compass_arrow"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
