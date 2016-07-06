@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -13,6 +14,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -21,6 +23,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -85,12 +88,22 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
         super.onCreate(savedInstanceState);
 
         //screen width and height
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-        screenHeight = displaymetrics.heightPixels;
-        screenWidth = displaymetrics.widthPixels;
+        if (Build.VERSION.SDK_INT >= 11) {
+            Point size = new Point();
+            try {
+                this.getWindowManager().getDefaultDisplay().getRealSize(size);
+                screenWidth = size.x;
+                screenHeight = size.y;
+            } catch (NoSuchMethodError e) {
+                Log.i("error", "it can't work");
+            }
 
-        Log.d("screen resolution", "width:"+screenWidth+", height:"+screenHeight);
+        } else {
+            DisplayMetrics metrics = new DisplayMetrics();
+            this.getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            screenWidth = metrics.widthPixels;
+            screenHeight = metrics.heightPixels;
+        }
 
         drawThreads = new HashMap<>();
         customRects = new HashMap<>();
@@ -216,20 +229,6 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
                 azimuthInDegress += 360.0f;
             }
 
-            //direction
-//            //Set the field
-//            String bearingText = "N";
-//
-//            if ( (360 >= azimuthInDegress && azimuthInDegress >= 337.5) || (0 <= azimuthInDegress && azimuthInDegress <= 22.5) ) bearingText = "N";
-//            else if (azimuthInDegress > 22.5 && azimuthInDegress < 67.5) bearingText = "NE";
-//            else if (azimuthInDegress >= 67.5 && azimuthInDegress <= 112.5) bearingText = "E";
-//            else if (azimuthInDegress > 112.5 && azimuthInDegress < 157.5) bearingText = "SE";
-//            else if (azimuthInDegress >= 157.5 && azimuthInDegress <= 202.5) bearingText = "S";
-//            else if (azimuthInDegress > 202.5 && azimuthInDegress < 247.5) bearingText = "SW";
-//            else if (azimuthInDegress >= 247.5 && azimuthInDegress <= 292.5) bearingText = "W";
-//            else if (azimuthInDegress > 292.5 && azimuthInDegress < 337.5) bearingText = "NW";
-//            else bearingText = "?";
-
             compassImage.setRotation(-azimuthInDegress);
 
             if(deviceLocation != null && targetLocation != null) {
@@ -240,24 +239,23 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
                 }
                 //This is where we choose to point it
                 float direction = bearTo - azimuthInDegress;
+                float directionForMarker = direction - 90;
                 //marker still inside screen 45 degree till 135 degree
-                if(direction >= 45 && direction <= 135){
+                if(directionForMarker >= -45 && directionForMarker <= 45){
                     //positioning rect here.
                     float x = 0f;
                     float y = 0f;
                     float ratio = 0f;
-                    float absoluteValue = Math.abs((int)direction-90);
-                    if(direction >= 45 && direction <= 90){
-                        ratio = 1-(absoluteValue/45);
-                        x = ratio*screenWidth;
-                        y = ratio*screenHeight;
-                    } else if(direction <= 135 && direction >= 90){
-                        ratio = 1-(absoluteValue/135);
-                        x = ratio*screenHeight;
-                        y = ratio*screenHeight;
+                    float absoluteValue = Math.abs((int)directionForMarker-0);
+                    ratio = 1-(absoluteValue/45);
+                    if(directionForMarker >= -45 && directionForMarker <= 0){
+                        x = ratio*(screenWidth/2);
+                        y = (screenHeight/2);
+                    } else if(directionForMarker <= 45 && directionForMarker >= 0){
+                        ratio = 1 - ratio;
+                        x = ratio*(screenWidth/2) + (screenWidth/2);
+                        y = (screenHeight/2);
                     }
-                    Log.d("ratio", String.valueOf(ratio));
-                    Log.d("rect position", "x:"+x+", y:"+y);
                     customRects.get(responseList.get(targetPositionInList).getId()).setX((int)x);
                     customRects.get(responseList.get(targetPositionInList).getId()).setY((int)y);
                     customRects.get(responseList.get(targetPositionInList).getId()).setRect();
