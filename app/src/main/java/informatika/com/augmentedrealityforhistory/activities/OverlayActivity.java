@@ -1,11 +1,9 @@
 package informatika.com.augmentedrealityforhistory.activities;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Matrix;
 import android.graphics.Point;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -14,7 +12,6 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,12 +20,9 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -36,26 +30,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import informatika.com.augmentedrealityforhistory.models.CustomRect;
 import informatika.com.augmentedrealityforhistory.models.Response;
-import informatika.com.augmentedrealityforhistory.views.DrawThread;
-import informatika.com.augmentedrealityforhistory.views.DrawView;
 import informatika.com.augmentedrealityforhistory.R;
-
-import static java.lang.Math.abs;
 
 /**
  * Created by Ichwan Haryo Sembodo on 07/06/2016.
  */
 
-public class OverlayActivity extends AppCompatActivity implements View.OnTouchListener, SensorEventListener, LocationListener {
-    //map thread for drawing
-    public Map<String, DrawThread> drawThreads;
-    //map for positioning rect
-    public Map<String, CustomRect> customRects;
+public class OverlayActivity extends AppCompatActivity implements SensorEventListener, LocationListener, View.OnClickListener {
     public List<Response> responseList;
     public Map<String, ImageView> markers;
-    private DrawView drawView;
     private RelativeLayout overlayViewInsideRelativeLayout;
     private RelativeLayout.LayoutParams layoutParams;
 
@@ -111,30 +95,24 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
             screenWidth = metrics.widthPixels;
             screenHeight = metrics.heightPixels;
         }
-
-        drawThreads = new HashMap<>();
-        customRects = new HashMap<>();
         markers = new HashMap<>();
 
         responseList = new ArrayList<Response>();
-        responseList.add(new Response("1", -6.891814, 107.610263));
-        responseList.add(new Response("2", -6.891814, 107.610263));
-        responseList.add(new Response("3", -6.891814, 107.610263));
+        responseList.add(new Response("1", -6.891814, 107.610263, "itb", "", ""));
+        responseList.add(new Response("2", -6.8957288, 107.6206774, "gedung sate", "", ""));
+        responseList.add(new Response("3", -6.8816689, 107.6156134, "sabuga", "", ""));
 
         setContentView(R.layout.activity_overlay);
-
-        //drawView = (DrawView) findViewById(R.id.drawView);
-        //drawView.setOnTouchListener(this);
 
         overlayViewInsideRelativeLayout = (RelativeLayout) findViewById(R.id.overlayViewInsideRelativeLayout);
         layoutParams = new RelativeLayout.LayoutParams(50, 50);
         for(Response response :responseList){
-            customRects.put(response.getId(),new CustomRect(-1,-1));
             ImageView iv = new ImageView(this);
             iv.setImageResource(R.drawable.marker);
             iv.setVisibility(View.INVISIBLE);
             iv.setLayoutParams(layoutParams);
             iv.setRotation(90);
+            iv.setOnClickListener(this);
             markers.put(response.getId(), iv);
             overlayViewInsideRelativeLayout.addView(iv);
         }
@@ -187,25 +165,6 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
         //compassImage = (ImageView) findViewById(R.id.compassImage);
     }
 
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        Toast.makeText(this, "view clicked", Toast.LENGTH_SHORT).show();
-        float x = event.getX();
-        float y = event.getY();
-        switch(event.getAction())
-        {
-            case MotionEvent.ACTION_DOWN:
-                for(Map.Entry<String, CustomRect> entry: customRects.entrySet()){
-                    if(entry.getValue().getRect().contains((int)x, (int)y)){
-                        Toast.makeText(this, "image clicked", Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                }
-        }
-        return false;
-    }
-
     @Override
     public void onLocationChanged(Location location) {
         if(location == null) return;
@@ -229,8 +188,6 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        float azimuth;
-
         if (event.sensor == mAccelerometer) {
             System.arraycopy(event.values, 0, mLastAccelerometer, 0, event.values.length);
             mLastAccelerometerSet = true;
@@ -244,7 +201,9 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
                     SensorManager.AXIS_Z, mRotationMatrix);
             SensorManager.getOrientation(mRotationMatrix, mOrientation);
 
-            azimuth = (float)Math.toDegrees(mOrientation[0]); // orientation contains: azimut, pitch and roll
+            float azimuth = (float)Math.toDegrees(mOrientation[0]); // orientation contains: azimut, pitch and roll
+            float pitch = (float)Math.toDegrees(mOrientation[1]);
+            float roll = (float)Math.toDegrees(mOrientation[2]);
 
             if(deviceLocation != null && targetLocation != null) {
                 // Store the bearingTo in the bearTo variable
@@ -279,12 +238,12 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
                     layoutParams.topMargin = (int)y;
                     markers.get(responseList.get(targetPositionInList).getId()).setLayoutParams(layoutParams);
                     Log.d("marker position", "x:"+markers.get(responseList.get(targetPositionInList).getId()).getX()+", y:"+markers.get(responseList.get(targetPositionInList).getId()).getY());
-                    customRects.get(responseList.get(targetPositionInList).getId()).setX((int)x);
-                    customRects.get(responseList.get(targetPositionInList).getId()).setY((int)y);
-                    customRects.get(responseList.get(targetPositionInList).getId()).setRect();
+                    Log.d("target", responseList.get(targetPositionInList).getTitle());
                 } else {
                     markers.get(responseList.get(targetPositionInList).getId()).setVisibility(View.INVISIBLE);
                 }
+                Log.d("pitch", "pitch degrees : "+pitch);
+                Log.d("roll", "roll degrees : "+roll);
                 navArrow.setRotation(direction+90);
             }
         }
@@ -308,6 +267,13 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
     protected void onPause() {
         super.onPause();
         mSensorManager.unregisterListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v == markers.get(responseList.get(targetPositionInList).getId())){
+            Toast.makeText(this, "marker clicked", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private class loadARContent extends AsyncTask<String, Void, String>{
@@ -345,6 +311,7 @@ public class OverlayActivity extends AppCompatActivity implements View.OnTouchLi
             Log.d("device location", "lat :" + overlayActivity.deviceLocation.getLatitude() + ", long :"+ overlayActivity.deviceLocation.getLongitude());
             for(Response response : overlayActivity.responseList){
                 tmp = overlayActivity.deviceLocation.distanceTo(response.getLocation());
+                Log.d("device distance", "target: "+response.getTitle()+", distance: "+String.valueOf(tmp));
                 if(distanceInMeters < tmp){
                     distanceInMeters = tmp;
                     target = iterator;
