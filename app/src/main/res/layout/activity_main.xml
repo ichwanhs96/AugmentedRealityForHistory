@@ -7,18 +7,47 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context=".activities.MainActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView1"
+        android:id="@+id/orientationTextView"
         android:text="orientation"
         />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/textView1"
+        android:layout_below="@+id/orientationTextView"
+        android:id="@+id/azimuthTextView"
+        android:text="azimuth"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/azimuthTextView"
+        android:id="@+id/pitchTextView"
+        android:text="pitch"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pitchTextView"
+        android:id="@+id/rollTextView"
+        android:text="roll"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/rollTextView"
+        android:id="@+id/bearToTextView"
+        android:text="bear to"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/bearToTextView"
         android:id="@+id/textView2"
         android:text="location"
         />
@@ -43,7 +72,7 @@
         android:layout_height="wrap_content"
         android:text="ini tombol"
         android:id="@+id/button"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"/>
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/imageView" />
 
 </RelativeLayout>

@@ -10,22 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <informatika.com.augmentedrealityforhistory.views.DrawView
-        android:id="@+id/drawView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/overlayViewInsideRelativeLayout">
-
-        <ImageView
-            android:layout_width="70dp"
-            android:layout_height="93dp"
-            android:id="@+id/navArrow"
-            android:src="@drawable/arrow"
-            android:layout_alignParentEnd="true" />
 
     </RelativeLayout>
 

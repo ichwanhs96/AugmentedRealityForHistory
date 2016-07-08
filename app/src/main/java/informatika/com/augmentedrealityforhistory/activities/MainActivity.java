@@ -2,6 +2,7 @@ package informatika.com.augmentedrealityforhistory.activities;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -14,6 +15,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Surface;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -32,7 +34,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private boolean mLastAccelerometerSet = false;
     private boolean mLastMagnetometerSet = false;
 
-    private float[] mR = new float[9];
+    private float[] mTemporaryRotationMatrix = new float[9];
+    private float[] mRotationMatrix = new float[9];
     private float[] mOrientation = new float[3];
 
     //view
@@ -40,6 +43,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView textView2;
     private TextView textView3;
     private ImageView imageView;
+    private TextView azimuthTextView;
+    private TextView rollTextView;
+    private TextView pitchTextView;
+    private TextView bearToTextView;
 
     //variable
     private float directionBefore = 0.0f;
@@ -53,9 +60,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        textView1 = (TextView) findViewById(R.id.textView1);
+        textView1 = (TextView) findViewById(R.id.orientationTextView);
         textView2 = (TextView) findViewById(R.id.textView2);
         textView3 = (TextView) findViewById(R.id.textView3);
+        azimuthTextView = (TextView) findViewById(R.id.azimuthTextView);
+        rollTextView = (TextView) findViewById(R.id.rollTextView);
+        pitchTextView = (TextView) findViewById(R.id.pitchTextView);
+        bearToTextView = (TextView) findViewById(R.id.bearToTextView);
         imageView = (ImageView) findViewById(R.id.imageView);
         button = (Button) findViewById(R.id.button);
 
@@ -106,38 +117,37 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        float azimuth;
-
         if (event.sensor == mAccelerometer) {
-            System.arraycopy(event.values, 0, mLastAccelerometer, 0, event.values.length);
+            mLastAccelerometer = event.values.clone();
             mLastAccelerometerSet = true;
         } else if (event.sensor == mMagnetometer) {
-            System.arraycopy(event.values, 0, mLastMagnetometer, 0, event.values.length);
+            mLastMagnetometer = event.values.clone();
             mLastMagnetometerSet = true;
         }
         if (mLastAccelerometerSet && mLastMagnetometerSet) {
-            SensorManager.getRotationMatrix(mR, null, mLastAccelerometer, mLastMagnetometer);
-            SensorManager.getOrientation(mR, mOrientation);
-            textView1.setText(String.format("Orientation: %f, %f, %f",
-                    mOrientation[0], mOrientation[1], mOrientation[2]));
-
-            azimuth = mOrientation[0]; // orientation contains: azimut, pitch and roll
-            float azimuthInDegress = (float)Math.toDegrees(azimuth);
-            if (azimuthInDegress < 0.0f) {
-                azimuthInDegress += 360.0f;
-            }
-
+            SensorManager.getRotationMatrix(mTemporaryRotationMatrix, null, mLastAccelerometer, mLastMagnetometer);
+            SensorManager.remapCoordinateSystem(mTemporaryRotationMatrix, SensorManager.AXIS_X,
+                    SensorManager.AXIS_Z, mRotationMatrix);
+            //configureDeviceAngle();
+            SensorManager.getOrientation(mRotationMatrix, mOrientation);
+            textView1.setText("a: "+mOrientation[0]+", p: "+mOrientation[1]+", r: "+mOrientation[2]);
+            float azimuth = (float)((Math.toDegrees(mOrientation[0])+360)%360);
+            float pitch = (float)((Math.toDegrees(mOrientation[1])+360)%360);
+            float roll = (float)((Math.toDegrees(mOrientation[2])+360)%360);
+            azimuthTextView.setText("azimuth : "+azimuth);
+            pitchTextView.setText("pitch : "+pitch);
+            rollTextView.setText("roll : "+roll);
             //Set the field
             String bearingText = "N";
 
-            if ( (360 >= azimuthInDegress && azimuthInDegress >= 337.5) || (0 <= azimuthInDegress && azimuthInDegress <= 22.5) ) bearingText = "N";
-            else if (azimuthInDegress > 22.5 && azimuthInDegress < 67.5) bearingText = "NE";
-            else if (azimuthInDegress >= 67.5 && azimuthInDegress <= 112.5) bearingText = "E";
-            else if (azimuthInDegress > 112.5 && azimuthInDegress < 157.5) bearingText = "SE";
-            else if (azimuthInDegress >= 157.5 && azimuthInDegress <= 202.5) bearingText = "S";
-            else if (azimuthInDegress > 202.5 && azimuthInDegress < 247.5) bearingText = "SW";
-            else if (azimuthInDegress >= 247.5 && azimuthInDegress <= 292.5) bearingText = "W";
-            else if (azimuthInDegress > 292.5 && azimuthInDegress < 337.5) bearingText = "NW";
+            if ( (360 >= azimuth && azimuth >= 337.5) || (0 <= azimuth && azimuth <= 22.5) ) bearingText = "N";
+            else if (azimuth > 22.5 && azimuth < 67.5) bearingText = "NE";
+            else if (azimuth >= 67.5 && azimuth <= 112.5) bearingText = "E";
+            else if (azimuth > 112.5 && azimuth < 157.5) bearingText = "SE";
+            else if (azimuth >= 157.5 && azimuth <= 202.5) bearingText = "S";
+            else if (azimuth > 202.5 && azimuth < 247.5) bearingText = "SW";
+            else if (azimuth >= 247.5 && azimuth <= 292.5) bearingText = "W";
+            else if (azimuth > 292.5 && azimuth < 337.5) bearingText = "NW";
             else bearingText = "?";
 
             if(location != null) {
@@ -145,12 +155,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 destLoc.setLatitude(-6.891814);
                 destLoc.setLongitude(107.610263);
                 // Store the bearingTo in the bearTo variable
-                float bearTo = location.bearingTo(destLoc);
-                if (bearTo < 0.0f) {
-                    bearTo += 360.0f;
-                }
+                float bearTo = (location.bearingTo(destLoc)+360)%360;
+                bearToTextView.setText("bear to : " + bearTo);
                 //This is where we choose to point it
-                float direction = bearTo - azimuthInDegress;
+                float direction = bearTo - azimuth;
                 imageView.setRotation(direction);
             }
             textView3.setText(String.valueOf(bearingText));
@@ -202,5 +210,26 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     public void nextActivity() {
         Intent intent = new Intent(this, OverlayActivity.class);
         startActivity(intent);
+    }
+
+    private void configureDeviceAngle() {
+        switch (getWindowManager().getDefaultDisplay().getRotation()) {
+            case Surface.ROTATION_0: // Portrait
+                SensorManager.remapCoordinateSystem(mTemporaryRotationMatrix, SensorManager.AXIS_Z,
+                        SensorManager.AXIS_Y, mRotationMatrix);
+                break;
+            case Surface.ROTATION_90: // Landscape
+                SensorManager.remapCoordinateSystem(mTemporaryRotationMatrix, SensorManager.AXIS_Y,
+                        SensorManager.AXIS_MINUS_Z, mRotationMatrix);
+                break;
+            case Surface.ROTATION_180: // Portrait
+                SensorManager.remapCoordinateSystem(mTemporaryRotationMatrix, SensorManager.AXIS_MINUS_Z,
+                        SensorManager.AXIS_MINUS_Y, mRotationMatrix);
+                break;
+            case Surface.ROTATION_270: // Landscape
+                SensorManager.remapCoordinateSystem(mTemporaryRotationMatrix, SensorManager.AXIS_MINUS_Y,
+                        SensorManager.AXIS_Z, mRotationMatrix);
+                break;
+        }
     }
 }
