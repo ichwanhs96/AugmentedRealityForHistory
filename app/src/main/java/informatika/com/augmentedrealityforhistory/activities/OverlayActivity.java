@@ -217,33 +217,34 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                 if(direction > 180){
                     direction -= 360;
                 }
-                if(direction >= -30 && direction <= 30){
+                if(direction >= -30 && direction <= 30 && pitch >= -25 && pitch <= 25){
                     //positioning rect here.
                     float x = 0f;
                     float y = 0f;
                     float ratio = 0f;
                     float absoluteValue = Math.abs(direction);
-                    ratio = 1-(absoluteValue/30);
-                    if(direction >= -45 && direction <= 0){
-                        x = (screenWidth/2);
-                        y = ratio*(screenHeight/2);
-                    } else if(direction <= 45 && direction >= 0){
+                    float absoluteValuePitch = Math.abs(pitch);
+                    ratio = 1 - (absoluteValue / 30);
+                    float ratioPitch = 1 - (absoluteValuePitch / 25);
+                    if (direction >= -30 && direction <= 0) {
+                        y = ratio * (screenHeight / 2);
+                    } else if (direction <= 30 && direction >= 0) {
                         ratio = 1 - ratio;
-                        x = (screenWidth/2);
-                        y = ratio*(screenHeight/2) + (screenHeight/2);
+                        y = ratio * (screenHeight / 2) + (screenHeight / 2);
                     }
-
+                    if(pitch >= -25 && pitch <= 0){
+                        x = ratioPitch * (screenWidth/2);
+                    } else if(pitch <= 25 && pitch >= 0){
+                        ratioPitch = 1 - ratioPitch;
+                        x = ratioPitch * (screenWidth/2) + (screenWidth/2);
+                    }
                     markers.get(responseList.get(targetPositionInList).getId()).setVisibility(View.VISIBLE);
-                    layoutParams.leftMargin = (int)x;
-                    layoutParams.topMargin = (int)y;
+                    layoutParams.leftMargin = (int) x;
+                    layoutParams.topMargin = (int) y;
                     markers.get(responseList.get(targetPositionInList).getId()).setLayoutParams(layoutParams);
-                    Log.d("marker position", "x:"+markers.get(responseList.get(targetPositionInList).getId()).getX()+", y:"+markers.get(responseList.get(targetPositionInList).getId()).getY());
-                    Log.d("target", responseList.get(targetPositionInList).getTitle());
                 } else {
                     markers.get(responseList.get(targetPositionInList).getId()).setVisibility(View.INVISIBLE);
                 }
-                Log.d("pitch", "pitch degrees : "+pitch);
-                Log.d("roll", "roll degrees : "+roll);
                 navArrow.setRotation(direction+90);
             }
         }
