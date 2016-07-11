@@ -1,6 +1,7 @@
 package informatika.com.augmentedrealityforhistory.activities;
 
 import android.Manifest;
+import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -29,7 +30,6 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import java.util.ArrayList;
@@ -37,8 +37,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import informatika.com.augmentedrealityforhistory.fragments.MarkerDialog;
 import informatika.com.augmentedrealityforhistory.models.ElevationResponseContainer;
-import informatika.com.augmentedrealityforhistory.models.ElevationResponseResult;
 import informatika.com.augmentedrealityforhistory.models.Response;
 import informatika.com.augmentedrealityforhistory.R;
 import informatika.com.augmentedrealityforhistory.util.GsonRequest;
@@ -90,6 +90,9 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     private int screenWidth;
     private int screenHeight;
 
+    //fragment manager
+    private FragmentManager fragmentManager;
+
     //text view
     private TextView altitudeTextView;
     private TextView targetTextView;
@@ -121,12 +124,16 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
             screenHeight = metrics.heightPixels;
         }
 
+        fragmentManager = getFragmentManager();
+
+        ////////////////////////////////////////////////////////////
         markers = new HashMap<>();
 
         responseList = new ArrayList<Response>();
         responseList.add(new Response("1", -6.891814, 107.610263, "itb", "", ""));
         responseList.add(new Response("2", -6.8957288, 107.6206774, "gedung sate", "", ""));
         responseList.add(new Response("3", -6.8816689, 107.6156134, "sabuga", "", ""));
+        ////////////////////////////////////////////////////////////
 
         setContentView(R.layout.activity_overlay);
 
@@ -175,7 +182,6 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         if(mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
             Log.d("network enabled", "network enabled");
         }
-
 
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
         if (mLocationManager != null) {
@@ -303,7 +309,9 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     @Override
     public void onClick(View v) {
         if(v == markers.get(responseList.get(targetPositionInList).getId())){
-            Toast.makeText(this, responseList.get(targetPositionInList).getTitle(), Toast.LENGTH_SHORT).show();
+            MarkerDialog markerDialog = new MarkerDialog();
+            markerDialog.show(fragmentManager, "fragment_marker_dialog");
+            //Toast.makeText(this, responseList.get(targetPositionInList).getTitle(), Toast.LENGTH_SHORT).show();
         }
     }
 
