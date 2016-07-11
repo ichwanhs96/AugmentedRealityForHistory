@@ -15,6 +15,44 @@
         android:layout_height="match_parent"
         android:id="@+id/overlayViewInsideRelativeLayout">
 
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="93dp"
+            android:id="@+id/navArrow"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/arrow" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="altitude"
+            android:id="@+id/altitudeTextView"
+            android:rotation="90"
+            android:textColor="#009900"
+            android:layout_alignBottom="@+id/navArrow"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="target"
+            android:id="@+id/targetTextView"
+            android:rotation="90"
+            android:textColor="#009900"
+            android:layout_alignBottom="@+id/altitudeTextView"
+            android:layout_toStartOf="@+id/altitudeTextView" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="distance"
+            android:id="@+id/distanceTextView"
+            android:rotation="90"
+            android:textColor="#009900"
+            android:layout_alignBottom="@+id/navArrow"
+            android:layout_toStartOf="@+id/navArrow" />
+
     </RelativeLayout>
 
 </RelativeLayout>
