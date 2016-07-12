@@ -25,12 +25,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".TestSurface"
-            android:label="test surface activity">
-        </activity>
-        <activity
             android:name=".activities.OverlayActivity"
-            android:label="overlay activity">
+            android:label="overlay activity"
+            android:screenOrientation="landscape">
         </activity>
     </application>
 

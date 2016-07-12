@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.hardware.Sensor;
@@ -22,11 +23,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
@@ -48,8 +51,8 @@ import informatika.com.augmentedrealityforhistory.util.GsonRequest;
  */
 
 public class OverlayActivity extends AppCompatActivity implements SensorEventListener, LocationListener, View.OnClickListener {
-    public List<Response> responseList;
-    public Map<String, ImageView> markers;
+    private List<Response> responseList;
+    private Map<String, ImageView> markers;
     private RelativeLayout overlayViewInsideRelativeLayout;
     private RelativeLayout.LayoutParams layoutParams;
 
@@ -97,6 +100,10 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     private TextView altitudeTextView;
     private TextView targetTextView;
     private TextView distanceTextView;
+    private TextView angleTextView;
+
+    //button
+    private Button nextContentButton;
 
     //image view
     private ImageView navArrow;
@@ -131,16 +138,19 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
 
         responseList = new ArrayList<Response>();
         responseList.add(new Response("1", -6.891814, 107.610263, "itb", "", ""));
-        responseList.add(new Response("2", -6.8957288, 107.6206774, "gedung sate", "", ""));
-        responseList.add(new Response("3", -6.8816689, 107.6156134, "sabuga", "", ""));
+        responseList.add(new Response("2", -6.1825927, 106.8360346, "monas", "", ""));
+        responseList.add(new Response("3", -7.6078685, 110.2015626, "borobudur", "", ""));
         ////////////////////////////////////////////////////////////
 
+        Log.d("response list size", "size : "+responseList.size());
         setContentView(R.layout.activity_overlay);
 
         navArrow = (ImageView) findViewById(R.id.navArrow);
         altitudeTextView = (TextView) findViewById(R.id.altitudeTextView);
         targetTextView = (TextView) findViewById(R.id.targetTextView);
         distanceTextView = (TextView) findViewById(R.id.distanceTextView);
+        angleTextView = (TextView) findViewById(R.id.angleTextView);
+        nextContentButton = (Button) findViewById(R.id.nextContentButton);
         //compassImage = (ImageView) findViewById(R.id.compassImage);
 
         overlayViewInsideRelativeLayout = (RelativeLayout) findViewById(R.id.overlayViewInsideRelativeLayout);
@@ -150,7 +160,6 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
             iv.setImageResource(R.drawable.marker);
             iv.setVisibility(View.INVISIBLE);
             iv.setLayoutParams(layoutParams);
-            iv.setRotation(90);
             iv.setOnClickListener(this);
             markers.put(response.getId(), iv);
             overlayViewInsideRelativeLayout.addView(iv);
@@ -194,12 +203,25 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                 new loadDeviceElevation(this).execute("");
             }
         }
+
+        nextContentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                markers.get(responseList.get(targetPositionInList).getId()).setVisibility(View.INVISIBLE);
+                if(targetPositionInList < responseList.size()) {
+                    targetPositionInList += 1;
+                }
+                targetLocation = responseList.get(targetPositionInList).getLocation();
+                new loadTargetElevation(OverlayActivity.this).execute("");
+            }
+        });
     }
 
     @Override
     public void onLocationChanged(Location location) {
         if(location == null) return;
         //call get altitude for device and
+        //new loadDeviceElevation(this).execute("");
         //calculateAngleBetweenDeviceAndTarget();
         this.deviceLocation = location;
     }
@@ -263,16 +285,20 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                     ratio = 1 - (absoluteValue / 30);
                     float ratioPitch = 1 - (absoluteValuePitch / 25);
                     if (direction >= -30 && direction <= 0) {
-                        y = ratio * (screenHeight / 2);
+                        x = ratio * (screenWidth/2);
+                        //y = ratio * (screenHeight / 2);
                     } else if (direction <= 30 && direction >= 0) {
                         ratio = 1 - ratio;
-                        y = ratio * (screenHeight / 2) + (screenHeight / 2);
+                        x = ratio * (screenWidth / 2) + (screenWidth / 2);
+                        //y = ratio * (screenHeight / 2) + (screenHeight / 2);
                     }
                     if(pitch >= (-25+angleToTarget) && pitch <= angleToTarget){
-                        x = ratioPitch * (screenWidth/2);
-                    } else if(pitch <= (25+angleToTarget) && pitch >= angleToTarget){
                         ratioPitch = 1 - ratioPitch;
-                        x = ratioPitch * (screenWidth/2) + (screenWidth/2);
+                        //x = ratioPitch * (screenWidth/2) + (screenWidth/2);
+                        y = ratioPitch * (screenHeight / 2) + (screenHeight / 2);
+                    } else if(pitch <= (25+angleToTarget) && pitch >= angleToTarget){
+                        //x = ratioPitch * (screenWidth/2);
+                        y = ratioPitch * (screenHeight / 2);
                     }
                     markers.get(responseList.get(targetPositionInList).getId()).setVisibility(View.VISIBLE);
                     layoutParams.leftMargin = (int) x;
@@ -281,7 +307,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                 } else {
                     markers.get(responseList.get(targetPositionInList).getId()).setVisibility(View.INVISIBLE);
                 }
-                navArrow.setRotation(direction+90);
+                navArrow.setRotation(direction);
             }
         }
     }
@@ -324,6 +350,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
             double differenceHeight = deviceAltitude - targetAltitude;
             angleToTarget = (float)Math.toDegrees(Math.atan(differenceHeight/distance));
         }
+        angleTextView.setText("angle : "+angleToTarget);
     }
 
     private class loadARContent extends AsyncTask<String, Void, String>{
@@ -343,7 +370,10 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                 dialog.dismiss();
             }
             if(s.equals("success")){
-                Toast.makeText(context, "Content retrieved", Toast.LENGTH_SHORT);
+                Toast.makeText(context, "Content retrieved", Toast.LENGTH_SHORT).show();
+            } else{
+                Toast.makeText(context, "Retrieving AR content failed", Toast.LENGTH_SHORT).show();
+                overlayActivity.finish();
             }
         }
 
@@ -374,7 +404,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         }
 
         protected void onPreExecute() {
-            this.dialog.setMessage("Retrieving content...");
+            this.dialog.setMessage("Retrieving target location altitude...");
             this.dialog.show();
         }
 
@@ -393,6 +423,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                     new com.android.volley.Response.Listener<ElevationResponseContainer>() {
                         @Override
                         public void onResponse(ElevationResponseContainer response) {
+                            Log.d("target response", "target response retrieved");
                             overlayActivity.targetAltitude = response.getResults().get(0).getElevation();
                             overlayActivity.altitudeTextView.setText("target altitude : "+overlayActivity.targetAltitude);
                             success = true;
@@ -405,6 +436,9 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                         }
                     }
             );
+            myReq.setRetryPolicy(new DefaultRetryPolicy(30000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             mRequestQueue.add(myReq);
             return null;
         }
@@ -415,9 +449,10 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                 dialog.dismiss();
             }
             if(success){
-                Toast.makeText(context, "Target altitude retrieved", Toast.LENGTH_SHORT);
+                Toast.makeText(context, "Target altitude retrieved", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(context, "failed retrieving data", Toast.LENGTH_SHORT);
+                //Toast.makeText(context, "failed retrieving target altitude", Toast.LENGTH_SHORT).show();
+                //overlayActivity.finish();
             }
         }
     }
@@ -437,8 +472,8 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         }
 
         protected void onPreExecute() {
-            this.dialog.setMessage("Retrieving content...");
-            this.dialog.show();
+//            this.dialog.setMessage("Retrieving content...");
+//            this.dialog.show();
         }
 
         @Override
@@ -456,6 +491,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                     new com.android.volley.Response.Listener<ElevationResponseContainer>() {
                         @Override
                         public void onResponse(ElevationResponseContainer response) {
+                            Log.d("device response", "device response retrieved");
                             overlayActivity.deviceAltitude = response.getResults().get(0).getElevation();
                             overlayActivity.calculateAngleBetweenDeviceAndTarget();
                             success = true;
@@ -464,24 +500,117 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                     new com.android.volley.Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+                            Log.d("error", "error response");
                             success = false;
                         }
                     }
             );
+            myReq.setRetryPolicy(new DefaultRetryPolicy(30000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             mRequestQueue.add(myReq);
             return null;
         }
 
         @Override
         protected void onPostExecute(String s) {
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
+//            if (dialog.isShowing()) {
+//                dialog.dismiss();
+//            }
             if(success){
-                Toast.makeText(context, "Target altitude retrieved", Toast.LENGTH_SHORT);
+                Toast.makeText(context, "device altitude retrieved", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(context, "failed retrieving data", Toast.LENGTH_SHORT);
+                //Toast.makeText(context, "retrieving device altitude failed", Toast.LENGTH_SHORT).show();
+                //overlayActivity.finish();
             }
         }
+    }
+
+    public List<Response> getResponseList() {
+        return responseList;
+    }
+
+    public void setResponseList(List<Response> responseList) {
+        this.responseList = responseList;
+    }
+
+    public Map<String, ImageView> getMarkers() {
+        return markers;
+    }
+
+    public void setMarkers(Map<String, ImageView> markers) {
+        this.markers = markers;
+    }
+
+    public Location getDeviceLocation() {
+        return deviceLocation;
+    }
+
+    public void setDeviceLocation(Location deviceLocation) {
+        this.deviceLocation = deviceLocation;
+    }
+
+    public Location getTargetLocation() {
+        return targetLocation;
+    }
+
+    public void setTargetLocation(Location targetLocation) {
+        this.targetLocation = targetLocation;
+    }
+
+    public int getTargetPositionInList() {
+        return targetPositionInList;
+    }
+
+    public void setTargetPositionInList(int targetPositionInList) {
+        this.targetPositionInList = targetPositionInList;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(double distance) {
+        this.distance = distance;
+    }
+
+    public float getAngleToTarget() {
+        return angleToTarget;
+    }
+
+    public void setAngleToTarget(float angleToTarget) {
+        this.angleToTarget = angleToTarget;
+    }
+
+    public double getDeviceAltitude() {
+        return deviceAltitude;
+    }
+
+    public void setDeviceAltitude(double deviceAltitude) {
+        this.deviceAltitude = deviceAltitude;
+    }
+
+    public double getTargetAltitude() {
+        return targetAltitude;
+    }
+
+    public void setTargetAltitude(double targetAltitude) {
+        this.targetAltitude = targetAltitude;
+    }
+
+    public int getScreenWidth() {
+        return screenWidth;
+    }
+
+    public void setScreenWidth(int screenWidth) {
+        this.screenWidth = screenWidth;
+    }
+
+    public int getScreenHeight() {
+        return screenHeight;
+    }
+
+    public void setScreenHeight(int screenHeight) {
+        this.screenHeight = screenHeight;
     }
 }

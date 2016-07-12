@@ -55,7 +55,7 @@ public class CameraSurfaceView extends SurfaceView {
                 try {
                     // The Surface has been created, now tell the camera where to draw
                     // the preview.
-                    camera.setDisplayOrientation(90);
+                    //camera.setDisplayOrientation(90);
                     camera.setPreviewDisplay(surfaceHolder);
                     camera.startPreview();
                 } catch (Exception e) {
