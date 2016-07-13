@@ -37,13 +37,12 @@ import com.android.volley.toolbox.Volley;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import informatika.com.augmentedrealityforhistory.fragments.MarkerDialog;
 import informatika.com.augmentedrealityforhistory.models.ElevationResponseContainer;
 import informatika.com.augmentedrealityforhistory.models.Response;
 import informatika.com.augmentedrealityforhistory.R;
+import informatika.com.augmentedrealityforhistory.resources.ResourceClass;
 import informatika.com.augmentedrealityforhistory.util.GsonRequest;
 
 /**
@@ -51,8 +50,6 @@ import informatika.com.augmentedrealityforhistory.util.GsonRequest;
  */
 
 public class OverlayActivity extends AppCompatActivity implements SensorEventListener, LocationListener, View.OnClickListener {
-    private List<Response> responseList;
-    private Map<String, ImageView> markers;
     private RelativeLayout overlayViewInsideRelativeLayout;
     private RelativeLayout.LayoutParams layoutParams;
 
@@ -71,13 +68,6 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     private float[] mTemporaryRotationMatrix = new float[9];
     private float[] mRotationMatrix = new float[9];
     private float[] mOrientation = new float[3];
-
-    //device location
-    private Location deviceLocation;
-
-    //target location
-    private Location targetLocation;
-    private int targetPositionInList = 0;
 
     //distance between device location to target location
     private double distance = 0f;
@@ -101,6 +91,8 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     private TextView targetTextView;
     private TextView distanceTextView;
     private TextView angleTextView;
+    private TextView deviceLocationTextView;
+    private TextView targetLocationTextView;
 
     //button
     private Button nextContentButton;
@@ -134,15 +126,14 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         fragmentManager = getFragmentManager();
 
         ////////////////////////////////////////////////////////////
-        markers = new HashMap<>();
+        ResourceClass.markers = new HashMap<>();
 
-        responseList = new ArrayList<Response>();
-        responseList.add(new Response("1", -6.891814, 107.610263, "itb", "", ""));
-        responseList.add(new Response("2", -6.1825927, 106.8360346, "monas", "", ""));
-        responseList.add(new Response("3", -7.6078685, 110.2015626, "borobudur", "", ""));
+        ResourceClass.responseList = new ArrayList<Response>();
+        ResourceClass.responseList.add(new Response("1", -6.891814, 107.610263, "itb", "", ""));
+        ResourceClass.responseList.add(new Response("2", -6.1825927, 106.8360346, "monas", "", ""));
+        ResourceClass.responseList.add(new Response("3", -7.6078685, 110.2015626, "borobudur", "", ""));
         ////////////////////////////////////////////////////////////
 
-        Log.d("response list size", "size : "+responseList.size());
         setContentView(R.layout.activity_overlay);
 
         navArrow = (ImageView) findViewById(R.id.navArrow);
@@ -151,17 +142,19 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         distanceTextView = (TextView) findViewById(R.id.distanceTextView);
         angleTextView = (TextView) findViewById(R.id.angleTextView);
         nextContentButton = (Button) findViewById(R.id.nextContentButton);
+        deviceLocationTextView = (TextView) findViewById(R.id.deviceLocationTextView);
+        targetLocationTextView = (TextView) findViewById(R.id.targetLocationTextView);
         //compassImage = (ImageView) findViewById(R.id.compassImage);
 
         overlayViewInsideRelativeLayout = (RelativeLayout) findViewById(R.id.overlayViewInsideRelativeLayout);
         layoutParams = new RelativeLayout.LayoutParams(50, 50);
-        for(Response response :responseList){
+        for(Response response :ResourceClass.responseList){
             ImageView iv = new ImageView(this);
             iv.setImageResource(R.drawable.marker);
             iv.setVisibility(View.INVISIBLE);
             iv.setLayoutParams(layoutParams);
             iv.setOnClickListener(this);
-            markers.put(response.getId(), iv);
+            ResourceClass.markers.put(response.getId(), iv);
             overlayViewInsideRelativeLayout.addView(iv);
         }
 
@@ -185,33 +178,38 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         }
 
         if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            Log.d("gps enabled", "gps enabled");
+            System.out.println("gps enabled");
         }
 
         if(mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-            Log.d("network enabled", "network enabled");
+            System.out.println("network enabled");
         }
 
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
         if (mLocationManager != null) {
-            deviceLocation = mLocationManager
-                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (deviceLocation != null) {
+            ResourceClass.deviceLocation = mLocationManager
+                    .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            if (ResourceClass.deviceLocation != null) {
+                deviceLocationTextView.setText("device lat : "+ResourceClass.deviceLocation.getLatitude()+", long : "+ResourceClass.deviceLocation.getLongitude());
                 Log.d("device location", "device location set");
                 new loadARContent(this).execute("");
                 new loadTargetElevation(this).execute("");
                 new loadDeviceElevation(this).execute("");
+            } else {
+                Toast.makeText(this, "cant retrieve device location", Toast.LENGTH_SHORT);
+                Log.d("device location", "device location not set");
             }
         }
 
         nextContentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                markers.get(responseList.get(targetPositionInList).getId()).setVisibility(View.INVISIBLE);
-                if(targetPositionInList < responseList.size()) {
-                    targetPositionInList += 1;
+                Log.d("response list size", "size : "+ResourceClass.responseList.size());
+                ResourceClass.markers.get(ResourceClass.responseList.get(ResourceClass.targetPositionInList).getId()).setVisibility(View.INVISIBLE);
+                if(ResourceClass.targetPositionInList < ResourceClass.responseList.size()) {
+                    ResourceClass.targetPositionInList += 1;
                 }
-                targetLocation = responseList.get(targetPositionInList).getLocation();
+                ResourceClass.targetLocation = ResourceClass.responseList.get(ResourceClass.targetPositionInList).getLocation();
                 new loadTargetElevation(OverlayActivity.this).execute("");
             }
         });
@@ -219,11 +217,14 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     public void onLocationChanged(Location location) {
+        System.out.println("location changed");
         if(location == null) return;
         //call get altitude for device and
         //new loadDeviceElevation(this).execute("");
         //calculateAngleBetweenDeviceAndTarget();
-        this.deviceLocation = location;
+        ResourceClass.deviceLocation = location;
+        Log.d("device location", "lat : "+ResourceClass.deviceLocation.getLatitude()+", long : "+ResourceClass.deviceLocation.getLongitude());
+        deviceLocationTextView.setText("device lat : "+ResourceClass.deviceLocation.getLatitude()+", long : "+ResourceClass.deviceLocation.getLongitude());
     }
 
     @Override
@@ -260,11 +261,11 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
             float pitch = (float)Math.toDegrees(mOrientation[1]);
             float roll = (float)Math.toDegrees(mOrientation[2]);
 
-            if(deviceLocation != null && targetLocation != null) {
+            if(ResourceClass.deviceLocation != null && ResourceClass.targetLocation != null) {
                 // Store the bearingTo in the bearTo variable
-                float bearTo = deviceLocation.bearingTo(targetLocation);
-                distance = deviceLocation.distanceTo(targetLocation);
-                targetTextView.setText("target : " + responseList.get(targetPositionInList).getTitle());
+                float bearTo = ResourceClass.deviceLocation.bearingTo(ResourceClass.targetLocation);
+                distance = ResourceClass.deviceLocation.distanceTo(ResourceClass.targetLocation);
+                targetTextView.setText("target : " + ResourceClass.responseList.get(ResourceClass.targetPositionInList).getTitle());
                 distanceTextView.setText("distance : " + distance);
 
                 //This is where we choose to point it
@@ -300,12 +301,12 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                         //x = ratioPitch * (screenWidth/2);
                         y = ratioPitch * (screenHeight / 2);
                     }
-                    markers.get(responseList.get(targetPositionInList).getId()).setVisibility(View.VISIBLE);
+                    ResourceClass.markers.get(ResourceClass.responseList.get(ResourceClass.targetPositionInList).getId()).setVisibility(View.VISIBLE);
                     layoutParams.leftMargin = (int) x;
                     layoutParams.topMargin = (int) y;
-                    markers.get(responseList.get(targetPositionInList).getId()).setLayoutParams(layoutParams);
+                    ResourceClass.markers.get(ResourceClass.responseList.get(ResourceClass.targetPositionInList).getId()).setLayoutParams(layoutParams);
                 } else {
-                    markers.get(responseList.get(targetPositionInList).getId()).setVisibility(View.INVISIBLE);
+                    ResourceClass.markers.get(ResourceClass.responseList.get(ResourceClass.targetPositionInList).getId()).setVisibility(View.INVISIBLE);
                 }
                 navArrow.setRotation(direction);
             }
@@ -334,7 +335,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     public void onClick(View v) {
-        if(v == markers.get(responseList.get(targetPositionInList).getId())){
+        if(v == ResourceClass.markers.get(ResourceClass.responseList.get(ResourceClass.targetPositionInList).getId())){
             MarkerDialog markerDialog = new MarkerDialog();
             markerDialog.show(fragmentManager, "fragment_marker_dialog");
             //Toast.makeText(this, responseList.get(targetPositionInList).getTitle(), Toast.LENGTH_SHORT).show();
@@ -384,7 +385,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
 
         @Override
         protected String doInBackground(String... params) {
-            overlayActivity.targetLocation = responseList.get(targetPositionInList).getLocation();
+            ResourceClass.targetLocation = ResourceClass.responseList.get(ResourceClass.targetPositionInList).getLocation();
             return "success";
         }
     }
@@ -410,9 +411,9 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
 
         @Override
         protected String doInBackground(String... params) {
-            url += String.valueOf(responseList.get(targetPositionInList).getLatitude())
+            url += String.valueOf(ResourceClass.responseList.get(ResourceClass.targetPositionInList).getLatitude())
                     + ","
-                    + String.valueOf(responseList.get(targetPositionInList).getLongitude())
+                    + String.valueOf(ResourceClass.responseList.get(ResourceClass.targetPositionInList).getLongitude())
                     + "&sensor=true";
             Log.d("url", url);
             mRequestQueue = Volley.newRequestQueue(overlayActivity);
@@ -436,7 +437,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                         }
                     }
             );
-            myReq.setRetryPolicy(new DefaultRetryPolicy(30000,
+            myReq.setRetryPolicy(new DefaultRetryPolicy(5000,
                     DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
             mRequestQueue.add(myReq);
@@ -478,9 +479,9 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
 
         @Override
         protected String doInBackground(String... params) {
-            url += String.valueOf(deviceLocation.getLatitude())
+            url += String.valueOf(ResourceClass.deviceLocation.getLatitude())
                     + ","
-                    + String.valueOf(deviceLocation.getLongitude())
+                    + String.valueOf(ResourceClass.deviceLocation.getLongitude())
                     + "&sensor=true";
             Log.d("url", url);
             mRequestQueue = Volley.newRequestQueue(overlayActivity);
@@ -524,46 +525,6 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                 //overlayActivity.finish();
             }
         }
-    }
-
-    public List<Response> getResponseList() {
-        return responseList;
-    }
-
-    public void setResponseList(List<Response> responseList) {
-        this.responseList = responseList;
-    }
-
-    public Map<String, ImageView> getMarkers() {
-        return markers;
-    }
-
-    public void setMarkers(Map<String, ImageView> markers) {
-        this.markers = markers;
-    }
-
-    public Location getDeviceLocation() {
-        return deviceLocation;
-    }
-
-    public void setDeviceLocation(Location deviceLocation) {
-        this.deviceLocation = deviceLocation;
-    }
-
-    public Location getTargetLocation() {
-        return targetLocation;
-    }
-
-    public void setTargetLocation(Location targetLocation) {
-        this.targetLocation = targetLocation;
-    }
-
-    public int getTargetPositionInList() {
-        return targetPositionInList;
-    }
-
-    public void setTargetPositionInList(int targetPositionInList) {
-        this.targetPositionInList = targetPositionInList;
     }
 
     public double getDistance() {

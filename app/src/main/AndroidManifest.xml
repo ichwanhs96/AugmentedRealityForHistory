@@ -18,6 +18,11 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
         <activity android:name=".activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,6 +33,10 @@
             android:name=".activities.OverlayActivity"
             android:label="overlay activity"
             android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name=".activities.MapsActivity"
+            android:label="maps activity">
         </activity>
     </application>
 

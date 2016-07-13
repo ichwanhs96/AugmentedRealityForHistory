@@ -68,6 +68,24 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="device location"
+            android:id="@+id/deviceLocationTextView"
+            android:textColor="#009900"
+            android:layout_below="@+id/angleTextView"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="target location"
+            android:id="@+id/targetLocationTextView"
+            android:textColor="#009900"
+            android:layout_below="@+id/deviceLocationTextView"
+            android:layout_alignParentStart="true" />
+
 
     </RelativeLayout>
 
