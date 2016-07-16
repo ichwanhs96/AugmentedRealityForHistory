@@ -86,6 +86,33 @@
             android:layout_below="@+id/deviceLocationTextView"
             android:layout_alignParentStart="true" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="target location"
+            android:id="@+id/azimuthDevice"
+            android:textColor="#009900"
+            android:layout_below="@+id/targetLocationTextView"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="target location"
+            android:id="@+id/pitchDevice"
+            android:textColor="#009900"
+            android:layout_below="@+id/azimuthDevice"
+            android:layout_alignParentStart="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="target location"
+            android:id="@+id/rollDevice"
+            android:textColor="#009900"
+            android:layout_below="@+id/pitchDevice"
+            android:layout_alignParentStart="true" />
+
 
     </RelativeLayout>
 

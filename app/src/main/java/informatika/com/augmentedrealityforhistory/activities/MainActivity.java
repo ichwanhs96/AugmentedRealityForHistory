@@ -2,7 +2,6 @@ package informatika.com.augmentedrealityforhistory.activities;
 
 import android.Manifest;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -110,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                System.out.println("button clicked");
                 nextActivity();
             }
         });
@@ -126,10 +126,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
         if (mLastAccelerometerSet && mLastMagnetometerSet) {
             SensorManager.getRotationMatrix(mTemporaryRotationMatrix, null, mLastAccelerometer, mLastMagnetometer);
-            SensorManager.remapCoordinateSystem(mTemporaryRotationMatrix, SensorManager.AXIS_X,
-                    SensorManager.AXIS_Z, mRotationMatrix);
+//            SensorManager.remapCoordinateSystem(mTemporaryRotationMatrix, SensorManager.AXIS_X,
+//                    SensorManager.AXIS_Z, mRotationMatrix);
             //configureDeviceAngle();
-            SensorManager.getOrientation(mRotationMatrix, mOrientation);
+            SensorManager.getOrientation(mTemporaryRotationMatrix, mOrientation);
             textView1.setText("a: "+mOrientation[0]+", p: "+mOrientation[1]+", r: "+mOrientation[2]);
             float azimuth = (float)((Math.toDegrees(mOrientation[0])+360)%360);
             float pitch = (float)((Math.toDegrees(mOrientation[1])+360)%360);
@@ -149,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             else if (azimuth >= 247.5 && azimuth <= 292.5) bearingText = "W";
             else if (azimuth > 292.5 && azimuth < 337.5) bearingText = "NW";
             else bearingText = "?";
+            imageView.setRotation(azimuth);
 
             if(location != null) {
                 Location destLoc = new Location("");
@@ -159,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 bearToTextView.setText("bear to : " + bearTo);
                 //This is where we choose to point it
                 float direction = bearTo - azimuth;
-                imageView.setRotation(direction);
+                //imageView.setRotation(direction);
             }
             textView3.setText(String.valueOf(bearingText));
         }
@@ -208,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
 
     public void nextActivity() {
+        System.out.println("next activity called");
         Intent intent = new Intent(this, OverlayActivity.class);
         startActivity(intent);
     }

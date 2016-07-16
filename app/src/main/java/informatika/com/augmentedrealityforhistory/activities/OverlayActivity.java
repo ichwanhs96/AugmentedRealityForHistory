@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.hardware.Sensor;
@@ -93,6 +92,9 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     private TextView angleTextView;
     private TextView deviceLocationTextView;
     private TextView targetLocationTextView;
+    private TextView azimuthDeviceTextView;
+    private TextView pitchDeviceTextView;
+    private TextView rollDeviceTextView;
 
     //button
     private Button nextContentButton;
@@ -144,6 +146,9 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         nextContentButton = (Button) findViewById(R.id.nextContentButton);
         deviceLocationTextView = (TextView) findViewById(R.id.deviceLocationTextView);
         targetLocationTextView = (TextView) findViewById(R.id.targetLocationTextView);
+        azimuthDeviceTextView = (TextView) findViewById(R.id.azimuthDevice);
+        pitchDeviceTextView = (TextView) findViewById(R.id.pitchDevice);
+        rollDeviceTextView = (TextView) findViewById(R.id.rollDevice);
         //compassImage = (ImageView) findViewById(R.id.compassImage);
 
         overlayViewInsideRelativeLayout = (RelativeLayout) findViewById(R.id.overlayViewInsideRelativeLayout);
@@ -161,6 +166,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        initSensorListener();
 
         //position tracking
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -221,7 +227,9 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         if(location == null) return;
         //call get altitude for device and
         //new loadDeviceElevation(this).execute("");
-        //calculateAngleBetweenDeviceAndTarget();
+        if(deviceAltitude != 0) {
+            calculateAngleBetweenDeviceAndTarget();
+        }
         ResourceClass.deviceLocation = location;
         Log.d("device location", "lat : "+ResourceClass.deviceLocation.getLatitude()+", long : "+ResourceClass.deviceLocation.getLongitude());
         deviceLocationTextView.setText("device lat : "+ResourceClass.deviceLocation.getLatitude()+", long : "+ResourceClass.deviceLocation.getLongitude());
@@ -245,10 +253,10 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor == mAccelerometer) {
-            System.arraycopy(event.values, 0, mLastAccelerometer, 0, event.values.length);
+            mLastAccelerometer = event.values;
             mLastAccelerometerSet = true;
         } else if (event.sensor == mMagnetometer) {
-            System.arraycopy(event.values, 0, mLastMagnetometer, 0, event.values.length);
+            mLastMagnetometer = event.values;
             mLastMagnetometerSet = true;
         }
         if (mLastAccelerometerSet && mLastMagnetometerSet) {
@@ -309,6 +317,12 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                     ResourceClass.markers.get(ResourceClass.responseList.get(ResourceClass.targetPositionInList).getId()).setVisibility(View.INVISIBLE);
                 }
                 navArrow.setRotation(direction);
+                azimuth = (azimuth+360)%360;
+                azimuthDeviceTextView.setText("azimuth : "+azimuth);
+                pitch = (pitch+360)%360;
+                pitchDeviceTextView.setText("pitch : "+pitch);
+                roll = (roll+360)%360;
+                rollDeviceTextView.setText("roll : "+roll);
             }
         }
     }
@@ -321,10 +335,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     @Override
     protected void onResume() {
         super.onResume();
-        mLastAccelerometerSet = false;
-        mLastMagnetometerSet = false;
-        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+        initSensorListener();
     }
 
     @Override
@@ -343,6 +354,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     }
 
     private void calculateAngleBetweenDeviceAndTarget(){
+        System.out.println("device altitude : "+deviceAltitude);
         if(deviceAltitude <= targetAltitude){
             double differenceHeight = targetAltitude - deviceAltitude;
             angleToTarget = (float)Math.toDegrees(Math.atan(differenceHeight/distance));
@@ -352,6 +364,13 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
             angleToTarget = (float)Math.toDegrees(Math.atan(differenceHeight/distance));
         }
         angleTextView.setText("angle : "+angleToTarget);
+    }
+
+    private void initSensorListener(){
+        mLastAccelerometerSet = false;
+        mLastMagnetometerSet = false;
+        mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     private class loadARContent extends AsyncTask<String, Void, String>{
@@ -473,8 +492,8 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         }
 
         protected void onPreExecute() {
-//            this.dialog.setMessage("Retrieving content...");
-//            this.dialog.show();
+            this.dialog.setMessage("Retrieving content...");
+            this.dialog.show();
         }
 
         @Override
@@ -515,9 +534,9 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
 
         @Override
         protected void onPostExecute(String s) {
-//            if (dialog.isShowing()) {
-//                dialog.dismiss();
-//            }
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
             if(success){
                 Toast.makeText(context, "device altitude retrieved", Toast.LENGTH_SHORT).show();
             } else {
@@ -525,53 +544,5 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                 //overlayActivity.finish();
             }
         }
-    }
-
-    public double getDistance() {
-        return distance;
-    }
-
-    public void setDistance(double distance) {
-        this.distance = distance;
-    }
-
-    public float getAngleToTarget() {
-        return angleToTarget;
-    }
-
-    public void setAngleToTarget(float angleToTarget) {
-        this.angleToTarget = angleToTarget;
-    }
-
-    public double getDeviceAltitude() {
-        return deviceAltitude;
-    }
-
-    public void setDeviceAltitude(double deviceAltitude) {
-        this.deviceAltitude = deviceAltitude;
-    }
-
-    public double getTargetAltitude() {
-        return targetAltitude;
-    }
-
-    public void setTargetAltitude(double targetAltitude) {
-        this.targetAltitude = targetAltitude;
-    }
-
-    public int getScreenWidth() {
-        return screenWidth;
-    }
-
-    public void setScreenWidth(int screenWidth) {
-        this.screenWidth = screenWidth;
-    }
-
-    public int getScreenHeight() {
-        return screenHeight;
-    }
-
-    public void setScreenHeight(int screenHeight) {
-        this.screenHeight = screenHeight;
     }
 }
