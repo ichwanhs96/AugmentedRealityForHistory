@@ -57,7 +57,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        new loadDirectionGoogleAPI(this).execute("");
+        loadDirection();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -85,74 +85,42 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(targetLocation, 14.0f));
     }
 
-    private class loadDirectionGoogleAPI extends AsyncTask<String, Void, String> {
-        private ProgressDialog dialog;
-        private MapsActivity mapsActivity;
-        private Context context;
-        private RequestQueue mRequestQueue;
-        private boolean success = false;
-
-        public loadDirectionGoogleAPI(MapsActivity activity) {
-            this.mapsActivity = activity;
-            context = activity;
-            dialog = new ProgressDialog(context);
-        }
-
-        protected void onPreExecute() {
-            this.dialog.setMessage("Retrieving directions...");
-            this.dialog.show();
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            String url = "http://maps.google.com/maps/api/directions/json?origin=";
-            url += ResourceClass.deviceLocation.getLatitude() + "," + ResourceClass.deviceLocation.getLongitude();
-            url += "&destination=";
-            url += ResourceClass.targetLocation.getLatitude() + "," + ResourceClass.deviceLocation.getLongitude();
-            mRequestQueue = Volley.newRequestQueue(mapsActivity);
-            GsonRequest<DirectionsResult> myReq = new GsonRequest<DirectionsResult>(
-                    Request.Method.GET,
-                    url,
-                    DirectionsResult.class,
-                    new com.android.volley.Response.Listener<DirectionsResult>() {
-                        @Override
-                        public void onResponse(DirectionsResult response) {
-                            success = true;
-                            Log.d("direction response", "direction response retrieved");
-                            String encodedPoints = response.routes.get(0).overviewPolyLine.points;
-                            latLngs = PolyUtil.decode(encodedPoints);
-                            PolylineOptions polylineOptions = new PolylineOptions();
-                            polylineOptions.addAll(latLngs);
-                            polylineOptions.color(Color.RED);
-                            polylineOptions.width(2);
-                            mMap.addPolyline(polylineOptions);
-                        }
-                    },
-                    new com.android.volley.Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            success = false;
-                            Log.d("direction response", "direction response failed");
-                        }
+    private void loadDirection(){
+        String url = "http://maps.google.com/maps/api/directions/json?origin=";
+        url += ResourceClass.deviceLocation.getLatitude() + "," + ResourceClass.deviceLocation.getLongitude();
+        url += "&destination=";
+        url += ResourceClass.targetLocation.getLatitude() + "," + ResourceClass.targetLocation.getLongitude();
+        System.out.println("direction maps : "+url);
+        mRequestQueue = Volley.newRequestQueue(this);
+        GsonRequest<DirectionsResult> myReq = new GsonRequest<DirectionsResult>(
+                Request.Method.GET,
+                url,
+                DirectionsResult.class,
+                new com.android.volley.Response.Listener<DirectionsResult>() {
+                    @Override
+                    public void onResponse(DirectionsResult response) {
+                        Log.d("direction response", "direction response retrieved");
+                        String encodedPoints = response.routes.get(0).overviewPolyLine.points;
+                        latLngs = PolyUtil.decode(encodedPoints);
+                        PolylineOptions polylineOptions = new PolylineOptions();
+                        polylineOptions.addAll(latLngs);
+                        polylineOptions.color(Color.RED);
+                        polylineOptions.width(3);
+                        mMap.addPolyline(polylineOptions);
+                        Toast.makeText(MapsActivity.this, "direction retrieved", Toast.LENGTH_SHORT).show();
                     }
-            );
-            myReq.setRetryPolicy(new DefaultRetryPolicy(5000,
-                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-            mRequestQueue.add(myReq);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            if (dialog.isShowing()) {
-                dialog.dismiss();
-            }
-            if(success){
-                Toast.makeText(context, "direction retrieved", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(context, "direction cant be retrieved", Toast.LENGTH_SHORT).show();
-            }
-        }
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("direction response", "direction response failed");
+                        Toast.makeText(MapsActivity.this, "direction cant be retrieved", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+        myReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        mRequestQueue.add(myReq);
     }
 }

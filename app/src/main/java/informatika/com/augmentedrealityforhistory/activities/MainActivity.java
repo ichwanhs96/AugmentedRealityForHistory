@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private float directionBefore = 0.0f;
     //button
     private Button button;
+    private Button buttonListView;
 
     private Location location;
 
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         bearToTextView = (TextView) findViewById(R.id.bearToTextView);
         imageView = (ImageView) findViewById(R.id.imageView);
         button = (Button) findViewById(R.id.button);
+        buttonListView = (Button) findViewById(R.id.buttonListView);
 
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -109,8 +111,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("button clicked");
-                nextActivity();
+                nextOverlayActivity();
+            }
+        });
+
+        buttonListView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nextListViewActivity();
             }
         });
     }
@@ -208,9 +216,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     }
 
-    public void nextActivity() {
-        System.out.println("next activity called");
+    public void nextOverlayActivity() {
         Intent intent = new Intent(this, OverlayActivity.class);
+        startActivity(intent);
+    }
+
+    public void nextListViewActivity() {
+        Intent intent = new Intent(this, ListHistoryActivity.class);
         startActivity(intent);
     }
 

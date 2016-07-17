@@ -132,7 +132,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
 
         ResourceClass.responseList = new ArrayList<Response>();
         ResourceClass.responseList.add(new Response("1", -6.891814, 107.610263, "itb", "", ""));
-        ResourceClass.responseList.add(new Response("2", -6.1825927, 106.8360346, "monas", "", ""));
+        ResourceClass.responseList.add(new Response("2", -6.1753871, 106.8249641, "monas", "", ""));
         ResourceClass.responseList.add(new Response("3", -7.6078685, 110.2015626, "borobudur", "", ""));
         ////////////////////////////////////////////////////////////
 

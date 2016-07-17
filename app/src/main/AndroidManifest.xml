@@ -38,6 +38,10 @@
             android:name=".activities.MapsActivity"
             android:label="maps activity">
         </activity>
+        <activity
+            android:name=".activities.ListHistoryActivity"
+            android:label="list view history activity">
+        </activity>
     </application>
 
 </manifest>
