@@ -83,4 +83,12 @@
         android:id="@+id/buttonListView"
         android:layout_alignTop="@+id/button"
         android:layout_toStartOf="@+id/button" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:id="@+id/buttonLogin"
+        android:layout_alignTop="@+id/buttonListView"
+        android:layout_toStartOf="@+id/buttonListView" />
 </RelativeLayout>

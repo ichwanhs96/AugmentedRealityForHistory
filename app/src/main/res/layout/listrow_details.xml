@@ -2,11 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="40dp"
+    android:layout_height="wrap_content"
     android:clickable="true"
     android:orientation="vertical"
     android:paddingLeft="40dp"
-    tools:context=".activities.ListHistoryActivity" >
+    tools:context=".activities.ListHistoryActivity"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp">
 
     <TextView
         android:id="@+id/textViewListrowDetail"
@@ -17,7 +19,7 @@
         android:gravity="center_vertical"
         android:text="hello~"
         android:textSize="14sp"
-        android:textStyle="bold" >
+        android:textStyle="bold">
     </TextView>
 
     <View

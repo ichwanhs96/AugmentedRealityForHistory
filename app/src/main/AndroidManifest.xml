@@ -42,6 +42,12 @@
             android:name=".activities.ListHistoryActivity"
             android:label="list view history activity">
         </activity>
+        <activity
+            android:name=".activities.LoginActivity"
+            android:label="login activity"></activity>
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:label="register activity"></activity>
     </application>
 
 </manifest>

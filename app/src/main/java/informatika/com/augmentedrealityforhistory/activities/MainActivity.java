@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     //button
     private Button button;
     private Button buttonListView;
+    private Button buttonLogin;
 
     private Location location;
 
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         imageView = (ImageView) findViewById(R.id.imageView);
         button = (Button) findViewById(R.id.button);
         buttonListView = (Button) findViewById(R.id.buttonListView);
+        buttonLogin = (Button) findViewById(R.id.buttonLogin);
 
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -119,6 +121,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             @Override
             public void onClick(View v) {
                 nextListViewActivity();
+            }
+        });
+
+        buttonLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                nextLoginActivity();
             }
         });
     }
@@ -223,6 +232,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void nextListViewActivity() {
         Intent intent = new Intent(this, ListHistoryActivity.class);
+        startActivity(intent);
+    }
+
+    public void nextLoginActivity(){
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 

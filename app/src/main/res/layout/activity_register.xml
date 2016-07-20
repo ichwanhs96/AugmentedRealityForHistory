@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextRegisterUsername"
+        android:hint="username"
+        android:layout_above="@+id/editTextRegisterEmail"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextRegisterEmail"
+        android:inputType="textEmailAddress"
+        android:hint="email"
+        android:layout_above="@+id/editTextRegisterPassword"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextRegisterPassword"
+        android:inputType="textPassword"
+        android:hint="password"
+        android:layout_above="@+id/editTextRegisterConfirmPassword"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextRegisterConfirmPassword"
+        android:inputType="textPassword"
+        android:hint="confirm password"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="register"
+        android:id="@+id/buttonRegisterSubmit"
+        android:layout_below="@+id/editTextRegisterConfirmPassword"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Form Register"
+        android:id="@+id/textViewFormRegister"
+        android:layout_above="@+id/editTextRegisterUsername"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>

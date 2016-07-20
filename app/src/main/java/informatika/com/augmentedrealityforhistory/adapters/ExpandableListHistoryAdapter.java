@@ -69,9 +69,9 @@ public class ExpandableListHistoryAdapter extends BaseExpandableListAdapter {
             convertView = inflater.inflate(R.layout.listrow_group, null);
         }
         Group group = (Group) getGroup(groupPosition);
-        ((CheckedTextView) convertView).setText(group.string);
-        ((CheckedTextView) convertView).setChecked(isExpanded);
-        return convertView;
+        ((CheckedTextView) convertView.findViewById(R.id.textViewListrowGroup)).setText(group.string);
+        ((CheckedTextView) convertView.findViewById(R.id.textViewListrowGroup)).setChecked(isExpanded);
+        return convertView.findViewById(R.id.textViewListrowGroup);
     }
 
     @Override

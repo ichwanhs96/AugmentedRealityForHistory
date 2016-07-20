@@ -3,22 +3,38 @@ package informatika.com.augmentedrealityforhistory.activities;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.SparseArray;
 import android.widget.ExpandableListView;
+import android.widget.Toast;
+
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.Volley;
+
+import java.util.Arrays;
+import java.util.List;
 
 import informatika.com.augmentedrealityforhistory.R;
 import informatika.com.augmentedrealityforhistory.adapters.ExpandableListHistoryAdapter;
 import informatika.com.augmentedrealityforhistory.models.Group;
+import informatika.com.augmentedrealityforhistory.models.History;
+import informatika.com.augmentedrealityforhistory.resources.ResourceClass;
+import informatika.com.augmentedrealityforhistory.util.GsonRequest;
 
 /**
  * Created by USER on 7/18/2016.
  */
 public class ListHistoryActivity extends AppCompatActivity {
+    private RequestQueue mRequestQueue;
     SparseArray<Group> groups = new SparseArray<Group>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        loadHistories();
         setContentView(R.layout.activity_listhistory);
         createData();
         ExpandableListView listView = (ExpandableListView) findViewById(R.id.listView);
@@ -35,5 +51,38 @@ public class ListHistoryActivity extends AppCompatActivity {
             }
             groups.append(j, group);
         }
+    }
+
+    private void loadHistories(){
+        String url = "http://192.168.1.107:3000/api/Histories";
+        System.out.println("backend : "+url);
+        mRequestQueue = Volley.newRequestQueue(this);
+        GsonRequest<History[]> myReq = new GsonRequest<History[]>(
+                Request.Method.GET,
+                url,
+                History[].class,
+                new com.android.volley.Response.Listener<History[]>() {
+                    @Override
+                    public void onResponse(History[] response) {
+                        Log.d("direction response", "direction response retrieved");
+                        Toast.makeText(ListHistoryActivity.this, "histories retrieved", Toast.LENGTH_SHORT).show();
+                        List<History> histories = Arrays.asList(response);
+                        for(History result : histories){
+                            System.out.println("title : "+result.getTitle());
+                        }
+                    }
+                },
+                new com.android.volley.Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("direction response", "direction response failed");
+                        Toast.makeText(ListHistoryActivity.this, "histories cant be retrieved", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+        myReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        mRequestQueue.add(myReq);
     }
 }
