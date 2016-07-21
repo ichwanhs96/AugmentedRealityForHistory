@@ -48,6 +48,9 @@
         <activity
             android:name=".activities.RegisterActivity"
             android:label="register activity"></activity>
+        <activity
+            android:name=".activities.MainMenuActivity"
+            android:label="main menu activity"></activity>
     </application>
 
 </manifest>

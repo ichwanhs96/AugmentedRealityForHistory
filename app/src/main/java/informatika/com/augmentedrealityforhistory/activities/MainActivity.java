@@ -120,7 +120,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         buttonListView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                nextListViewActivity();
+                nextMainMenuActivity();
             }
         });
 
@@ -232,6 +232,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     public void nextListViewActivity() {
         Intent intent = new Intent(this, ListHistoryActivity.class);
+        startActivity(intent);
+    }
+
+    public void nextMainMenuActivity(){
+        Intent intent = new Intent(this, MainMenuActivity.class);
         startActivity(intent);
     }
 
