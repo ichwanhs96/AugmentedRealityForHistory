@@ -1,8 +1,10 @@
 package informatika.com.augmentedrealityforhistory.fragments;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
@@ -32,6 +34,7 @@ import informatika.com.augmentedrealityforhistory.util.GsonRequest;
 public class ListHistory extends Fragment {
     private RequestQueue mRequestQueue;
     SparseArray<Group> groups = new SparseArray<Group>();
+    AppCompatActivity activity;
 
     @Nullable
     @Override
@@ -68,7 +71,7 @@ public class ListHistory extends Fragment {
                     @Override
                     public void onResponse(History[] response) {
                         Log.d("direction response", "direction response retrieved");
-                        Toast.makeText(getActivity(), "histories retrieved", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "histories retrieved", Toast.LENGTH_SHORT).show();
                         List<History> histories = Arrays.asList(response);
                         for(History result : histories){
                             System.out.println("title : "+result.getTitle());
@@ -79,7 +82,7 @@ public class ListHistory extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("direction response", "direction response failed");
-                        Toast.makeText(getActivity(), "histories cant be retrieved", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "histories cant be retrieved", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -87,5 +90,11 @@ public class ListHistory extends Fragment {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mRequestQueue.add(myReq);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.activity = (AppCompatActivity) context;
     }
 }

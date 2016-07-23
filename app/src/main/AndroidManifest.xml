@@ -44,13 +44,20 @@
         </activity>
         <activity
             android:name=".activities.LoginActivity"
-            android:label="login activity"></activity>
+            android:label="login activity">
+        </activity>
         <activity
             android:name=".activities.RegisterActivity"
-            android:label="register activity"></activity>
+            android:label="register activity">
+        </activity>
         <activity
             android:name=".activities.MainMenuActivity"
-            android:label="main menu activity"></activity>
+            android:label="main menu activity">
+        </activity>
+        <activity
+            android:name=".activities.PoiMapActivity"
+            android:label="poi maps activity">
+        </activity>
     </application>
 
 </manifest>

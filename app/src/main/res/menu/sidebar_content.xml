@@ -3,35 +3,35 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/inbox"
+            android:id="@+id/history"
             android:checked="false"
             android:icon="@drawable/ic_android_black_24dp"
-            android:title="list history" />
+            android:title="List History" />
 
         <item
-            android:id="@+id/starred"
+            android:id="@+id/addHistory"
             android:checked="false"
             android:icon="@drawable/ic_android_black_24dp"
-            android:title="test" />
+            android:title="Tambah History" />
 
         <item
-            android:id="@+id/sent_mail"
+            android:id="@+id/addPoi"
             android:checked="false"
             android:icon="@drawable/ic_android_black_24dp"
-            android:title="test" />
+            android:title="Tambah Point Of interest" />
 
         <item
-            android:id="@+id/drafts"
+            android:id="@+id/addContent"
             android:checked="false"
             android:icon="@drawable/ic_android_black_24dp"
-            android:title="test" />
+            android:title="Tambah Konten" />
 
 
         <item
-            android:id="@+id/allmail"
+            android:id="@+id/logout"
             android:checked="false"
             android:icon="@drawable/ic_android_black_24dp"
-            android:title="test" />
+            android:title="Logout" />
 
     </group>
 </menu>

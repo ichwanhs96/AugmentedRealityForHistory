@@ -3,6 +3,8 @@ package informatika.com.augmentedrealityforhistory.resources;
 import android.location.Location;
 import android.widget.ImageView;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import java.util.List;
 import java.util.Map;
 
@@ -20,4 +22,5 @@ public class ResourceClass {
     //target location
     public static Location targetLocation;
     public static int targetPositionInList = 0;
+    public static LatLng poiLatLng;
 }

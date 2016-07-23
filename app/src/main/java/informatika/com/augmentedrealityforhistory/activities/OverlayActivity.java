@@ -11,11 +11,10 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +32,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -48,15 +52,19 @@ import informatika.com.augmentedrealityforhistory.util.GsonRequest;
  * Created by Ichwan Haryo Sembodo on 07/06/2016.
  */
 
-public class OverlayActivity extends AppCompatActivity implements SensorEventListener, LocationListener, View.OnClickListener {
+public class OverlayActivity extends AppCompatActivity implements SensorEventListener, LocationListener, View.OnClickListener,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private RelativeLayout overlayViewInsideRelativeLayout;
     private RelativeLayout.LayoutParams layoutParams;
+
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
+    private LocationRequest mLocationRequest;
 
     //sensor
     private SensorManager mSensorManager;
     private Sensor mAccelerometer;
     private Sensor mMagnetometer;
-    private LocationManager mLocationManager;
 
     //variable for sensor
     private float[] mLastAccelerometer = new float[3];
@@ -153,7 +161,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
 
         overlayViewInsideRelativeLayout = (RelativeLayout) findViewById(R.id.overlayViewInsideRelativeLayout);
         layoutParams = new RelativeLayout.LayoutParams(50, 50);
-        for(Response response :ResourceClass.responseList){
+        for (Response response : ResourceClass.responseList) {
             ImageView iv = new ImageView(this);
             iv.setImageResource(R.drawable.marker);
             iv.setVisibility(View.INVISIBLE);
@@ -168,51 +176,21 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         mMagnetometer = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
         initSensorListener();
 
-        //position tracking
-        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
 
-        //permission checking from android studio ._.
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-
-        if(mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            System.out.println("gps enabled");
-        }
-
-        if(mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)){
-            System.out.println("network enabled");
-        }
-
-        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, this);
-        if (mLocationManager != null) {
-            ResourceClass.deviceLocation = mLocationManager
-                    .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            if (ResourceClass.deviceLocation != null) {
-                deviceLocationTextView.setText("device lat : "+ResourceClass.deviceLocation.getLatitude()+", long : "+ResourceClass.deviceLocation.getLongitude());
-                Log.d("device location", "device location set");
-                new loadARContent(this).execute("");
-                new loadTargetElevation(this).execute("");
-                new loadDeviceElevation(this).execute("");
-            } else {
-                Toast.makeText(this, "cant retrieve device location", Toast.LENGTH_SHORT);
-                Log.d("device location", "device location not set");
-            }
-        }
+        new loadARContent(this).execute("");
+        new loadTargetElevation(this).execute("");
 
         nextContentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("response list size", "size : "+ResourceClass.responseList.size());
+                Log.d("response list size", "size : " + ResourceClass.responseList.size());
                 ResourceClass.markers.get(ResourceClass.responseList.get(ResourceClass.targetPositionInList).getId()).setVisibility(View.INVISIBLE);
-                if(ResourceClass.targetPositionInList < ResourceClass.responseList.size()) {
+                if (ResourceClass.targetPositionInList < ResourceClass.responseList.size()) {
                     ResourceClass.targetPositionInList += 1;
                 }
                 ResourceClass.targetLocation = ResourceClass.responseList.get(ResourceClass.targetPositionInList).getLocation();
@@ -223,31 +201,17 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     public void onLocationChanged(Location location) {
-        System.out.println("location changed");
-        if(location == null) return;
+        System.out.println("device location changed");
+        if (location == null) return;
         //call get altitude for device and
-        //new loadDeviceElevation(this).execute("");
-        if(deviceAltitude != 0) {
+        if(ResourceClass.deviceLocation.distanceTo(location) > 10){
+            new loadDeviceElevation(this).execute("");
+        }
+        if (deviceAltitude != 0) {
             calculateAngleBetweenDeviceAndTarget();
         }
         ResourceClass.deviceLocation = location;
-        Log.d("device location", "lat : "+ResourceClass.deviceLocation.getLatitude()+", long : "+ResourceClass.deviceLocation.getLongitude());
-        deviceLocationTextView.setText("device lat : "+ResourceClass.deviceLocation.getLatitude()+", long : "+ResourceClass.deviceLocation.getLongitude());
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
-
+        deviceLocationTextView.setText("device lat : " + ResourceClass.deviceLocation.getLatitude() + ", long : " + ResourceClass.deviceLocation.getLongitude());
     }
 
     @Override
@@ -265,11 +229,11 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                     SensorManager.AXIS_Z, mRotationMatrix);
             SensorManager.getOrientation(mRotationMatrix, mOrientation);
 
-            float azimuth = (float)Math.toDegrees(mOrientation[0]); // orientation contains: azimut, pitch and roll
-            float pitch = (float)Math.toDegrees(mOrientation[1]);
-            float roll = (float)Math.toDegrees(mOrientation[2]);
+            float azimuth = (float) Math.toDegrees(mOrientation[0]); // orientation contains: azimut, pitch and roll
+            float pitch = (float) Math.toDegrees(mOrientation[1]);
+            float roll = (float) Math.toDegrees(mOrientation[2]);
 
-            if(ResourceClass.deviceLocation != null && ResourceClass.targetLocation != null) {
+            if (ResourceClass.deviceLocation != null && ResourceClass.targetLocation != null) {
                 // Store the bearingTo in the bearTo variable
                 float bearTo = ResourceClass.deviceLocation.bearingTo(ResourceClass.targetLocation);
                 distance = ResourceClass.deviceLocation.distanceTo(ResourceClass.targetLocation);
@@ -278,13 +242,13 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
 
                 //This is where we choose to point it
                 float direction = bearTo - azimuth;
-                if(direction < -180){
+                if (direction < -180) {
                     direction += 360;
                 }
-                if(direction > 180){
+                if (direction > 180) {
                     direction -= 360;
                 }
-                if(direction >= -30 && direction <= 30 && pitch >= (-25+angleToTarget) && pitch <= (25+angleToTarget)){
+                if (direction >= -30 && direction <= 30 && pitch >= (-25 + angleToTarget) && pitch <= (25 + angleToTarget)) {
                     //positioning rect here.
                     float x = 0f;
                     float y = 0f;
@@ -294,18 +258,18 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                     ratio = 1 - (absoluteValue / 30);
                     float ratioPitch = 1 - (absoluteValuePitch / 25);
                     if (direction >= -30 && direction <= 0) {
-                        x = ratio * (screenWidth/2);
+                        x = ratio * (screenWidth / 2);
                         //y = ratio * (screenHeight / 2);
                     } else if (direction <= 30 && direction >= 0) {
                         ratio = 1 - ratio;
                         x = ratio * (screenWidth / 2) + (screenWidth / 2);
                         //y = ratio * (screenHeight / 2) + (screenHeight / 2);
                     }
-                    if(pitch >= (-25+angleToTarget) && pitch <= angleToTarget){
+                    if (pitch >= (-25 + angleToTarget) && pitch <= angleToTarget) {
                         ratioPitch = 1 - ratioPitch;
                         //x = ratioPitch * (screenWidth/2) + (screenWidth/2);
                         y = ratioPitch * (screenHeight / 2) + (screenHeight / 2);
-                    } else if(pitch <= (25+angleToTarget) && pitch >= angleToTarget){
+                    } else if (pitch <= (25 + angleToTarget) && pitch >= angleToTarget) {
                         //x = ratioPitch * (screenWidth/2);
                         y = ratioPitch * (screenHeight / 2);
                     }
@@ -317,12 +281,12 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                     ResourceClass.markers.get(ResourceClass.responseList.get(ResourceClass.targetPositionInList).getId()).setVisibility(View.INVISIBLE);
                 }
                 navArrow.setRotation(direction);
-                azimuth = (azimuth+360)%360;
-                azimuthDeviceTextView.setText("azimuth : "+azimuth);
-                pitch = (pitch+360)%360;
-                pitchDeviceTextView.setText("pitch : "+pitch);
-                roll = (roll+360)%360;
-                rollDeviceTextView.setText("roll : "+roll);
+                azimuth = (azimuth + 360) % 360;
+                azimuthDeviceTextView.setText("azimuth : " + azimuth);
+                pitch = (pitch + 360) % 360;
+                pitchDeviceTextView.setText("pitch : " + pitch);
+                roll = (roll + 360) % 360;
+                rollDeviceTextView.setText("roll : " + roll);
             }
         }
     }
@@ -330,6 +294,18 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
+    }
+
+    @Override
+    protected void onStart() {
+        mGoogleApiClient.connect();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
     }
 
     @Override
@@ -346,31 +322,64 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
 
     @Override
     public void onClick(View v) {
-        if(v == ResourceClass.markers.get(ResourceClass.responseList.get(ResourceClass.targetPositionInList).getId())){
+        if (v == ResourceClass.markers.get(ResourceClass.responseList.get(ResourceClass.targetPositionInList).getId())) {
             MarkerDialog markerDialog = new MarkerDialog();
             markerDialog.show(fragmentManager, "fragment_marker_dialog");
             //Toast.makeText(this, responseList.get(targetPositionInList).getTitle(), Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void calculateAngleBetweenDeviceAndTarget(){
-        System.out.println("device altitude : "+deviceAltitude);
-        if(deviceAltitude <= targetAltitude){
+    private void calculateAngleBetweenDeviceAndTarget() {
+        System.out.println("device altitude : " + deviceAltitude);
+        if (deviceAltitude <= targetAltitude) {
             double differenceHeight = targetAltitude - deviceAltitude;
-            angleToTarget = (float)Math.toDegrees(Math.atan(differenceHeight/distance));
+            angleToTarget = (float) Math.toDegrees(Math.atan(differenceHeight / distance));
             angleToTarget = -angleToTarget;
-        } else if(deviceAltitude > targetAltitude){
+        } else if (deviceAltitude > targetAltitude) {
             double differenceHeight = deviceAltitude - targetAltitude;
-            angleToTarget = (float)Math.toDegrees(Math.atan(differenceHeight/distance));
+            angleToTarget = (float) Math.toDegrees(Math.atan(differenceHeight / distance));
         }
-        angleTextView.setText("angle : "+angleToTarget);
+        angleTextView.setText("angle : " + angleToTarget);
     }
 
-    private void initSensorListener(){
+    private void initSensorListener() {
         mLastAccelerometerSet = false;
         mLastMagnetometerSet = false;
         mSensorManager.registerListener(this, mAccelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         mSensorManager.registerListener(this, mMagnetometer, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if(mLastLocation != null){
+            ResourceClass.deviceLocation = mLastLocation;
+            new loadDeviceElevation(this).execute("");
+        }
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(1000);
+        LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
     }
 
     private class loadARContent extends AsyncTask<String, Void, String>{

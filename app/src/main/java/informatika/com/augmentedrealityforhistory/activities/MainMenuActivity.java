@@ -13,6 +13,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import informatika.com.augmentedrealityforhistory.R;
+import informatika.com.augmentedrealityforhistory.fragments.AddContent;
+import informatika.com.augmentedrealityforhistory.fragments.AddHistory;
+import informatika.com.augmentedrealityforhistory.fragments.AddPoi;
 import informatika.com.augmentedrealityforhistory.fragments.ListHistory;
 
 /**
@@ -28,6 +31,13 @@ public class MainMenuActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mainmenu);
+
+        //set main fragment
+        ListHistory listHistoryFragment = new ListHistory();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frame, listHistoryFragment);
+        fragmentTransaction.commit();
+
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -43,29 +53,40 @@ public class MainMenuActivity extends AppCompatActivity {
                 //Closing drawer on item click
                 drawerLayout.closeDrawers();
 
+                android.support.v4.app.FragmentTransaction fragmentTransaction;
+
                 //Check to see which item was being clicked and perform appropriate action
                 switch (menuItem.getItemId()){
-
-
-                    //Replacing the main content with ContentFragment Which is our Inbox View;
-                    case R.id.inbox:
+                    case R.id.history:
                         Toast.makeText(getApplicationContext(),"List History Selected", Toast.LENGTH_SHORT).show();
-                        ListHistory fragment = new ListHistory();
-                        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-                        fragmentTransaction.replace(R.id.frame, fragment);
+                        ListHistory listHistoryFragment = new ListHistory();
+                        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.frame, listHistoryFragment);
                         fragmentTransaction.commit();
                         return true;
-
-                    // For rest of the options we just show a toast on click
-
-                    case R.id.starred:
-                        Toast.makeText(getApplicationContext(),"Stared Selected",Toast.LENGTH_SHORT).show();
+                    case R.id.addHistory:
+                        Toast.makeText(getApplicationContext(),"Add History Selected",Toast.LENGTH_SHORT).show();
+                        AddHistory addHistoryFragment = new AddHistory();
+                        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.frame, addHistoryFragment);
+                        fragmentTransaction.commit();
                         return true;
-                    case R.id.sent_mail:
-                        Toast.makeText(getApplicationContext(),"Send Selected",Toast.LENGTH_SHORT).show();
+                    case R.id.addPoi:
+                        Toast.makeText(getApplicationContext(),"Add Poi Selected",Toast.LENGTH_SHORT).show();
+                        AddPoi addPoiFragment = new AddPoi();
+                        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.frame, addPoiFragment);
+                        fragmentTransaction.commit();
                         return true;
-                    case R.id.drafts:
-                        Toast.makeText(getApplicationContext(),"Drafts Selected",Toast.LENGTH_SHORT).show();
+                    case R.id.addContent:
+                        Toast.makeText(getApplicationContext(),"Add Content Selected",Toast.LENGTH_SHORT).show();
+                        AddContent addContentFragment = new AddContent();
+                        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.frame, addContentFragment);
+                        fragmentTransaction.commit();
+                        return true;
+                    case R.id.logout:
+                        Toast.makeText(getApplicationContext(),"Logout Selected",Toast.LENGTH_SHORT).show();
                         return true;
                     default:
                         Toast.makeText(getApplicationContext(),"Somethings Wrong",Toast.LENGTH_SHORT).show();
@@ -81,14 +102,11 @@ public class MainMenuActivity extends AppCompatActivity {
 
             @Override
             public void onDrawerClosed(View drawerView) {
-                // Code here will be triggered once the drawer closes as we dont want anything to happen so we leave this blank
                 super.onDrawerClosed(drawerView);
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
-                // Code here will be triggered once the drawer open as we dont want anything to happen so we leave this blank
-
                 super.onDrawerOpened(drawerView);
             }
         };

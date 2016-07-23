@@ -10,85 +10,27 @@
     android:orientation="vertical"
     tools:context=".activities.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/orientationTextView"
-        android:text="orientation"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/orientationTextView"
-        android:id="@+id/azimuthTextView"
-        android:text="azimuth"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/azimuthTextView"
-        android:id="@+id/pitchTextView"
-        android:text="pitch"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/pitchTextView"
-        android:id="@+id/rollTextView"
-        android:text="roll"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/rollTextView"
-        android:id="@+id/bearToTextView"
-        android:text="bear to"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/bearToTextView"
-        android:id="@+id/textView2"
-        android:text="location"
-        />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView2"
-        android:id="@+id/textView3"
-        android:text="compass"
-        />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/imageView"
-        android:layout_below="@+id/textView3"
-        android:layout_alignParentStart="true"
-        android:src="@drawable/arrow"/>
-
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="camera view"
         android:id="@+id/button"
-        android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/imageView" />
+        android:layout_alignTop="@+id/buttonListView"
+        android:layout_toEndOf="@+id/buttonListView" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="list view"
         android:id="@+id/buttonListView"
-        android:layout_alignTop="@+id/button"
-        android:layout_toStartOf="@+id/button" />
+        android:layout_alignTop="@+id/buttonLogin"
+        android:layout_toEndOf="@+id/buttonLogin" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Login"
         android:id="@+id/buttonLogin"
-        android:layout_alignTop="@+id/buttonListView"
-        android:layout_toStartOf="@+id/buttonListView" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 </RelativeLayout>
