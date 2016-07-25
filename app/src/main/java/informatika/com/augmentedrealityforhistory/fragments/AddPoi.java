@@ -1,10 +1,12 @@
 package informatika.com.augmentedrealityforhistory.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +15,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import informatika.com.augmentedrealityforhistory.R;
+import informatika.com.augmentedrealityforhistory.activities.MainMenuActivity;
 import informatika.com.augmentedrealityforhistory.activities.PoiMapActivity;
 import informatika.com.augmentedrealityforhistory.resources.ResourceClass;
 
@@ -25,8 +43,13 @@ public class AddPoi extends Fragment {
     private EditText editTextPoiName;
     private EditText editTextPoiLatitude;
     private EditText editTextPoiLongitude;
+    private EditText editTextPoiImageLink;
     private Button buttonPoiOpenMap;
     private Button buttonPoiSubmit;
+
+    private ProgressDialog dialog;
+
+    private RequestQueue mRequestQueue;
 
     @Nullable
     @Override
@@ -35,8 +58,11 @@ public class AddPoi extends Fragment {
         editTextPoiName = (EditText) v.findViewById(R.id.editTextPoiName);
         editTextPoiLatitude = (EditText) v.findViewById(R.id.editTextPoiLatitude);
         editTextPoiLongitude = (EditText) v.findViewById(R.id.editTextPoiLongitude);
+        editTextPoiImageLink = (EditText) v.findViewById(R.id.editTextPoiImageLink);
         buttonPoiOpenMap = (Button) v.findViewById(R.id.buttonPoiOpenMap);
         buttonPoiSubmit = (Button) v.findViewById(R.id.buttonPoiSubmit);
+
+        dialog = new ProgressDialog(getActivity());
 
         buttonPoiOpenMap.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +76,9 @@ public class AddPoi extends Fragment {
             @Override
             public void onClick(View v) {
                 Toast.makeText(activity, "submit button clicked", Toast.LENGTH_SHORT).show();
+                dialog.setMessage("Adding Poi...");
+                dialog.show();
+                submitPoi();
             }
         });
 
@@ -74,5 +103,68 @@ public class AddPoi extends Fragment {
     private void openPoiMapActivity(){
         Intent intent = new Intent(getActivity(), PoiMapActivity.class);
         startActivity(intent);
+    }
+
+    private void submitPoi(){
+        String url = "http://192.168.1.107:3000/api/PointOfInterests";
+
+        if(editTextPoiName.getText().toString().matches("")){
+            Toast.makeText(getActivity(), "nama konten tidak boleh kosong", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if(editTextPoiLongitude.getText().toString().matches("")
+                && editTextPoiLatitude.getText().toString().matches("")){
+            Toast.makeText(getActivity(), "lokasi tidak boleh kosong", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        mRequestQueue = Volley.newRequestQueue(getActivity());
+        JSONObject jsonObject = new JSONObject();
+        try {
+            JSONObject jsonLocation = new JSONObject();
+            jsonLocation.put("lat", editTextPoiLatitude.getText());
+            jsonLocation.put("lng", editTextPoiLongitude.getText());
+            jsonObject.put("location", jsonLocation);
+            jsonObject.put("title", editTextPoiName.getText());
+            if(!editTextPoiImageLink.getText().toString().matches("")) {
+                jsonObject.put("imageLink", editTextPoiImageLink.getText());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest myReq = new JsonObjectRequest(Request.Method.PUT, url, jsonObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        Toast.makeText(getActivity(),"adding poi complete", Toast.LENGTH_SHORT).show();
+                        ResourceClass.poiLatLng = null;
+                        ((MainMenuActivity)getActivity()).goToMainFragment();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getActivity(),"error on adding poi", Toast.LENGTH_SHORT).show();
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                    }
+                }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", ResourceClass.auth_key);
+                return headers;
+            }
+        };
+        myReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        mRequestQueue.add(myReq);
     }
 }

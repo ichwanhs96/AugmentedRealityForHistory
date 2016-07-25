@@ -23,4 +23,8 @@ public class ResourceClass {
     public static Location targetLocation;
     public static int targetPositionInList = 0;
     public static LatLng poiLatLng;
+
+    //user token
+    public static String auth_key;
+    public static String user_id;
 }

@@ -7,6 +7,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textSize="30dp"
+        android:layout_marginBottom="30dp"
+        android:layout_gravity="center_horizontal"
         android:text="Tambah Point of Interest"
         android:id="@+id/textViewAddPoi" />
 
@@ -78,6 +81,18 @@
             android:id="@+id/buttonPoiOpenMap"/>
 
     </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Tambah gambar"
+        android:id="@+id/textViewPoiImageLink" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/editTextPoiImageLink" />
 
     <Button
         style="?android:attr/buttonStyleSmall"

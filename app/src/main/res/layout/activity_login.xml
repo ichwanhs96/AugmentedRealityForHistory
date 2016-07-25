@@ -7,10 +7,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/usernameEditText"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="158dp"
-        android:hint="Username" />
+        android:hint="Username"
+        android:layout_above="@+id/passwordEditText"
+        android:layout_centerHorizontal="true" />
 
     <EditText
         android:layout_width="wrap_content"
@@ -18,9 +17,9 @@
         android:inputType="textPassword"
         android:ems="10"
         android:id="@+id/passwordEditText"
-        android:layout_below="@+id/usernameEditText"
-        android:layout_centerHorizontal="true"
-        android:hint="Password" />
+        android:hint="Password"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -40,4 +39,15 @@
         android:id="@+id/registerTextView"
         android:layout_below="@+id/loginButton"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="AR untuk Sejarah"
+        android:textSize="30dp"
+        android:id="@+id/textViewArForHistory"
+        android:layout_above="@+id/usernameEditText"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="75dp" />
 </RelativeLayout>

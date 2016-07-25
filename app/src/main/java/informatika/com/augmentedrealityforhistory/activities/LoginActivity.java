@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import informatika.com.augmentedrealityforhistory.R;
+import informatika.com.augmentedrealityforhistory.resources.ResourceClass;
 
 /**
  * Created by USER on 7/20/2016.
@@ -75,8 +76,8 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void nextListHistoryActivity() {
-        Intent intent = new Intent(this, ListHistoryActivity.class);
+    public void nextMainMenuActivity() {
+        Intent intent = new Intent(this, MainMenuActivity.class);
         startActivity(intent);
     }
 
@@ -86,8 +87,8 @@ public class LoginActivity extends AppCompatActivity {
         mRequestQueue = Volley.newRequestQueue(this);
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("username", ""+usernameEditText.getText());
-            jsonObject.put("password", ""+passwordEditText.getText());
+            jsonObject.put("username", usernameEditText.getText());
+            jsonObject.put("password", passwordEditText.getText());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -95,11 +96,17 @@ public class LoginActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        System.out.println("response retrieved : "+response.toString());
+                        try {
+                            ResourceClass.auth_key = response.getString("id");
+                            ResourceClass.user_id = response.getString("userId");
+                            System.out.println("auth key : "+ ResourceClass.auth_key);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }
-                        nextListHistoryActivity();
+                        nextMainMenuActivity();
                     }
                 },
                 new Response.ErrorListener() {

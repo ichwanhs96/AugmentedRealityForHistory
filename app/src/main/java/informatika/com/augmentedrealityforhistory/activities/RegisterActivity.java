@@ -84,7 +84,7 @@ public class RegisterActivity extends AppCompatActivity {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        System.out.println("response retrieved : "+response.toString());
+                        Toast.makeText(RegisterActivity.this, "register success", Toast.LENGTH_SHORT).show();
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }

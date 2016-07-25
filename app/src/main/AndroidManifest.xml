@@ -39,10 +39,6 @@
             android:label="maps activity">
         </activity>
         <activity
-            android:name=".activities.ListHistoryActivity"
-            android:label="list view history activity">
-        </activity>
-        <activity
             android:name=".activities.LoginActivity"
             android:label="login activity">
         </activity>

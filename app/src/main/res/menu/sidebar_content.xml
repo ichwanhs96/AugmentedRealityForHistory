@@ -3,16 +3,22 @@
     <group android:checkableBehavior="single">
 
         <item
+            android:id="@+id/myHistory"
+            android:checked="false"
+            android:icon="@drawable/ic_android_black_24dp"
+            android:title="Sejarahku" />
+
+        <item
             android:id="@+id/history"
             android:checked="false"
             android:icon="@drawable/ic_android_black_24dp"
-            android:title="List History" />
+            android:title="Daftar Sejarah" />
 
         <item
             android:id="@+id/addHistory"
             android:checked="false"
             android:icon="@drawable/ic_android_black_24dp"
-            android:title="Tambah History" />
+            android:title="Tambah Sejarah" />
 
         <item
             android:id="@+id/addPoi"
@@ -25,13 +31,6 @@
             android:checked="false"
             android:icon="@drawable/ic_android_black_24dp"
             android:title="Tambah Konten" />
-
-
-        <item
-            android:id="@+id/logout"
-            android:checked="false"
-            android:icon="@drawable/ic_android_black_24dp"
-            android:title="Logout" />
 
     </group>
 </menu>

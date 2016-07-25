@@ -15,14 +15,6 @@
         android:layout_height="wrap_content"
         android:text="camera view"
         android:id="@+id/button"
-        android:layout_alignTop="@+id/buttonListView"
-        android:layout_toEndOf="@+id/buttonListView" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="list view"
-        android:id="@+id/buttonListView"
         android:layout_alignTop="@+id/buttonLogin"
         android:layout_toEndOf="@+id/buttonLogin" />
 

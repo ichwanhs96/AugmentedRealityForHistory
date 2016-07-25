@@ -1,5 +1,7 @@
 package informatika.com.augmentedrealityforhistory.activities;
 
+import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -12,11 +14,27 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import informatika.com.augmentedrealityforhistory.R;
 import informatika.com.augmentedrealityforhistory.fragments.AddContent;
 import informatika.com.augmentedrealityforhistory.fragments.AddHistory;
 import informatika.com.augmentedrealityforhistory.fragments.AddPoi;
 import informatika.com.augmentedrealityforhistory.fragments.ListHistory;
+import informatika.com.augmentedrealityforhistory.resources.ResourceClass;
 
 /**
  * Created by USER on 7/22/2016.
@@ -26,17 +44,19 @@ public class MainMenuActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private NavigationView navigationView;
     private DrawerLayout drawerLayout;
+    private RequestQueue mRequestQueue;
+
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mainmenu);
 
-        //set main fragment
-        ListHistory listHistoryFragment = new ListHistory();
-        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frame, listHistoryFragment);
-        fragmentTransaction.commit();
+        //init progress dialog
+        dialog = new ProgressDialog(this);
+
+        goToMainFragment();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -57,6 +77,10 @@ public class MainMenuActivity extends AppCompatActivity {
 
                 //Check to see which item was being clicked and perform appropriate action
                 switch (menuItem.getItemId()){
+                    case R.id.myHistory:{
+                        Toast.makeText(getApplicationContext(),"My History Selected", Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
                     case R.id.history:
                         Toast.makeText(getApplicationContext(),"List History Selected", Toast.LENGTH_SHORT).show();
                         ListHistory listHistoryFragment = new ListHistory();
@@ -84,9 +108,6 @@ public class MainMenuActivity extends AppCompatActivity {
                         fragmentTransaction = getSupportFragmentManager().beginTransaction();
                         fragmentTransaction.replace(R.id.frame, addContentFragment);
                         fragmentTransaction.commit();
-                        return true;
-                    case R.id.logout:
-                        Toast.makeText(getApplicationContext(),"Logout Selected",Toast.LENGTH_SHORT).show();
                         return true;
                     default:
                         Toast.makeText(getApplicationContext(),"Somethings Wrong",Toast.LENGTH_SHORT).show();
@@ -133,10 +154,67 @@ public class MainMenuActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.logout) {
+            dialog.setMessage("Logout...");
+            dialog.show();
+            callLogout();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void goToMainFragment(){
+        //set main fragment
+        ListHistory listHistoryFragment = new ListHistory();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frame, listHistoryFragment);
+        fragmentTransaction.commit();
+    }
+
+    private void nextLoginActivity(){
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
+
+    private void callLogout(){
+        String url = "http://192.168.1.107:3000/api/UserForHistory/Logout";
+        mRequestQueue = Volley.newRequestQueue(this);
+        JSONObject jsonObject = new JSONObject();
+        JsonObjectRequest myReq = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                        Toast.makeText(MainMenuActivity.this, "logout done", Toast.LENGTH_SHORT).show();
+                        ResourceClass.auth_key = null;
+                        ResourceClass.user_id = null;
+                        nextLoginActivity();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(MainMenuActivity.this, "error on logout", Toast.LENGTH_SHORT).show();
+                        if (dialog.isShowing()) {
+                            dialog.dismiss();
+                        }
+                    }
+                }
+        ) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", ResourceClass.auth_key);
+                return headers;
+            }
+        };
+        myReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        mRequestQueue.add(myReq);
     }
 }

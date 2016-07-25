@@ -1,5 +1,6 @@
 package informatika.com.augmentedrealityforhistory.fragments;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -13,19 +14,26 @@ import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import informatika.com.augmentedrealityforhistory.R;
 import informatika.com.augmentedrealityforhistory.adapters.ExpandableListHistoryAdapter;
+import informatika.com.augmentedrealityforhistory.models.Content;
 import informatika.com.augmentedrealityforhistory.models.Group;
 import informatika.com.augmentedrealityforhistory.models.History;
+import informatika.com.augmentedrealityforhistory.models.ListHistoryResponseContainer;
+import informatika.com.augmentedrealityforhistory.resources.ResourceClass;
 import informatika.com.augmentedrealityforhistory.util.GsonRequest;
 
 /**
@@ -33,48 +41,60 @@ import informatika.com.augmentedrealityforhistory.util.GsonRequest;
  */
 public class ListHistory extends Fragment {
     private RequestQueue mRequestQueue;
-    SparseArray<Group> groups = new SparseArray<Group>();
-    AppCompatActivity activity;
+    private List<History> histories;
+    private ExpandableListView listView;
+    private SparseArray<Group> groups = new SparseArray<Group>();
+    private AppCompatActivity activity;
+    private ProgressDialog progressDialog;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_listhistory, container, false);
+        histories = new ArrayList<>();
+        listView = (ExpandableListView) v.findViewById(R.id.listView);
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setMessage("Retrieving histories...");
+        progressDialog.show();
         loadHistories();
         createData();
-        ExpandableListView listView = (ExpandableListView) v.findViewById(R.id.listView);
-        ExpandableListHistoryAdapter adapter = new ExpandableListHistoryAdapter(getActivity(),
-                groups);
-        listView.setAdapter(adapter);
         return v;
     }
 
     private void createData() {
-        for (int j = 0; j < 5; j++) {
-            Group group = new Group("Test " + j);
-            for (int i = 0; i < 5; i++) {
-                group.children.add("Sub Item" + i);
+        for(int i = 0; i < histories.size(); i++){
+            Group group = new Group(histories.get(i).title);
+            for(Content content : histories.get(i).contents){
+                group.children.add(content.title);
             }
-            groups.append(j, group);
+            groups.append(i, group);
         }
+        ExpandableListHistoryAdapter adapter = new ExpandableListHistoryAdapter(getActivity(),
+                groups);
+        listView.setAdapter(adapter);
     }
 
     private void loadHistories(){
-        String url = "http://192.168.1.107:3000/api/Histories";
-        System.out.println("backend : "+url);
+        String url = "http://192.168.1.107:3000/api/Histories/getHistories";
         mRequestQueue = Volley.newRequestQueue(getActivity());
-        GsonRequest<History[]> myReq = new GsonRequest<History[]>(
+        GsonRequest<ListHistoryResponseContainer> myReq = new GsonRequest<ListHistoryResponseContainer>(
                 Request.Method.GET,
                 url,
-                History[].class,
-                new com.android.volley.Response.Listener<History[]>() {
+                ListHistoryResponseContainer.class,
+                new com.android.volley.Response.Listener<ListHistoryResponseContainer>() {
                     @Override
-                    public void onResponse(History[] response) {
-                        Log.d("direction response", "direction response retrieved");
+                    public void onResponse(ListHistoryResponseContainer response) {
                         Toast.makeText(activity, "histories retrieved", Toast.LENGTH_SHORT).show();
-                        List<History> histories = Arrays.asList(response);
-                        for(History result : histories){
-                            System.out.println("title : "+result.getTitle());
+                        if(progressDialog.isShowing()){
+                            progressDialog.dismiss();
+                        }
+                        histories = response.histories;
+                        createData();
+                        for(History result : response.histories){
+                            System.out.println("history title : "+result.title);
+                            for(Content content : result.contents){
+                                System.out.println("content title : "+content.title);
+                            }
                         }
                     }
                 },
@@ -85,7 +105,15 @@ public class ListHistory extends Fragment {
                         Toast.makeText(activity, "histories cant be retrieved", Toast.LENGTH_SHORT).show();
                     }
                 }
-        );
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                headers.put("Authorization", ResourceClass.auth_key);
+                return headers;
+            }
+        };
         myReq.setRetryPolicy(new DefaultRetryPolicy(5000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
