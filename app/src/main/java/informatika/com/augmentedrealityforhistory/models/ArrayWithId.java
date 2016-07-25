@@ -6,6 +6,15 @@ package informatika.com.augmentedrealityforhistory.models;
 public class ArrayWithId {
     private String mText;
     private String mId;
+    private String mDescription;
+
+    public String getmDescription() {
+        return mDescription;
+    }
+
+    public void setmDescription(String mDescription) {
+        this.mDescription = mDescription;
+    }
 
     public String getmText() {
         return mText;

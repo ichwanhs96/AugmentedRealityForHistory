@@ -106,7 +106,7 @@ public class AddPoi extends Fragment {
     }
 
     private void submitPoi(){
-        String url = "http://192.168.1.107:3000/api/PointOfInterests";
+        String url = ResourceClass.url+"PointOfInterests";
 
         if(editTextPoiName.getText().toString().matches("")){
             Toast.makeText(getActivity(), "nama konten tidak boleh kosong", Toast.LENGTH_SHORT).show();

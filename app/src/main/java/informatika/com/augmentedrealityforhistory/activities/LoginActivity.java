@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void postLoginData(){
-        String url = "http://192.168.1.107:3000/api/UserForHistories/login";
+        String url = ResourceClass.url+"UserForHistories/login";
         System.out.println("backend : "+url);
         mRequestQueue = Volley.newRequestQueue(this);
         JSONObject jsonObject = new JSONObject();

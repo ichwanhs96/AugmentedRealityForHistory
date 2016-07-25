@@ -178,7 +178,7 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
     private void callLogout(){
-        String url = "http://192.168.1.107:3000/api/UserForHistory/Logout";
+        String url = ResourceClass.url+"UserForHistory/Logout";
         mRequestQueue = Volley.newRequestQueue(this);
         JSONObject jsonObject = new JSONObject();
         JsonObjectRequest myReq = new JsonObjectRequest(Request.Method.POST, url, jsonObject,

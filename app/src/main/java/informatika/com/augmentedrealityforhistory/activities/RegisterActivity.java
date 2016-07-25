@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import informatika.com.augmentedrealityforhistory.R;
+import informatika.com.augmentedrealityforhistory.resources.ResourceClass;
 
 /**
  * Created by USER on 7/20/2016.
@@ -69,7 +70,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void postRegisterData(){
-        String url = "http://192.168.1.107:3000/api/UserForHistories";
+        String url = ResourceClass.url+"UserForHistories";
         System.out.println("backend : "+url);
         mRequestQueue = Volley.newRequestQueue(this);
         JSONObject jsonObject = new JSONObject();

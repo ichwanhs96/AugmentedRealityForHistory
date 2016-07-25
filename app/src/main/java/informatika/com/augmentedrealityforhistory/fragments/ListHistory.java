@@ -29,6 +29,7 @@ import java.util.Map;
 
 import informatika.com.augmentedrealityforhistory.R;
 import informatika.com.augmentedrealityforhistory.adapters.ExpandableListHistoryAdapter;
+import informatika.com.augmentedrealityforhistory.models.ArrayWithId;
 import informatika.com.augmentedrealityforhistory.models.Content;
 import informatika.com.augmentedrealityforhistory.models.Group;
 import informatika.com.augmentedrealityforhistory.models.History;
@@ -63,9 +64,16 @@ public class ListHistory extends Fragment {
 
     private void createData() {
         for(int i = 0; i < histories.size(); i++){
-            Group group = new Group(histories.get(i).title);
+            ArrayWithId arrayWithId = new ArrayWithId();
+            arrayWithId.setmId(histories.get(i).id);
+            arrayWithId.setmText(histories.get(i).title);
+            arrayWithId.setmDescription(histories.get(i).description);
+            Group group = new Group(arrayWithId);
             for(Content content : histories.get(i).contents){
-                group.children.add(content.title);
+                ArrayWithId arrayWithId1 = new ArrayWithId();
+                arrayWithId1.setmText(content.title);
+                arrayWithId.setmId(content.id);
+                group.children.add(arrayWithId1);
             }
             groups.append(i, group);
         }
@@ -75,7 +83,7 @@ public class ListHistory extends Fragment {
     }
 
     private void loadHistories(){
-        String url = "http://192.168.1.107:3000/api/Histories/getHistories";
+        String url = ResourceClass.url+"Histories/getHistories";
         mRequestQueue = Volley.newRequestQueue(getActivity());
         GsonRequest<ListHistoryResponseContainer> myReq = new GsonRequest<ListHistoryResponseContainer>(
                 Request.Method.GET,

@@ -105,7 +105,7 @@ public class AddContent extends Fragment {
     }
 
     private void loadPointOfInterests(){
-        String url = "http://192.168.1.107:3000/api/PointOfInterests";
+        String url = ResourceClass.url+"PointOfInterests";
         mRequestQueue = Volley.newRequestQueue(getActivity());
         GsonRequest<PointOfInterest[]> myReq = new GsonRequest<PointOfInterest[]>(
                 Request.Method.GET,
@@ -153,7 +153,7 @@ public class AddContent extends Fragment {
     }
 
     private void submitPoi() {
-        String url = "http://192.168.1.107:3000/api/Contents";
+        String url = ResourceClass.url+"Contents";
         if (editTextContentName.getText().toString().matches("")) {
             Toast.makeText(getActivity(), "nama konten tidak boleh kosong", Toast.LENGTH_SHORT).show();
             return;
@@ -226,7 +226,7 @@ public class AddContent extends Fragment {
     }
 
     private void addReference(){
-        String url = "http://192.168.1.107:3000/api/Contents/"+contentCreatedId+"/References";
+        String url = ResourceClass.url+"Contents/"+contentCreatedId+"/References";
         mRequestQueue = Volley.newRequestQueue(getActivity());
         JSONObject jsonObject = new JSONObject();
         try {

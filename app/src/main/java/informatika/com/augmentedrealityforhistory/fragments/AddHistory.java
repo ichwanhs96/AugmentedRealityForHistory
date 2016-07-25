@@ -147,7 +147,7 @@ public class AddHistory extends Fragment {
     }
 
     private void loadContents(){
-        String url = "http://192.168.1.107:3000/api/Contents";
+        String url = ResourceClass.url+"Contents";
         mRequestQueue = Volley.newRequestQueue(getActivity());
         GsonRequest<Content[]> myReq = new GsonRequest<Content[]>(
                 Request.Method.GET,
@@ -195,7 +195,7 @@ public class AddHistory extends Fragment {
     }
 
     private void submitHistory() {
-        String url = "http://192.168.1.107:3000/api/Histories";
+        String url = ResourceClass.url+"Histories";
         if (editTextHistoryName.getText().toString().matches("")) {
             Toast.makeText(getActivity(), "nama tidak boleh kosong", Toast.LENGTH_SHORT).show();
             return;
@@ -263,7 +263,7 @@ public class AddHistory extends Fragment {
     }
 
     private void createHistoryContent() {
-        String url = "http://192.168.1.107:3000/api/HistoryContents";
+        String url = ResourceClass.url+"HistoryContents";
 
         mRequestQueue = Volley.newRequestQueue(getActivity());
         JSONArray jsonArray = new JSONArray();

@@ -14,6 +14,7 @@ import informatika.com.augmentedrealityforhistory.models.Response;
  * Created by USER on 7/13/2016.
  */
 public class ResourceClass {
+    public static String url = "http://192.168.137.1:3000/api/";
     public static List<Response> responseList;
     public static Map<String, ImageView> markers;
     //device location

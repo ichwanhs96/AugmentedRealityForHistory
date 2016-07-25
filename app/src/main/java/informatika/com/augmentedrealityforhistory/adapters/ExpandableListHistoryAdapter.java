@@ -8,10 +8,14 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.CheckedTextView;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import informatika.com.augmentedrealityforhistory.R;
+import informatika.com.augmentedrealityforhistory.models.ArrayWithId;
 import informatika.com.augmentedrealityforhistory.models.Group;
 
 /**
@@ -64,29 +68,43 @@ public class ExpandableListHistoryAdapter extends BaseExpandableListAdapter {
     }
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+    public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.listrow_group, null);
         }
         Group group = (Group) getGroup(groupPosition);
-        ((CheckedTextView) convertView.findViewById(R.id.textViewListrowGroup)).setText(group.string);
-        ((CheckedTextView) convertView.findViewById(R.id.textViewListrowGroup)).setChecked(isExpanded);
-        return convertView.findViewById(R.id.textViewListrowGroup);
+        CheckedTextView checkedTextView = (CheckedTextView) convertView.findViewById(R.id.textViewListrowGroup);
+        checkedTextView.setText(group.arrayWithId.getmText());
+        TextView textViewHistoryShortDescription = (TextView) convertView.findViewById(R.id.textViewHistoryShortDescription);
+        textViewHistoryShortDescription.setText(group.arrayWithId.getmDescription());
+        checkedTextView.setChecked(isExpanded);
+        checkedTextView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //((Group) getGroup(groupPosition)).arrayWithId.getmText()
+            }
+        });
+        ImageView imageView = (ImageView) convertView.findViewById(R.id.thumbImage);
+        imageView.setImageResource(R.drawable.marker);
+        return convertView;
     }
 
     @Override
     public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-        final String children = (String) getChild(groupPosition, childPosition);
+        final ArrayWithId children = (ArrayWithId) getChild(groupPosition, childPosition);
         TextView text = null;
+        ImageView thumbChildImage;
         if (convertView == null) {
             convertView = inflater.inflate(R.layout.listrow_details, null);
         }
         text = (TextView) convertView.findViewById(R.id.textViewListrowDetail);
-        text.setText(children);
+        thumbChildImage = (ImageView) convertView.findViewById(R.id.thumbChildImage);
+        thumbChildImage.setImageResource(R.drawable.icon);
+        text.setText(children.getmText());
         convertView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(activity, children,
+                Toast.makeText(activity, children.getmText(),
                         Toast.LENGTH_SHORT).show();
             }
         });
