@@ -12,4 +12,5 @@ public class History {
     public String videoLink;
     public List<Content> contents;
     public String id;
+    public boolean isTeacher;
 }

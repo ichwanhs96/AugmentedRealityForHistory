@@ -29,8 +29,10 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
 
 import java.util.List;
+import java.util.Map;
 
 import informatika.com.augmentedrealityforhistory.R;
+import informatika.com.augmentedrealityforhistory.models.Content;
 import informatika.com.augmentedrealityforhistory.models.DirectionsResult;
 import informatika.com.augmentedrealityforhistory.models.Response;
 import informatika.com.augmentedrealityforhistory.resources.ResourceClass;
@@ -69,18 +71,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         mMap.setMyLocationEnabled(true);
-        int targetPositionInList = ResourceClass.targetPositionInList;
-        BitmapDescriptor targetIcon = BitmapDescriptorFactory.fromResource(R.drawable.icon);
-        LatLng markerLocation;
-        for(Response response : ResourceClass.responseList){
-            if(response.getId() != ResourceClass.responseList.get(targetPositionInList).getId()){
-                markerLocation = new LatLng(response.getLatitude(), response.getLongitude());
-                mMap.addMarker(new MarkerOptions().position(markerLocation).title("Marker in "+response.getTitle()));
-            }
-        }
-        LatLng targetLocation = new LatLng(ResourceClass.responseList.get(targetPositionInList).getLatitude(), ResourceClass.responseList.get(targetPositionInList).getLongitude());
-        LatLng deviceLocation = new LatLng(ResourceClass.deviceLocation.getLatitude(), ResourceClass.deviceLocation.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(targetLocation).title("Marker in "+ResourceClass.responseList.get(targetPositionInList).getTitle()));
+        String currentContentId = ResourceClass.currentContentId;
+        LatLng targetLocation = new LatLng(ResourceClass.arcontents.get(currentContentId).pointOfInterest.location.getLat(), ResourceClass.arcontents.get(currentContentId).pointOfInterest.location.getLng());
+        mMap.addMarker(new MarkerOptions().position(targetLocation).title(ResourceClass.arcontents.get(currentContentId).title));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(targetLocation));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(targetLocation, 14.0f));
     }
@@ -107,7 +100,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         polylineOptions.color(Color.RED);
                         polylineOptions.width(3);
                         mMap.addPolyline(polylineOptions);
-                        Toast.makeText(MapsActivity.this, "direction retrieved", Toast.LENGTH_SHORT).show();
                     }
                 },
                 new com.android.volley.Response.ErrorListener() {

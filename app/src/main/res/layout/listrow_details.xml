@@ -9,28 +9,16 @@
     android:paddingTop="15dp"
     android:paddingBottom="15dp">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/textViewListrowDetail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/thumbChildImage"
-            android:layout_marginRight="5dp"/>
-
-        <TextView
-            android:id="@+id/textViewListrowDetail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="5dp"
-            android:gravity="center_vertical"
-            android:text="hello~"
-            android:textSize="14sp"
-            android:textStyle="bold">
-        </TextView>
-    </LinearLayout>
+        android:drawablePadding="5dp"
+        android:gravity="center_vertical"
+        android:text="hello~"
+        android:textSize="14sp"
+        android:textStyle="bold">
+    </TextView>
 
     <View
         android:layout_width="match_parent"

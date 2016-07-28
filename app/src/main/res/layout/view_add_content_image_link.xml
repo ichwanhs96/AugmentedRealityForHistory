@@ -1,38 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textSize="30dp"
-        android:layout_marginBottom="30dp"
-        android:layout_gravity="center_horizontal"
-        android:text="Tambah Point of Interest"
-        android:id="@+id/textViewAddPoi" />
+    android:layout_height="match_parent"
+    android:layout_marginTop="10dp">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Nama : "
-        android:id="@+id/textViewPoiName"
-        android:layout_marginTop="20dp"/>
+        android:text="Tambah url gambar"
+        android:id="@+id/textViewAddContentImageLink" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editTextPoiName"
+        android:id="@+id/editTextAddContentImageLink"
         android:layout_marginBottom="20dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Lokasi"
-        android:id="@+id/textViewPoiLocation" />
+        android:text="Tambah lokasi gambar ketika diambil"
+        android:id="@+id/textViewAddContentImageLocation" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -45,13 +35,13 @@
             android:layout_height="match_parent"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="lat : "
-            android:id="@+id/textViewPoiLatitude"
+            android:id="@+id/textViewContentImageLinkLatitude"
             android:layout_marginTop="10dp"/>
 
         <EditText
             android:layout_width="75dp"
             android:layout_height="match_parent"
-            android:id="@+id/editTextPoiLatitude"
+            android:id="@+id/editTextContentImageLinkLatitude"
             android:layout_marginRight="10dp"/>
 
         <TextView
@@ -59,13 +49,13 @@
             android:layout_height="match_parent"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="lng : "
-            android:id="@+id/textViewPoiLongitude"
+            android:id="@+id/textViewContentImageLinkLongitude"
             android:layout_marginTop="10dp"/>
 
         <EditText
             android:layout_width="75dp"
             android:layout_height="match_parent"
-            android:id="@+id/editTextPoiLongitude" />
+            android:id="@+id/editTextContentImageLinkLongitude" />
 
         <View
             android:layout_width="0dp"
@@ -77,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Buka Peta"
-            android:id="@+id/buttonPoiOpenMap"
+            android:id="@+id/buttonContentImageLinkOpenMap"
             android:textColor="#fff"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
@@ -85,31 +75,5 @@
 
     </LinearLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Tambah gambar"
-        android:id="@+id/textViewPoiImageLink" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/editTextPoiImageLink" />
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Submit"
-        android:id="@+id/buttonPoiSubmit"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
-        android:paddingRight="20dp"
-        android:paddingLeft="20dp"
-        android:textColor="#fff"
-        android:background="@color/colorPrimary"/>
 
 </LinearLayout>

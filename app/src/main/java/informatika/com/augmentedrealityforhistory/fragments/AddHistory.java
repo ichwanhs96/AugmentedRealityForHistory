@@ -156,7 +156,6 @@ public class AddHistory extends Fragment {
                 new com.android.volley.Response.Listener<Content[]>() {
                     @Override
                     public void onResponse(Content[] response) {
-                        Toast.makeText(getActivity(), "content retrieved", Toast.LENGTH_SHORT).show();
                         contentArray = Arrays.asList(response);
                         for(Content result : contentArray){
                             ArrayWithId arrayWithId = new ArrayWithId();
@@ -234,7 +233,6 @@ public class AddHistory extends Fragment {
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }
-                        Toast.makeText(getActivity(), "adding history complete", Toast.LENGTH_SHORT).show();
                         createHistoryContent();
                     }
                 },

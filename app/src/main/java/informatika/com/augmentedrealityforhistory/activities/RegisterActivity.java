@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -34,11 +35,12 @@ public class RegisterActivity extends AppCompatActivity {
     private RequestQueue mRequestQueue;
     private ProgressDialog dialog;
 
-    EditText usernameEditText;
-    EditText emailEditText;
-    EditText passwordEditText;
-    EditText confirmPasswordEditText;
-    Button submitButton;
+    private EditText usernameEditText;
+    private EditText emailEditText;
+    private EditText passwordEditText;
+    private EditText confirmPasswordEditText;
+    private Button submitButton;
+    private CheckBox checkBoxIsTeacher;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,6 +52,7 @@ public class RegisterActivity extends AppCompatActivity {
         passwordEditText = (EditText) findViewById(R.id.editTextRegisterPassword);
         confirmPasswordEditText = (EditText) findViewById(R.id.editTextRegisterConfirmPassword);
         submitButton = (Button) findViewById(R.id.buttonRegisterSubmit);
+        checkBoxIsTeacher = (CheckBox) findViewById(R.id.checkBoxIsTeacher);
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +64,7 @@ public class RegisterActivity extends AppCompatActivity {
                     System.out.println("email : " + emailEditText.getText());
                     System.out.println("password : " + passwordEditText.getText());
                     System.out.println("confim password : " + confirmPasswordEditText.getText());
+                    System.out.println("is teacher : " + checkBoxIsTeacher.isEnabled());
                     postRegisterData();
                 } else {
                     Toast.makeText(RegisterActivity.this, "confirm password harus sama dengan password", Toast.LENGTH_SHORT).show();
@@ -78,6 +82,11 @@ public class RegisterActivity extends AppCompatActivity {
             jsonObject.put("username", ""+usernameEditText.getText());
             jsonObject.put("password", ""+passwordEditText.getText());
             jsonObject.put("email", ""+emailEditText.getText());
+            if(checkBoxIsTeacher.isEnabled()){
+                jsonObject.put("isTeacher", true);
+            } else {
+                jsonObject.put("isTeacher", false);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

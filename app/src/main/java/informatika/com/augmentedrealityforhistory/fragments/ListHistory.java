@@ -68,11 +68,15 @@ public class ListHistory extends Fragment {
             arrayWithId.setmId(histories.get(i).id);
             arrayWithId.setmText(histories.get(i).title);
             arrayWithId.setmDescription(histories.get(i).description);
+            arrayWithId.setmIsTeacher(histories.get(i).isTeacher);
+            if(histories.get(i).imageLink != null && !histories.get(i).imageLink.matches("")){
+                arrayWithId.setmImageLink(histories.get(i).imageLink);
+            }
             Group group = new Group(arrayWithId);
             for(Content content : histories.get(i).contents){
                 ArrayWithId arrayWithId1 = new ArrayWithId();
                 arrayWithId1.setmText(content.title);
-                arrayWithId.setmId(content.id);
+                arrayWithId1.setmId(content.id);
                 group.children.add(arrayWithId1);
             }
             groups.append(i, group);
@@ -92,18 +96,17 @@ public class ListHistory extends Fragment {
                 new com.android.volley.Response.Listener<ListHistoryResponseContainer>() {
                     @Override
                     public void onResponse(ListHistoryResponseContainer response) {
-                        Toast.makeText(activity, "histories retrieved", Toast.LENGTH_SHORT).show();
                         if(progressDialog.isShowing()){
                             progressDialog.dismiss();
                         }
                         histories = response.histories;
-                        createData();
-                        for(History result : response.histories){
-                            System.out.println("history title : "+result.title);
-                            for(Content content : result.contents){
-                                System.out.println("content title : "+content.title);
-                            }
+                        if(!ResourceClass.mapHistoryWithContent.isEmpty()){
+                            ResourceClass.mapHistoryWithContent.clear();
                         }
+                        for(History history : histories) {
+                            ResourceClass.mapHistoryWithContent.put(history.id, history.contents);
+                        }
+                        createData();
                     }
                 },
                 new com.android.volley.Response.ErrorListener() {

@@ -77,33 +77,25 @@ public class MainMenuActivity extends AppCompatActivity {
 
                 //Check to see which item was being clicked and perform appropriate action
                 switch (menuItem.getItemId()){
-                    case R.id.myHistory:{
-                        Toast.makeText(getApplicationContext(),"My History Selected", Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
                     case R.id.history:
-                        Toast.makeText(getApplicationContext(),"List History Selected", Toast.LENGTH_SHORT).show();
                         ListHistory listHistoryFragment = new ListHistory();
                         fragmentTransaction = getSupportFragmentManager().beginTransaction();
                         fragmentTransaction.replace(R.id.frame, listHistoryFragment);
                         fragmentTransaction.commit();
                         return true;
                     case R.id.addHistory:
-                        Toast.makeText(getApplicationContext(),"Add History Selected",Toast.LENGTH_SHORT).show();
                         AddHistory addHistoryFragment = new AddHistory();
                         fragmentTransaction = getSupportFragmentManager().beginTransaction();
                         fragmentTransaction.replace(R.id.frame, addHistoryFragment);
                         fragmentTransaction.commit();
                         return true;
                     case R.id.addPoi:
-                        Toast.makeText(getApplicationContext(),"Add Poi Selected",Toast.LENGTH_SHORT).show();
                         AddPoi addPoiFragment = new AddPoi();
                         fragmentTransaction = getSupportFragmentManager().beginTransaction();
                         fragmentTransaction.replace(R.id.frame, addPoiFragment);
                         fragmentTransaction.commit();
                         return true;
                     case R.id.addContent:
-                        Toast.makeText(getApplicationContext(),"Add Content Selected",Toast.LENGTH_SHORT).show();
                         AddContent addContentFragment = new AddContent();
                         fragmentTransaction = getSupportFragmentManager().beginTransaction();
                         fragmentTransaction.replace(R.id.frame, addContentFragment);
@@ -178,7 +170,7 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
     private void callLogout(){
-        String url = ResourceClass.url+"UserForHistory/Logout";
+        String url = ResourceClass.url+"UserForHistories/Logout";
         mRequestQueue = Volley.newRequestQueue(this);
         JSONObject jsonObject = new JSONObject();
         JsonObjectRequest myReq = new JsonObjectRequest(Request.Method.POST, url, jsonObject,

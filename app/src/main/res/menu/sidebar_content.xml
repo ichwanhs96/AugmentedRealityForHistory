@@ -3,12 +3,6 @@
     <group android:checkableBehavior="single">
 
         <item
-            android:id="@+id/myHistory"
-            android:checked="false"
-            android:icon="@drawable/ic_android_black_24dp"
-            android:title="Sejarahku" />
-
-        <item
             android:id="@+id/history"
             android:checked="false"
             android:icon="@drawable/ic_android_black_24dp"

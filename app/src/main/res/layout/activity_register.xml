@@ -42,7 +42,7 @@
         android:layout_height="wrap_content"
         android:text="register"
         android:id="@+id/buttonRegisterSubmit"
-        android:layout_below="@+id/editTextRegisterConfirmPassword"
+        android:layout_below="@+id/checkBoxIsTeacher"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -54,6 +54,15 @@
         android:text="Form Register"
         android:id="@+id/textViewFormRegister"
         android:layout_above="@+id/editTextRegisterUsername"
+        android:layout_centerHorizontal="true" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/editTextRegisterConfirmPassword"
+        android:text="Guru"
+        android:id="@+id/checkBoxIsTeacher"
+        android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

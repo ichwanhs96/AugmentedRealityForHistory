@@ -7,6 +7,24 @@ public class ArrayWithId {
     private String mText;
     private String mId;
     private String mDescription;
+    private String mImageLink;
+    private boolean mIsTeacher;
+
+    public boolean getmIsTeacher() {
+        return mIsTeacher;
+    }
+
+    public void setmIsTeacher(boolean mIsTeacher) {
+        this.mIsTeacher = mIsTeacher;
+    }
+
+    public String getmImageLink() {
+        return mImageLink;
+    }
+
+    public void setmImageLink(String mImageLink) {
+        this.mImageLink = mImageLink;
+    }
 
     public String getmDescription() {
         return mDescription;

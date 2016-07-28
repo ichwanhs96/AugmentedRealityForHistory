@@ -99,6 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                         try {
                             ResourceClass.auth_key = response.getString("id");
                             ResourceClass.user_id = response.getString("userId");
+                            ResourceClass.isTeacher = response.getBoolean("isTeacher");
                             System.out.println("auth key : "+ ResourceClass.auth_key);
                         } catch (JSONException e) {
                             e.printStackTrace();

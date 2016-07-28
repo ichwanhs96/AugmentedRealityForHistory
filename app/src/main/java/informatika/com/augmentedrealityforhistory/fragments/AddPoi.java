@@ -97,6 +97,7 @@ public class AddPoi extends Fragment {
         if(ResourceClass.poiLatLng != null){
             editTextPoiLatitude.setText(""+ResourceClass.poiLatLng.latitude);
             editTextPoiLongitude.setText(""+ResourceClass.poiLatLng.longitude);
+            ResourceClass.poiLatLng = null;
         }
     }
 
@@ -139,7 +140,7 @@ public class AddPoi extends Fragment {
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }
-                        Toast.makeText(getActivity(),"adding poi complete", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(),"berhasil membuat point of interest", Toast.LENGTH_SHORT).show();
                         ResourceClass.poiLatLng = null;
                         ((MainMenuActivity)getActivity()).goToMainFragment();
                     }
