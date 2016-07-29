@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 
 import informatika.com.augmentedrealityforhistory.R;
+import informatika.com.augmentedrealityforhistory.activities.AddARContentActivity;
 import informatika.com.augmentedrealityforhistory.activities.MainMenuActivity;
 import informatika.com.augmentedrealityforhistory.activities.PoiMapActivity;
 import informatika.com.augmentedrealityforhistory.models.ArrayWithId;
@@ -114,12 +115,18 @@ public class AddContent extends Fragment {
             public void onClick(View v) {
                 View childView = inflater.inflate(R.layout.view_add_content_image_link, null);
                 Button buttonAddContentImageLink = (Button) childView.findViewById(R.id.buttonContentImageLinkOpenMap);
+                final EditText editTextImageUrl = (EditText) childView.findViewById(R.id.editTextAddContentImageLink);
                 buttonAddContentImageLink.setOnClickListener(new View.OnClickListener() {
                     private int position = imageUrlCounter;
                     @Override
                     public void onClick(View v) {
-                        clickedImageUrlButtonPosition = position;
-                        openPoiMapActivity();
+                        if(!editTextImageUrl.getText().toString().matches("")) {
+                            clickedImageUrlButtonPosition = position;
+                            ResourceClass.imageMatchingUrl = editTextImageUrl.getText().toString();
+                            openAddARContentActivity();
+                        } else {
+                            Toast.makeText(getActivity(), "Url gambar tidak boleh kosong", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
 
@@ -150,13 +157,13 @@ public class AddContent extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(!addContentImageUrlViews.isEmpty()) {
+        if(!addContentImageUrlViews.isEmpty() && ResourceClass.deviceLocation != null) {
             View v = addContentImageUrlViews.get(clickedImageUrlButtonPosition);
-            EditText editTextImageLat = (EditText) v.findViewById(R.id.editTextContentImageLinkLatitude);
-            EditText editTextImageLng = (EditText) v.findViewById(R.id.editTextContentImageLinkLongitude);
-            editTextImageLat.setText("" + ResourceClass.poiLatLng.latitude);
-            editTextImageLng.setText("" + ResourceClass.poiLatLng.longitude);
-            ResourceClass.poiLatLng = null;
+            TextView textViewImageLat = (TextView) v.findViewById(R.id.textViewContentImageLinkLatitude);
+            TextView textViewImageLng = (TextView) v.findViewById(R.id.textViewContentImageLinkLongitude);
+            textViewImageLat.setText("" + ResourceClass.deviceLocation.getLatitude());
+            textViewImageLng.setText("" + ResourceClass.deviceLocation.getLongitude());
+            ResourceClass.deviceLocation = null;
         }
     }
 
@@ -171,8 +178,8 @@ public class AddContent extends Fragment {
         });
     }
 
-    private void openPoiMapActivity(){
-        Intent intent = new Intent(getActivity(), PoiMapActivity.class);
+    private void openAddARContentActivity(){
+        Intent intent = new Intent(getActivity(), AddARContentActivity.class);
         startActivity(intent);
     }
 
@@ -240,13 +247,13 @@ public class AddContent extends Fragment {
             for(Map.Entry<Integer, View> entry : addContentImageUrlViews.entrySet()){
                 View v = entry.getValue();
                 EditText editTextImageUrl = (EditText) v.findViewById(R.id.editTextAddContentImageLink);
-                EditText editTextImageLat = (EditText) v.findViewById(R.id.editTextContentImageLinkLatitude);
-                EditText editTextImageLng = (EditText) v.findViewById(R.id.editTextContentImageLinkLongitude);
+                TextView textViewImageLat = (TextView) v.findViewById(R.id.textViewContentImageLinkLatitude);
+                TextView textViewImageLng = (TextView) v.findViewById(R.id.textViewContentImageLinkLongitude);
                 if(editTextImageUrl.getText().toString().matches("")){
                     Toast.makeText(getActivity(), "url gambar tidak boleh kosong", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(editTextImageLat.getText().toString().matches("") && editTextImageLng.getText().toString().matches("")){
+                if(textViewImageLat.getText().toString().matches("") && textViewImageLng.getText().toString().matches("")){
                     Toast.makeText(getActivity(), "lokasi gambar tidak boleh kosong", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -317,14 +324,14 @@ public class AddContent extends Fragment {
             for(Map.Entry<Integer, View> entry : addContentImageUrlViews.entrySet()){
                 View v = entry.getValue();
                 EditText editTextImageUrl = (EditText) v.findViewById(R.id.editTextAddContentImageLink);
-                EditText editTextImageLat = (EditText) v.findViewById(R.id.editTextContentImageLinkLatitude);
-                EditText editTextImageLng = (EditText) v.findViewById(R.id.editTextContentImageLinkLongitude);
+                TextView textViewImageLat = (TextView) v.findViewById(R.id.textViewContentImageLinkLatitude);
+                TextView textViewImageLng = (TextView) v.findViewById(R.id.textViewContentImageLinkLongitude);
                 try {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("url", editTextImageUrl.getText());
                     JSONObject jsonObjectLoc = new JSONObject();
-                    jsonObjectLoc.put("lat", editTextImageLat.getText());
-                    jsonObjectLoc.put("lng", editTextImageLng.getText());
+                    jsonObjectLoc.put("lat", textViewImageLat.getText());
+                    jsonObjectLoc.put("lng", textViewImageLng.getText());
                     jsonObject.put("location", jsonObjectLoc);
                     jsonObject.put("contentId", contentCreatedId);
                     jsonArray.put(jsonObject);

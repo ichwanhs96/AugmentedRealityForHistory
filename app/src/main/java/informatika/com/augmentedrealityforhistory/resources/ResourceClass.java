@@ -39,4 +39,7 @@ public class ResourceClass {
     public static int currentContentPosition = 0;
     public static String currentContentId;
     public static LatLng poiLatLng;
+
+    //for add content image matching
+    public static String imageMatchingUrl;
 }

@@ -50,6 +50,11 @@
             android:name=".activities.PoiMapActivity"
             android:label="poi maps activity">
         </activity>
+        <activity
+            android:name=".activities.AddARContentActivity"
+            android:label="add AR content"
+            android:screenOrientation="landscape">
+        </activity>
     </application>
 
 </manifest>

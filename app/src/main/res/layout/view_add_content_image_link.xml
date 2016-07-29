@@ -24,56 +24,46 @@
         android:text="Tambah lokasi gambar ketika diambil"
         android:id="@+id/textViewAddContentImageLocation" />
 
-    <LinearLayout
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="20dp">
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="lat : "
+        android:layout_marginTop="10dp"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="lat : "
-            android:id="@+id/textViewContentImageLinkLatitude"
-            android:layout_marginTop="10dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/textViewContentImageLinkLatitude"
+        android:layout_marginTop="10dp"/>
 
-        <EditText
-            android:layout_width="75dp"
-            android:layout_height="match_parent"
-            android:id="@+id/editTextContentImageLinkLatitude"
-            android:layout_marginRight="10dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="lng : "
+        android:layout_marginTop="10dp"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="lng : "
-            android:id="@+id/textViewContentImageLinkLongitude"
-            android:layout_marginTop="10dp"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/textViewContentImageLinkLongitude"
+        android:layout_marginTop="10dp"/>
 
-        <EditText
-            android:layout_width="75dp"
-            android:layout_height="match_parent"
-            android:id="@+id/editTextContentImageLinkLongitude" />
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"/>
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Buka Peta"
-            android:id="@+id/buttonContentImageLinkOpenMap"
-            android:textColor="#fff"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:background="@color/colorPrimary"/>
-
-    </LinearLayout>
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Buka Peta"
+        android:id="@+id/buttonContentImageLinkOpenMap"
+        android:textColor="#fff"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:background="@color/colorPrimary"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="right"/>
 
 
 </LinearLayout>

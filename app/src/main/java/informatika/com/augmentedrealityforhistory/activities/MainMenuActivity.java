@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -170,7 +171,7 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
     private void callLogout(){
-        String url = ResourceClass.url+"UserForHistories/Logout";
+        String url = ResourceClass.url+"UserForHistories/logout?access_token="+ResourceClass.auth_key;
         mRequestQueue = Volley.newRequestQueue(this);
         JSONObject jsonObject = new JSONObject();
         JsonObjectRequest myReq = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
@@ -189,7 +190,14 @@ public class MainMenuActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainMenuActivity.this, "error on logout", Toast.LENGTH_SHORT).show();
+                        NetworkResponse networkResponse = error.networkResponse;
+                        if(networkResponse != null) {
+                            Toast.makeText(MainMenuActivity.this, "error on logout status code ", Toast.LENGTH_SHORT).show();
+                        } else {
+                            ResourceClass.auth_key = null;
+                            ResourceClass.user_id = null;
+                            nextLoginActivity();
+                        }
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }

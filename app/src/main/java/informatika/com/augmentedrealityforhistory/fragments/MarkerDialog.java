@@ -134,7 +134,6 @@ public class MarkerDialog extends DialogFragment {
                 }
             });
             carouselView.setPageCount(imageLinks.size());
-            System.out.println("image location lat : " + imageLocations.get(0).getLatitude() + ", lng : " + imageLocations.get(0).getLongitude());
             ((OverlayActivity)getActivity()).imagePlaceTakenLocation = imageLocations.get(0);
             ((OverlayActivity)getActivity()).bitmapForMarker = imageBitmaps.get(0);
             isCallbackFullfiled = true;

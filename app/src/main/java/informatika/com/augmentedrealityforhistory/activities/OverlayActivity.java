@@ -39,6 +39,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationListener;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import informatika.com.augmentedrealityforhistory.fragments.ChooseContentDialog;
@@ -108,15 +109,8 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     private FragmentManager fragmentManager;
 
     //text view
-    private TextView altitudeTextView;
     private TextView targetTextView;
-    private TextView distanceTextView;
-    private TextView angleTextView;
-    private TextView deviceLocationTextView;
-    private TextView targetLocationTextView;
-    private TextView azimuthDeviceTextView;
-    private TextView pitchDeviceTextView;
-    private TextView rollDeviceTextView;
+    private TextView distanceTextView;;
 
     //button
     private Button nextContentButton;
@@ -124,7 +118,6 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
 
     //image view
     private ImageView navArrow;
-    private ImageView compassImage;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -153,18 +146,10 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         setContentView(R.layout.activity_overlay);
 
         navArrow = (ImageView) findViewById(R.id.navArrow);
-        altitudeTextView = (TextView) findViewById(R.id.altitudeTextView);
         targetTextView = (TextView) findViewById(R.id.targetTextView);
         distanceTextView = (TextView) findViewById(R.id.distanceTextView);
-        angleTextView = (TextView) findViewById(R.id.angleTextView);
         nextContentButton = (Button) findViewById(R.id.nextContentButton);
-        deviceLocationTextView = (TextView) findViewById(R.id.deviceLocationTextView);
-        targetLocationTextView = (TextView) findViewById(R.id.targetLocationTextView);
-        azimuthDeviceTextView = (TextView) findViewById(R.id.azimuthDevice);
-        pitchDeviceTextView = (TextView) findViewById(R.id.pitchDevice);
-        rollDeviceTextView = (TextView) findViewById(R.id.rollDevice);
         buttonOverlayChooseContent = (Button) findViewById(R.id.buttonOverlayChooseContent);
-        //compassImage = (ImageView) findViewById(R.id.compassImage);
 
         initTargetPosition();
 
@@ -230,7 +215,6 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         }
 
         ResourceClass.deviceLocation = location;
-        deviceLocationTextView.setText("device lat : " + ResourceClass.deviceLocation.getLatitude() + ", long : " + ResourceClass.deviceLocation.getLongitude());
     }
 
     @Override
@@ -359,19 +343,17 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                 y = ratioPitch * (screenHeight / 2);
             }
             ResourceClass.markers.get(ResourceClass.currentContentId).setVisibility(View.VISIBLE);
-            layoutParams.leftMargin = (int) x;
-            layoutParams.topMargin = (int) y;
-            ResourceClass.markers.get(ResourceClass.currentContentId).setLayoutParams(layoutParams);
+            float absX = Math.abs(ResourceClass.markers.get(ResourceClass.currentContentId).getX() - x);
+            float absY = Math.abs(ResourceClass.markers.get(ResourceClass.currentContentId).getY() - y);
+            if(absX > 10 && absY > 10){
+                layoutParams.leftMargin = (int) x;
+                layoutParams.topMargin = (int) y;
+                ResourceClass.markers.get(ResourceClass.currentContentId).setLayoutParams(layoutParams);
+            }
         } else {
             ResourceClass.markers.get(ResourceClass.currentContentId).setVisibility(View.INVISIBLE);
         }
         navArrow.setRotation(direction);
-        azimuth = (azimuth + 360) % 360;
-        azimuthDeviceTextView.setText("azimuth : " + azimuth);
-        pitch = (pitch + 360) % 360;
-        pitchDeviceTextView.setText("pitch : " + pitch);
-        roll = (roll + 360) % 360;
-        rollDeviceTextView.setText("roll : " + roll);
     }
 
     private void updateMarker(String mode){
@@ -432,6 +414,9 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         ResourceClass.targetPositionInList = 0;
         ResourceClass.currentContentId = null;
         ResourceClass.currentContentPosition = 0;
+        ResourceClass.arcontents.clear();
+        ResourceClass.markers.clear();
+        ResourceClass.deviceLocation = null;
     }
 
     private void calculateAngleBetweenDeviceAndTarget() {
@@ -443,7 +428,6 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
             double differenceHeight = deviceAltitude - targetAltitude;
             angleToTarget = (float) Math.toDegrees(Math.atan(differenceHeight / distance));
         }
-        angleTextView.setText("angle : " + angleToTarget);
     }
 
     private void initSensorListener() {
@@ -461,7 +445,6 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                 location.setLatitude(entry.getValue().pointOfInterest.location.getLat());
                 location.setLongitude(entry.getValue().pointOfInterest.location.getLng());
                 ResourceClass.targetLocation = location;
-                targetLocationTextView.setText("lat : "+location.getLatitude()+", lng : "+location.getLongitude());
                 break;
             }
         }
@@ -485,7 +468,6 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         location.setLongitude(ResourceClass.arcontents.get(nextId).pointOfInterest.location.getLng());
         ResourceClass.targetLocation = location;
         new loadTargetElevation(OverlayActivity.this).execute("");
-        targetLocationTextView.setText("lat : "+location.getLatitude()+", lng : "+location.getLongitude());
     }
 
     @Override
@@ -556,7 +538,6 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                         @Override
                         public void onResponse(ElevationResponseContainer response) {
                             overlayActivity.targetAltitude = response.getResults().get(0).getElevation();
-                            overlayActivity.altitudeTextView.setText("target altitude : "+overlayActivity.targetAltitude);
                             success = true;
                         }
                     },

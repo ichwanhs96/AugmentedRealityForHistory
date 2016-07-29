@@ -38,7 +38,19 @@
         android:textColor="#0066ff"
         android:id="@+id/registerTextView"
         android:layout_below="@+id/loginButton"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="change server address"
+        android:textColor="#0066ff"
+        android:id="@+id/changeServerTextView"
+        android:layout_below="@+id/registerTextView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -50,4 +62,6 @@
         android:layout_above="@+id/usernameEditText"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="75dp" />
+
+
 </RelativeLayout>

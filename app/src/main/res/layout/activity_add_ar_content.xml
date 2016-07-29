@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <RelativeLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <informatika.com.augmentedrealityforhistory.views.CameraSurfaceView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="set position"
+            android:background="@color/colorPrimary"
+            android:textColor="#fff"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_gravity="right"
+            android:id="@+id/buttonAddARContentSetPosition"/>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/imageViewFromContent"/>
+
+    </LinearLayout>
+</LinearLayout>

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +28,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import informatika.com.augmentedrealityforhistory.R;
+import informatika.com.augmentedrealityforhistory.fragments.ChangeAddressServer;
 import informatika.com.augmentedrealityforhistory.resources.ResourceClass;
 
 /**
@@ -40,6 +42,8 @@ public class LoginActivity extends AppCompatActivity {
     EditText usernameEditText;
     EditText passwordEditText;
     TextView registerTextView;
+    private TextView changeServerTextView;
+    private android.app.FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,6 +54,9 @@ public class LoginActivity extends AppCompatActivity {
         usernameEditText = (EditText) findViewById(R.id.usernameEditText);
         passwordEditText = (EditText) findViewById(R.id.passwordEditText);
         registerTextView = (TextView) findViewById(R.id.registerTextView);
+        changeServerTextView = (TextView) findViewById(R.id.changeServerTextView);
+
+        fragmentManager = getFragmentManager();
 
         registerTextView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +74,14 @@ public class LoginActivity extends AppCompatActivity {
                 System.out.println("password : "+passwordEditText.getText());
                 Toast.makeText(LoginActivity.this, "login clicked", Toast.LENGTH_SHORT).show();
                 postLoginData();
+            }
+        });
+
+        changeServerTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ChangeAddressServer changeAddressServer = new ChangeAddressServer();
+                changeAddressServer.show(fragmentManager, "fragment_dialog_change_server_address");
             }
         });
     }
