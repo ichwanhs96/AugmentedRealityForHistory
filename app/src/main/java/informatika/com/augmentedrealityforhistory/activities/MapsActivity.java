@@ -74,6 +74,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         String currentContentId = ResourceClass.currentContentId;
         LatLng targetLocation = new LatLng(ResourceClass.arcontents.get(currentContentId).pointOfInterest.location.getLat(), ResourceClass.arcontents.get(currentContentId).pointOfInterest.location.getLng());
         mMap.addMarker(new MarkerOptions().position(targetLocation).title(ResourceClass.arcontents.get(currentContentId).title));
+        for(Map.Entry<String, Content> entry : ResourceClass.arcontents.entrySet()){
+            if(currentContentId != entry.getKey()) {
+                LatLng loc = new LatLng(entry.getValue().pointOfInterest.location.getLat(), entry.getValue().pointOfInterest.location.getLng());
+                mMap.addMarker(new MarkerOptions().position(loc).title(entry.getValue().title));
+            }
+        }
         mMap.moveCamera(CameraUpdateFactory.newLatLng(targetLocation));
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(targetLocation, 14.0f));
     }

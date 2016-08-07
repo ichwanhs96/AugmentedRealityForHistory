@@ -59,6 +59,7 @@ public class AddARContentActivity extends AppCompatActivity implements LocationL
             @Override
             public void onClick(View v) {
                 Toast.makeText(AddARContentActivity.this, "set position clicked", Toast.LENGTH_SHORT).show();
+                AddARContentActivity.this.finish();
             }
         });
     }
@@ -131,6 +132,8 @@ public class AddARContentActivity extends AppCompatActivity implements LocationL
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         System.out.println("failed to retrieve icon");
+                        Toast.makeText(AddARContentActivity.this, "Can't retrieve image", Toast.LENGTH_SHORT).show();
+                        AddARContentActivity.this.finish();
                     }
                 });
         request.setRetryPolicy(new DefaultRetryPolicy(5000,

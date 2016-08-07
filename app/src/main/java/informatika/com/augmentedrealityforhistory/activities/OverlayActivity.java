@@ -23,6 +23,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -42,6 +43,7 @@ import com.google.android.gms.location.LocationListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import informatika.com.augmentedrealityforhistory.fragments.ARConfigurationDialog;
 import informatika.com.augmentedrealityforhistory.fragments.ChooseContentDialog;
 import informatika.com.augmentedrealityforhistory.fragments.MarkerDialog;
 import informatika.com.augmentedrealityforhistory.models.Content;
@@ -113,8 +115,9 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     private TextView distanceTextView;;
 
     //button
-    private Button nextContentButton;
+    private ImageButton nextContentButton;
     private Button buttonOverlayChooseContent;
+    private ImageButton buttonARConfiguration;
 
     //image view
     private ImageView navArrow;
@@ -148,8 +151,9 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         navArrow = (ImageView) findViewById(R.id.navArrow);
         targetTextView = (TextView) findViewById(R.id.targetTextView);
         distanceTextView = (TextView) findViewById(R.id.distanceTextView);
-        nextContentButton = (Button) findViewById(R.id.nextContentButton);
+        nextContentButton = (ImageButton) findViewById(R.id.nextContentButton);
         buttonOverlayChooseContent = (Button) findViewById(R.id.buttonOverlayChooseContent);
+        buttonARConfiguration = (ImageButton) findViewById(R.id.buttonARConfiguration);
 
         initTargetPosition();
 
@@ -196,13 +200,21 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                 chooseContentDialog.show(fragmentManager, "fragment_dialog_choose_content");
             }
         });
+
+        buttonARConfiguration.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ARConfigurationDialog arConfigurationDialog = new ARConfigurationDialog();
+                arConfigurationDialog.show(fragmentManager, "fragment_dialog_arconfiguration");
+            }
+        });
     }
 
     @Override
     public void onLocationChanged(Location location) {
         if (location == null) return;
         //call get altitude for device and
-        if(ResourceClass.deviceLocation.distanceTo(location) > update_device_altitude_thresold){
+        if(ResourceClass.deviceLocation != null && ResourceClass.deviceLocation.distanceTo(location) > update_device_altitude_thresold){
             new loadDeviceElevation(this).execute("");
         }
         if (deviceAltitude != 0) {
@@ -244,7 +256,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                     if(imagePlaceTakenLocation == null){
                         showAndMoveMarker(azimuth, pitch, roll);
                     }
-                    if(imagePlaceTakenLocation != null && ResourceClass.deviceLocation.distanceTo(imagePlaceTakenLocation) < show_image_place_taken_thresold){
+                    else {
                         updateMarker(mode);
                         showAndMoveMarker(azimuth, pitch, roll);
                     }
@@ -359,42 +371,52 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     private void updateMarker(String mode){
         switch (mode){
             case SHOW_IMAGE_PLACE_TAKEN : {
+                //buttonARConfiguration.setVisibility(View.VISIBLE);
                 if(!isShowImagePlaceTaken) {
-                    if(bitmapForMarker != null){
-                        float ratio = 0f;
-                        if(bitmapForMarker.getHeight() >= bitmapForMarker.getWidth()){
-                            ratio = 200.0f/bitmapForMarker.getHeight();
-                        } else {
-                            ratio = 200.0f/bitmapForMarker.getWidth();
+                    if(ResourceClass.deviceLocation.distanceTo(imagePlaceTakenLocation) < show_image_place_taken_thresold) {
+                        if (bitmapForMarker != null) {
+                            float ratio = 0f;
+                            if (bitmapForMarker.getHeight() >= bitmapForMarker.getWidth()) {
+                                ratio = 200.0f / bitmapForMarker.getHeight();
+                            } else {
+                                ratio = 200.0f / bitmapForMarker.getWidth();
+                            }
+                            int height = (int) (bitmapForMarker.getHeight() * ratio);
+                            int width = (int) (bitmapForMarker.getWidth() * ratio);
+                            System.out.println("ratio : " + ratio + ", heigth : " + height + ", width :" + width);
+                            layoutParams = new RelativeLayout.LayoutParams(height, width);
+                            ResourceClass.markers.get(ResourceClass.currentContentId).setImageBitmap(bitmapForMarker);
+                            ResourceClass.markers.get(ResourceClass.currentContentId).setLayoutParams(layoutParams);
                         }
-                        int height = (int) (bitmapForMarker.getHeight() * ratio);
-                        int width = (int) (bitmapForMarker.getWidth() * ratio);
-                        System.out.println("ratio : "+ratio+", heigth : "+height+", width :"+width);
-                        layoutParams = new RelativeLayout.LayoutParams(height, width);
-                        ResourceClass.markers.get(ResourceClass.currentContentId).setImageBitmap(bitmapForMarker);
-                        ResourceClass.markers.get(ResourceClass.currentContentId).setLayoutParams(layoutParams);
+                    } else {
+                        Toast.makeText(OverlayActivity.this, "Terlalu jauh dari tempat pengambilan gambar", Toast.LENGTH_SHORT).show();
                     }
                     isShowImagePlaceTaken = true;
                 } else if(updateBitmapForMarker){
                     updateBitmapForMarker = false;
-                    if(bitmapForMarker != null){
-                        float ratio = 0f;
-                        if(bitmapForMarker.getHeight() >= bitmapForMarker.getWidth()){
-                            ratio = 200.0f/bitmapForMarker.getHeight();
-                        } else {
-                            ratio = 200.0f/bitmapForMarker.getWidth();
+                    if(ResourceClass.deviceLocation.distanceTo(imagePlaceTakenLocation) < show_image_place_taken_thresold) {
+                        if (bitmapForMarker != null) {
+                            float ratio = 0f;
+                            if (bitmapForMarker.getHeight() >= bitmapForMarker.getWidth()) {
+                                ratio = 200.0f / bitmapForMarker.getHeight();
+                            } else {
+                                ratio = 200.0f / bitmapForMarker.getWidth();
+                            }
+                            int height = (int) (bitmapForMarker.getHeight() * ratio);
+                            int width = (int) (bitmapForMarker.getWidth() * ratio);
+                            System.out.println("ratio : " + ratio + ", heigth : " + height + ", width :" + width);
+                            layoutParams = new RelativeLayout.LayoutParams(height, width);
+                            ResourceClass.markers.get(ResourceClass.currentContentId).setImageBitmap(bitmapForMarker);
+                            ResourceClass.markers.get(ResourceClass.currentContentId).setLayoutParams(layoutParams);
                         }
-                        int height = (int) (bitmapForMarker.getHeight() * ratio);
-                        int width = (int) (bitmapForMarker.getWidth() * ratio);
-                        System.out.println("ratio : "+ratio+", heigth : "+height+", width :"+width);
-                        layoutParams = new RelativeLayout.LayoutParams(height, width);
-                        ResourceClass.markers.get(ResourceClass.currentContentId).setImageBitmap(bitmapForMarker);
-                        ResourceClass.markers.get(ResourceClass.currentContentId).setLayoutParams(layoutParams);
+                    } else {
+                        Toast.makeText(OverlayActivity.this, "Terlalu jauh dari tempat pengambilan gambar", Toast.LENGTH_SHORT).show();
                     }
                 }
                 break;
             }
             case SHOW_POI : {
+                //buttonARConfiguration.setVisibility(View.GONE);
                 if(isShowImagePlaceTaken) {
                     layoutParams = new RelativeLayout.LayoutParams(50, 50);
                     ResourceClass.markers.get(ResourceClass.currentContentId).setImageResource(R.drawable.marker);

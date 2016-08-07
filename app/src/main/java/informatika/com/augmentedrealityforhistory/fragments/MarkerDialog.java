@@ -136,6 +136,7 @@ public class MarkerDialog extends DialogFragment {
             carouselView.setPageCount(imageLinks.size());
             ((OverlayActivity)getActivity()).imagePlaceTakenLocation = imageLocations.get(0);
             ((OverlayActivity)getActivity()).bitmapForMarker = imageBitmaps.get(0);
+            ((OverlayActivity)getActivity()).updateBitmapForMarker = true;
             isCallbackFullfiled = true;
         }
     }
