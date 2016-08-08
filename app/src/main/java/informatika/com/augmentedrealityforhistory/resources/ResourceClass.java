@@ -42,4 +42,6 @@ public class ResourceClass {
 
     //for add content image matching
     public static String imageMatchingUrl;
+
+    public static Location imageLocation;
 }

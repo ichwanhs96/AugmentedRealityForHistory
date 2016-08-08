@@ -1,64 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <TextView
-        android:layout_marginTop="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Radius : 100"
-        android:id="@+id/textViewRadius"
-        android:paddingLeft="10dp"/>
-
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="10dp"
-        android:paddingLeft="10dp">
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Radius POI : 0"
+            android:id="@+id/textViewRadiusPOI"
+            android:paddingLeft="10dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="maksimal radius POI dalam meter : "/>
+
+            <EditText
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextMaximumRadiusPOI"
+                android:text="100"
+                android:inputType="number"/>
+
+        </LinearLayout>
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarRadiusPOI"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="maksimal radius dalam meter : "/>
+            android:text="Jarak POI : 0"
+            android:id="@+id/textViewDistancePOI"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp"/>
 
-        <EditText
-            android:layout_width="100dp"
+        <TextView
+            android:layout_marginTop="30dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/editTextMaximumRadius"
-            android:text="100"
-            android:inputType="number"/>
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Radius Lokasi Gambar : 0"
+            android:id="@+id/textViewRadiusImage"
+            android:paddingLeft="10dp"
+            android:visibility="gone"/>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="maksimal radius lokasi gambar (m) : "
+                android:id="@+id/textViewMaximumRadiusImage"
+                android:visibility="gone"/>
+
+            <EditText
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/editTextMaximumRadiusImage"
+                android:text="100"
+                android:inputType="number"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBarRadiusImage"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Jarak Lokasi Gambar : 0"
+            android:id="@+id/textViewDistanceImage"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp"
+            android:visibility="gone"/>
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="tunjukkan lokasi gambar"
+            android:background="@color/colorPrimary"
+            android:textColor="#fff"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/buttonShowImageLocation"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:visibility="gone"/>
+
+        <Button
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ok"
+            android:id="@+id/buttonARConfigurationConfirm"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:background="@color/colorPrimary"
+            android:textColor="#fff"
+            android:layout_marginTop="10dp"/>
     </LinearLayout>
-
-    <SeekBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/seekBarRadius"
-        android:layout_marginTop="10dp"
-        android:paddingLeft="10dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Distance : 1000"
-        android:id="@+id/textViewDistance"
-        android:layout_marginTop="10dp"
-        android:paddingLeft="10dp"/>
-
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ok"
-        android:id="@+id/buttonARConfigurationConfirm"
-        android:layout_gravity="center_horizontal"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:background="@color/colorPrimary"
-        android:textColor="#fff"/>
-</LinearLayout>
+</ScrollView>

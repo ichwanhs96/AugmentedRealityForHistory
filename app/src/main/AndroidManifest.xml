@@ -55,6 +55,10 @@
             android:label="add AR content"
             android:screenOrientation="landscape">
         </activity>
+        <activity
+            android:name=".activities.ImageLocationMapActivity"
+            android:label="image location maps activity">
+        </activity>
     </application>
 
 </manifest>

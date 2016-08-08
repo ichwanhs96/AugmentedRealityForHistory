@@ -4,9 +4,12 @@ import android.Manifest;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Point;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -61,9 +64,9 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
 
     private final String SHOW_IMAGE_PLACE_TAKEN = "SHOW_IMAGE_PLACE_TAKEN";
     private final String SHOW_POI = "SHOW_POI";
-    private final int show_poi_distance_min = 300;
-    private final int update_device_altitude_thresold = 10;
-    private final int show_image_place_taken_thresold = 10;
+    public int show_poi_distance_min = 100;
+    private final int update_device_distance_thresold = 10;
+    public int show_image_place_taken_thresold = 10;
 
     private RelativeLayout overlayViewInsideRelativeLayout;
     private RelativeLayout.LayoutParams layoutParams;
@@ -88,11 +91,11 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     private float[] mOrientation = new float[3];
 
     //distance between device location to target location
-    private double distance = 0f;
+    public double distance = 0f;
 
     public Bitmap bitmapForMarker;
     public Location imagePlaceTakenLocation;
-    private String mode = SHOW_POI;
+    public String mode = SHOW_POI;
     private boolean isShowImagePlaceTaken = false;
     public boolean updateBitmapForMarker = false;
 
@@ -118,6 +121,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     private ImageButton nextContentButton;
     private Button buttonOverlayChooseContent;
     private ImageButton buttonARConfiguration;
+    private ImageButton buttonMap;
 
     //image view
     private ImageView navArrow;
@@ -154,6 +158,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         nextContentButton = (ImageButton) findViewById(R.id.nextContentButton);
         buttonOverlayChooseContent = (Button) findViewById(R.id.buttonOverlayChooseContent);
         buttonARConfiguration = (ImageButton) findViewById(R.id.buttonARConfiguration);
+        buttonMap = (ImageButton) findViewById(R.id.imageButtonMap);
 
         initTargetPosition();
 
@@ -208,13 +213,21 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                 arConfigurationDialog.show(fragmentManager, "fragment_dialog_arconfiguration");
             }
         });
+
+        buttonMap.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OverlayActivity.this, MapsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
     public void onLocationChanged(Location location) {
         if (location == null) return;
         //call get altitude for device and
-        if(ResourceClass.deviceLocation != null && ResourceClass.deviceLocation.distanceTo(location) > update_device_altitude_thresold){
+        if(ResourceClass.deviceLocation != null && ResourceClass.deviceLocation.distanceTo(location) > update_device_distance_thresold){
             new loadDeviceElevation(this).execute("");
         }
         if (deviceAltitude != 0) {
@@ -390,6 +403,9 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                         }
                     } else {
                         Toast.makeText(OverlayActivity.this, "Terlalu jauh dari tempat pengambilan gambar", Toast.LENGTH_SHORT).show();
+                        layoutParams = new RelativeLayout.LayoutParams(50, 50);
+                        ResourceClass.markers.get(ResourceClass.currentContentId).setImageResource(R.drawable.marker);
+                        ResourceClass.markers.get(ResourceClass.currentContentId).setLayoutParams(layoutParams);
                     }
                     isShowImagePlaceTaken = true;
                 } else if(updateBitmapForMarker){

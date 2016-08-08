@@ -350,6 +350,7 @@ public class AddContent extends Fragment {
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }
+                        Toast.makeText(getActivity(), "berhasil membuat konten", Toast.LENGTH_SHORT).show();
                         ((MainMenuActivity)getActivity()).goToMainFragment();
                     }
                 },
@@ -393,7 +394,6 @@ public class AddContent extends Fragment {
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }
-                        Toast.makeText(getActivity(), "berhasil membuat konten", Toast.LENGTH_SHORT).show();
                         addImage();
                     }
                 },

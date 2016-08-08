@@ -47,7 +47,6 @@ import informatika.com.augmentedrealityforhistory.util.GsonRequest;
  */
 public class MarkerDialog extends DialogFragment {
     private RequestQueue mRequestQueue;
-    private Button mapButton;
     private CarouselView carouselView;
     private List<String> imageLinks;
     private List<Location> imageLocations;
@@ -59,15 +58,6 @@ public class MarkerDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_marker_dialog, container);
-
-        mapButton = (Button) view.findViewById(R.id.mapButton);
-        mapButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), MapsActivity.class);
-                startActivity(intent);
-            }
-        });
         getDialog().setTitle(ResourceClass.arcontents.get(ResourceClass.currentContentId).title);
 
         imageLinks = new ArrayList<>();
@@ -88,7 +78,10 @@ public class MarkerDialog extends DialogFragment {
             @Override
             public void onPageSelected(int position) {
                 System.out.println("image location lat : " + imageLocations.get(position).getLatitude() + ", lng : " + imageLocations.get(position).getLongitude());
-                ((OverlayActivity)getActivity()).imagePlaceTakenLocation = imageLocations.get(position);
+                if(imageLocations != null) {
+                    ((OverlayActivity) getActivity()).imagePlaceTakenLocation = imageLocations.get(position);
+                    ResourceClass.imageLocation = imageLocations.get(position);
+                }
                 ((OverlayActivity)getActivity()).bitmapForMarker = imageBitmaps.get(position);
                 ((OverlayActivity)getActivity()).updateBitmapForMarker = true;
             }
@@ -134,7 +127,10 @@ public class MarkerDialog extends DialogFragment {
                 }
             });
             carouselView.setPageCount(imageLinks.size());
-            ((OverlayActivity)getActivity()).imagePlaceTakenLocation = imageLocations.get(0);
+            if(imageLocations != null) {
+                ((OverlayActivity) getActivity()).imagePlaceTakenLocation = imageLocations.get(0);
+                ResourceClass.imageLocation = imageLocations.get(0);
+            }
             ((OverlayActivity)getActivity()).bitmapForMarker = imageBitmaps.get(0);
             ((OverlayActivity)getActivity()).updateBitmapForMarker = true;
             isCallbackFullfiled = true;

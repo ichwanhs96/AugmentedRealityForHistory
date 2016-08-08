@@ -67,7 +67,6 @@ public class AddPoi extends Fragment {
         buttonPoiOpenMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(activity, "open map clicked", Toast.LENGTH_SHORT).show();
                 openPoiMapActivity();
             }
         });
@@ -75,7 +74,6 @@ public class AddPoi extends Fragment {
         buttonPoiSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(activity, "submit button clicked", Toast.LENGTH_SHORT).show();
                 dialog.setMessage("Adding Poi...");
                 dialog.show();
                 submitPoi();

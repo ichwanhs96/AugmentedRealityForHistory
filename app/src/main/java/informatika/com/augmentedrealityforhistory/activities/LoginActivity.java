@@ -61,7 +61,6 @@ public class LoginActivity extends AppCompatActivity {
         registerTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "register clicked", Toast.LENGTH_SHORT).show();
                 nextRegisterActivity();
             }
         });
@@ -72,7 +71,6 @@ public class LoginActivity extends AppCompatActivity {
                 dialog.show();
                 System.out.println("username : "+usernameEditText.getText());
                 System.out.println("password : "+passwordEditText.getText());
-                Toast.makeText(LoginActivity.this, "login clicked", Toast.LENGTH_SHORT).show();
                 postLoginData();
             }
         });
