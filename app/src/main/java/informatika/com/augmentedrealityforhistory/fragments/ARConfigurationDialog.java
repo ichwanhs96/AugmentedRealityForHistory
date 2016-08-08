@@ -69,7 +69,7 @@ public class ARConfigurationDialog extends DialogFragment {
             maximumRadiusImage = Integer.valueOf(editTextMaximumRadiusImage.getText().toString());
 
             textViewRadiusImage.setVisibility(View.VISIBLE);
-            maximumRadiusImage = ((OverlayActivity)getActivity()).show_image_place_taken_thresold;
+            maximumRadiusImage = ((OverlayActivity)getActivity()).show_image_place_taken_threshold;
             textViewRadiusImage.setText("Radius Lokasi Gambar : "+maximumRadiusImage);
 
             if(((OverlayActivity)getActivity()).imagePlaceTakenLocation != null){
@@ -172,8 +172,10 @@ public class ARConfigurationDialog extends DialogFragment {
         buttonARConfigurationConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((OverlayActivity)getActivity()).show_image_place_taken_thresold = maximumRadiusImage;
-                ((OverlayActivity)getActivity()).show_poi_distance_min = maximumRadiusPOI;
+                ((OverlayActivity)getActivity()).show_image_place_taken_threshold = radiusImage;
+                ((OverlayActivity)getActivity()).show_poi_distance_min = radiusPOI;
+                ((OverlayActivity)getActivity()).updateRadius = true;
+                System.out.println("update radius fak");
                 dismiss();
             }
         });

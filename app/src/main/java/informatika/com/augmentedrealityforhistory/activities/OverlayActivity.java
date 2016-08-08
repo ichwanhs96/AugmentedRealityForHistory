@@ -65,8 +65,8 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     private final String SHOW_IMAGE_PLACE_TAKEN = "SHOW_IMAGE_PLACE_TAKEN";
     private final String SHOW_POI = "SHOW_POI";
     public int show_poi_distance_min = 100;
-    private final int update_device_distance_thresold = 10;
-    public int show_image_place_taken_thresold = 10;
+    private final int update_device_distance_threshold = 10;
+    public int show_image_place_taken_threshold = 10;
 
     private RelativeLayout overlayViewInsideRelativeLayout;
     private RelativeLayout.LayoutParams layoutParams;
@@ -98,6 +98,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     public String mode = SHOW_POI;
     private boolean isShowImagePlaceTaken = false;
     public boolean updateBitmapForMarker = false;
+    public boolean updateRadius = false;
 
     //angle between target and device
     private float angleToTarget = 0f;
@@ -227,7 +228,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     public void onLocationChanged(Location location) {
         if (location == null) return;
         //call get altitude for device and
-        if(ResourceClass.deviceLocation != null && ResourceClass.deviceLocation.distanceTo(location) > update_device_distance_thresold){
+        if(ResourceClass.deviceLocation != null && ResourceClass.deviceLocation.distanceTo(location) > update_device_distance_threshold){
             new loadDeviceElevation(this).execute("");
         }
         if (deviceAltitude != 0) {
@@ -386,7 +387,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
             case SHOW_IMAGE_PLACE_TAKEN : {
                 //buttonARConfiguration.setVisibility(View.VISIBLE);
                 if(!isShowImagePlaceTaken) {
-                    if(ResourceClass.deviceLocation.distanceTo(imagePlaceTakenLocation) < show_image_place_taken_thresold) {
+                    if(ResourceClass.deviceLocation.distanceTo(imagePlaceTakenLocation) < show_image_place_taken_threshold) {
                         if (bitmapForMarker != null) {
                             float ratio = 0f;
                             if (bitmapForMarker.getHeight() >= bitmapForMarker.getWidth()) {
@@ -410,7 +411,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                     isShowImagePlaceTaken = true;
                 } else if(updateBitmapForMarker){
                     updateBitmapForMarker = false;
-                    if(ResourceClass.deviceLocation.distanceTo(imagePlaceTakenLocation) < show_image_place_taken_thresold) {
+                    if(ResourceClass.deviceLocation.distanceTo(imagePlaceTakenLocation) < show_image_place_taken_threshold) {
                         if (bitmapForMarker != null) {
                             float ratio = 0f;
                             if (bitmapForMarker.getHeight() >= bitmapForMarker.getWidth()) {
@@ -427,6 +428,29 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                         }
                     } else {
                         Toast.makeText(OverlayActivity.this, "Terlalu jauh dari tempat pengambilan gambar", Toast.LENGTH_SHORT).show();
+                    }
+                } else if (updateRadius) {
+                    updateRadius = false;
+                    if(ResourceClass.deviceLocation.distanceTo(imagePlaceTakenLocation) < show_image_place_taken_threshold) {
+                        if (bitmapForMarker != null) {
+                            float ratio = 0f;
+                            if (bitmapForMarker.getHeight() >= bitmapForMarker.getWidth()) {
+                                ratio = 200.0f / bitmapForMarker.getHeight();
+                            } else {
+                                ratio = 200.0f / bitmapForMarker.getWidth();
+                            }
+                            int height = (int) (bitmapForMarker.getHeight() * ratio);
+                            int width = (int) (bitmapForMarker.getWidth() * ratio);
+                            System.out.println("ratio : " + ratio + ", heigth : " + height + ", width :" + width);
+                            layoutParams = new RelativeLayout.LayoutParams(height, width);
+                            ResourceClass.markers.get(ResourceClass.currentContentId).setImageBitmap(bitmapForMarker);
+                            ResourceClass.markers.get(ResourceClass.currentContentId).setLayoutParams(layoutParams);
+                        }
+                    } else {
+                        Toast.makeText(OverlayActivity.this, "Terlalu jauh dari tempat pengambilan gambar", Toast.LENGTH_SHORT).show();
+                        layoutParams = new RelativeLayout.LayoutParams(50, 50);
+                        ResourceClass.markers.get(ResourceClass.currentContentId).setImageResource(R.drawable.marker);
+                        ResourceClass.markers.get(ResourceClass.currentContentId).setLayoutParams(layoutParams);
                     }
                 }
                 break;
