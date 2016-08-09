@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -64,6 +65,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
         //Initializing NavigationView
         navigationView = (NavigationView) findViewById(R.id.navigation_view);
+
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
@@ -121,6 +123,10 @@ public class MainMenuActivity extends AppCompatActivity {
 
             @Override
             public void onDrawerOpened(View drawerView) {
+                TextView usernameSidebar = (TextView) drawerView.findViewById(R.id.usernameSidebar);
+                TextView email = (TextView) drawerView.findViewById(R.id.email);
+                usernameSidebar.setText(ResourceClass.user_name);
+                email.setText(ResourceClass.user_email);
                 super.onDrawerOpened(drawerView);
             }
         };

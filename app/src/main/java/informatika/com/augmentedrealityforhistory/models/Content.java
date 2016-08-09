@@ -9,6 +9,7 @@ public class Content {
     public String videoLink;
     public String pointOfInterestId;
     public String historyId;
+    public Reference reference;
     public String id;
     public PointOfInterest pointOfInterest;
     public int position;

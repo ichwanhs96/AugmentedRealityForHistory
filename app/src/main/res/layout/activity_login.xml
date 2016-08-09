@@ -28,7 +28,11 @@
         android:text="Login"
         android:id="@+id/loginButton"
         android:layout_below="@+id/passwordEditText"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:background="@color/colorPrimary"
+        android:textColor="#fff"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"/>
 
     <TextView
         android:layout_width="wrap_content"

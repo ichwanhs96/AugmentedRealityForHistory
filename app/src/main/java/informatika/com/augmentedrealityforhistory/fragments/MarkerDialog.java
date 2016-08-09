@@ -91,6 +91,12 @@ public class MarkerDialog extends DialogFragment {
 
             }
         });
+
+        TextView textViewReference = (TextView) view.findViewById(R.id.textViewReference);
+        if(ResourceClass.arcontents.get(ResourceClass.currentContentId).reference != null){
+            textViewReference.setText("Referensi : " + ResourceClass.arcontents.get(ResourceClass.currentContentId).reference.url);
+            textViewReference.setVisibility(View.VISIBLE);
+        }
         return view;
     }
 

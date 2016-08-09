@@ -98,11 +98,11 @@ public class ExpandableListHistoryAdapter extends BaseExpandableListAdapter {
         textViewHistoryShortDescription.setText(group.arrayWithId.getmDescription());
 
         if(group.arrayWithId.getmIsTeacher()){
-            TextView textViewIsHistoryValid = (TextView) convertView.findViewById(R.id.textViewIsHistoryValid);
-            textViewIsHistoryValid.setVisibility(View.VISIBLE);
+            ImageView imageViewIsHistoryValid = (ImageView) convertView.findViewById(R.id.imageViewIsHistoryValid);
+            imageViewIsHistoryValid.setVisibility(View.VISIBLE);
         }else{
-            TextView textViewIsHistoryValid = (TextView) convertView.findViewById(R.id.textViewIsHistoryValid);
-            textViewIsHistoryValid.setVisibility(View.GONE);
+            ImageView imageViewIsHistoryValid = (ImageView) convertView.findViewById(R.id.imageViewIsHistoryValid);
+            imageViewIsHistoryValid.setVisibility(View.VISIBLE);
         }
 
         if(!imageViewThumbImages.containsKey(groupPosition)){
@@ -113,7 +113,7 @@ public class ExpandableListHistoryAdapter extends BaseExpandableListAdapter {
         if(group.arrayWithId.getmImageLink() != null){
             getImageForGroup(group.arrayWithId.getmImageLink(), groupPosition);
         } else {
-            imageViewThumbImages.get(android.R.color.transparent);
+            imageViewThumbImages.get(groupPosition).setImageResource(R.drawable.imagenotfound);
         }
 
         LinearLayout linearLayout = (LinearLayout) convertView.findViewById(R.id.linearLayoutListrowGroup);
@@ -178,6 +178,7 @@ public class ExpandableListHistoryAdapter extends BaseExpandableListAdapter {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         System.out.println("failed to retrieve icon");
+                        imageViewThumbImages.get(groupPosition).setImageResource(R.drawable.imagenotfound);
                     }
                 });
         request.setRetryPolicy(new DefaultRetryPolicy(5000,

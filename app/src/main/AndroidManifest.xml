@@ -44,7 +44,7 @@
         </activity>
         <activity
             android:name=".activities.MainMenuActivity"
-            android:label="main menu activity">
+            android:label="main menu">
         </activity>
         <activity
             android:name=".activities.PoiMapActivity"

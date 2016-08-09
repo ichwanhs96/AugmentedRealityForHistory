@@ -22,6 +22,8 @@ public class ResourceClass {
     //user token
     public static String auth_key;
     public static String user_id;
+    public static String user_name;
+    public static String user_email;
     public static boolean isTeacher;
 
     //variable for AR

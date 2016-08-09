@@ -29,11 +29,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:padding="10dp"
-                android:text="coming soon!"
+                android:padding="5dp"
+                android:text="Story in here!"
                 android:id="@+id/textViewMarkerDialogContentDescription"
                 android:gravity="center_vertical"
                 android:layout_gravity="center"/>
+
+            <TextView
+                android:padding="5dp"
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reference here"
+                android:id="@+id/textViewReference"
+                android:visibility="gone"/>
         </LinearLayout>
     </ScrollView>
 
