@@ -175,7 +175,6 @@ public class ARConfigurationDialog extends DialogFragment {
                 ((OverlayActivity)getActivity()).show_image_place_taken_threshold = radiusImage;
                 ((OverlayActivity)getActivity()).show_poi_distance_min = radiusPOI;
                 ((OverlayActivity)getActivity()).updateRadius = true;
-                System.out.println("update radius fak");
                 dismiss();
             }
         });

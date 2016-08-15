@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:text="Login"
         android:id="@+id/loginButton"
-        android:layout_below="@+id/passwordEditText"
+        android:layout_below="@+id/checkBoxKeepLogin"
         android:layout_centerHorizontal="true"
         android:background="@color/colorPrimary"
         android:textColor="#fff"
@@ -48,17 +48,6 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="change server address"
-        android:textColor="#0066ff"
-        android:id="@+id/changeServerTextView"
-        android:layout_below="@+id/registerTextView"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="AR untuk Sejarah"
         android:textSize="30dp"
@@ -66,6 +55,14 @@
         android:layout_above="@+id/usernameEditText"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="75dp" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="keep login"
+        android:id="@+id/checkBoxKeepLogin"
+        android:layout_below="@+id/passwordEditText"
+        android:layout_centerHorizontal="true" />
 
 
 </RelativeLayout>

@@ -3,4 +3,10 @@
     <string name="closeDrawer">Navigation View</string>
     <string name="openDrawer">Navigation View Closed</string>
     <string name="action_settings">Settings</string>
+    <string name="AugmentedRealityForHistory_token">AugmentedRealityForHistory_token</string>
+    <string name="AugmentedRealityForHistory_user_id">AugmentedRealityForHistory_user_id</string>
+    <string name="AugmentedRealityForHistory_isTeacher">AugmentedRealityForHistory_isTeacher</string>
+    <string name="AugmentedRealityForHistory_username">AugmentedRealityForHistory_username</string>
+    <string name="AugmentedRealityForHistory_email">AugmentedRealityForHistory_email</string>
+    <string name="AugmentedRealityForHistory_sharedpreference">AugmentedRealityForHistory_sharedpreference</string>
 </resources>

@@ -81,6 +81,7 @@ public class AddContent extends Fragment {
 
         //init progress dialog
         dialog = new ProgressDialog(getActivity());
+        dialog.setCanceledOnTouchOutside(false);
         dialog.setMessage("Retrieving Poi...");
         dialog.show();
 

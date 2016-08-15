@@ -47,6 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         dialog = new ProgressDialog(this);
+        dialog.setCanceledOnTouchOutside(false);
         usernameEditText = (EditText) findViewById(R.id.editTextRegisterUsername);
         emailEditText = (EditText) findViewById(R.id.editTextRegisterEmail);
         passwordEditText = (EditText) findViewById(R.id.editTextRegisterPassword);

@@ -55,6 +55,7 @@ public class ListHistory extends Fragment {
         histories = new ArrayList<>();
         listView = (ExpandableListView) v.findViewById(R.id.listView);
         progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setMessage("Retrieving histories...");
         progressDialog.show();
         loadHistories();
@@ -87,6 +88,7 @@ public class ListHistory extends Fragment {
     }
 
     private void loadHistories(){
+        System.out.println("token yg dipake get histories : " + ResourceClass.auth_key);
         String url = ResourceClass.url+"Histories/getHistories";
         mRequestQueue = Volley.newRequestQueue(getActivity());
         GsonRequest<ListHistoryResponseContainer> myReq = new GsonRequest<ListHistoryResponseContainer>(
@@ -112,7 +114,7 @@ public class ListHistory extends Fragment {
                 new com.android.volley.Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("direction response", "direction response failed");
+                        Log.d("get histories response", "get histories response failed");
                         Toast.makeText(activity, "histories cant be retrieved", Toast.LENGTH_SHORT).show();
                     }
                 }

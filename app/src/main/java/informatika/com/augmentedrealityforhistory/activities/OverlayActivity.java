@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -114,10 +115,6 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     //fragment manager
     private FragmentManager fragmentManager;
 
-    //text view
-    private TextView targetTextView;
-    private TextView distanceTextView;;
-
     //button
     private ImageButton nextContentButton;
     private Button buttonOverlayChooseContent;
@@ -154,8 +151,6 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         setContentView(R.layout.activity_overlay);
 
         navArrow = (ImageView) findViewById(R.id.navArrow);
-        targetTextView = (TextView) findViewById(R.id.targetTextView);
-        distanceTextView = (TextView) findViewById(R.id.distanceTextView);
         nextContentButton = (ImageButton) findViewById(R.id.nextContentButton);
         buttonOverlayChooseContent = (Button) findViewById(R.id.buttonOverlayChooseContent);
         buttonARConfiguration = (ImageButton) findViewById(R.id.buttonARConfiguration);
@@ -296,9 +291,30 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         super.onStop();
     }
 
+    private void nextLoginActivity(){
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.AugmentedRealityForHistory_sharedpreference),Context.MODE_PRIVATE);
+        ResourceClass.auth_key = sharedPref.getString(getString(R.string.AugmentedRealityForHistory_token), null);
+        ResourceClass.user_id = sharedPref.getString(getString(R.string.AugmentedRealityForHistory_user_id), null);
+        ResourceClass.user_email = sharedPref.getString(getString(R.string.AugmentedRealityForHistory_email), null);
+        ResourceClass.user_name = sharedPref.getString(getString(R.string.AugmentedRealityForHistory_username), null);
+        if(ResourceClass.auth_key == null ||
+                ResourceClass.user_id == null ||
+                ResourceClass.user_email == null ||
+                ResourceClass.user_name == null) {
+            System.out.println("next login activity called from main menu");
+            System.out.println("next token : "+ResourceClass.auth_key);
+            System.out.println("next userid : "+ResourceClass.user_id);
+            System.out.println("next username : "+ResourceClass.user_name);
+            System.out.println("next user email : "+ResourceClass.user_email);
+            nextLoginActivity();
+        }
         initSensorListener();
     }
 
@@ -332,8 +348,6 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         // Store the bearingTo in the bearTo variable
         float bearTo = ResourceClass.deviceLocation.bearingTo(ResourceClass.targetLocation);
         distance = ResourceClass.deviceLocation.distanceTo(ResourceClass.targetLocation);
-        targetTextView.setText("target : " + ResourceClass.arcontents.get(ResourceClass.currentContentId).title);
-        distanceTextView.setText("distance : " + distance);
 
         //This is where we choose to point it
         float direction = bearTo - azimuth;
@@ -570,7 +584,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         private OverlayActivity overlayActivity;
         private Context context;
         private RequestQueue mRequestQueue;
-        private String url = "http://maps.googleapis.com/maps/api/elevation/json?locations=";
+        private String url = "https://maps.googleapis.com/maps/api/elevation/json?locations=";
         private boolean success = false;
 
         public loadTargetElevation(OverlayActivity activity) {
@@ -589,7 +603,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
             url += String.valueOf(ResourceClass.arcontents.get(ResourceClass.currentContentId).pointOfInterest.location.getLat())
                     + ","
                     + String.valueOf(ResourceClass.arcontents.get(ResourceClass.currentContentId).pointOfInterest.location.getLng())
-                    + "&sensor=true";
+                    + "&sensor=true&key=" + ResourceClass.elevationApiKey;
             System.out.println("url load target elevation : "+url);
             mRequestQueue = Volley.newRequestQueue(overlayActivity);
             GsonRequest<ElevationResponseContainer> myReq = new GsonRequest<ElevationResponseContainer>(
@@ -636,7 +650,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         private OverlayActivity overlayActivity;
         private Context context;
         private RequestQueue mRequestQueue;
-        private String url = "http://maps.googleapis.com/maps/api/elevation/json?locations=";
+        private String url = "https://maps.googleapis.com/maps/api/elevation/json?locations=";
         private boolean success = false;
 
         public loadDeviceElevation(OverlayActivity activity) {
@@ -655,7 +669,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
             url += String.valueOf(ResourceClass.deviceLocation.getLatitude())
                     + ","
                     + String.valueOf(ResourceClass.deviceLocation.getLongitude())
-                    + "&sensor=true";
+                    + "&sensor=true&key=" + ResourceClass.elevationApiKey;
             Log.d("url", url);
             mRequestQueue = Volley.newRequestQueue(overlayActivity);
             GsonRequest<ElevationResponseContainer> myReq = new GsonRequest<ElevationResponseContainer>(

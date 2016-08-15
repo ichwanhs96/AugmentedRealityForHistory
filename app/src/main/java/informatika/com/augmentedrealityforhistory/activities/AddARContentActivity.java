@@ -1,6 +1,9 @@
 package informatika.com.augmentedrealityforhistory.activities;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -85,6 +88,21 @@ public class AddARContentActivity extends AppCompatActivity implements LocationL
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(1000);
         LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        ResourceClass.auth_key = sharedPref.getString(getString(R.string.AugmentedRealityForHistory_token), null);
+        if(ResourceClass.auth_key == null){
+            nextLoginActivity();
+        }
+    }
+
+    private void nextLoginActivity(){
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 
     @Override

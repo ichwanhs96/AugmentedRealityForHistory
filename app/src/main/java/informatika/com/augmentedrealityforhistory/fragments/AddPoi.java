@@ -63,6 +63,7 @@ public class AddPoi extends Fragment {
         buttonPoiSubmit = (Button) v.findViewById(R.id.buttonPoiSubmit);
 
         dialog = new ProgressDialog(getActivity());
+        dialog.setCanceledOnTouchOutside(false);
 
         buttonPoiOpenMap.setOnClickListener(new View.OnClickListener() {
             @Override

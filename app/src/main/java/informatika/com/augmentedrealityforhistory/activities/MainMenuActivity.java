@@ -1,7 +1,9 @@
 package informatika.com.augmentedrealityforhistory.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -57,6 +59,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
         //init progress dialog
         dialog = new ProgressDialog(this);
+        dialog.setCanceledOnTouchOutside(false);
 
         goToMainFragment();
 
@@ -163,6 +166,29 @@ public class MainMenuActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        System.out.println("main menu started");
+        System.out.println("token pas main menu start : "+ResourceClass.auth_key);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.AugmentedRealityForHistory_sharedpreference),Context.MODE_PRIVATE);
+        ResourceClass.auth_key = sharedPref.getString(getString(R.string.AugmentedRealityForHistory_token), null);
+        ResourceClass.user_id = sharedPref.getString(getString(R.string.AugmentedRealityForHistory_user_id), null);
+        ResourceClass.user_email = sharedPref.getString(getString(R.string.AugmentedRealityForHistory_email), null);
+        ResourceClass.user_name = sharedPref.getString(getString(R.string.AugmentedRealityForHistory_username), null);
+        if(ResourceClass.auth_key == null ||
+                ResourceClass.user_id == null ||
+                ResourceClass.user_email == null ||
+                ResourceClass.user_name == null) {
+            nextLoginActivity();
+        }
+    }
+
     public void goToMainFragment(){
         //set main fragment
         ListHistory listHistoryFragment = new ListHistory();
@@ -173,6 +199,9 @@ public class MainMenuActivity extends AppCompatActivity {
 
     private void nextLoginActivity(){
         Intent intent = new Intent(this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }
 
@@ -187,9 +216,13 @@ public class MainMenuActivity extends AppCompatActivity {
                         if (dialog.isShowing()) {
                             dialog.dismiss();
                         }
-                        Toast.makeText(MainMenuActivity.this, "logout done", Toast.LENGTH_SHORT).show();
                         ResourceClass.auth_key = null;
                         ResourceClass.user_id = null;
+                        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPref.edit();
+                        editor.clear();
+                        editor.commit();
+
                         nextLoginActivity();
                     }
                 },
@@ -202,6 +235,10 @@ public class MainMenuActivity extends AppCompatActivity {
                         } else {
                             ResourceClass.auth_key = null;
                             ResourceClass.user_id = null;
+                            SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPref.edit();
+                            editor.clear();
+                            editor.commit();
                             nextLoginActivity();
                         }
                         if (dialog.isShowing()) {

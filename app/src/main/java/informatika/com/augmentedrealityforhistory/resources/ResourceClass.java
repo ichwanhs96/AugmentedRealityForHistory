@@ -17,7 +17,8 @@ import informatika.com.augmentedrealityforhistory.models.Response;
  * Created by USER on 7/13/2016.
  */
 public class ResourceClass {
-    public static String url = "http://192.168.1.133:3000/api/";
+    public static String url = "http://94.177.249.173:3000/api/";
+    public static String elevationApiKey = "AIzaSyAALndLrpcK21STHx5CAq0tXp5T2i3Xv9A";
 
     //user token
     public static String auth_key;
