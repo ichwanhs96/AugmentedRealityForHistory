@@ -10,11 +10,14 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Pilih Konten"
-        android:id="@+id/textViewSelectContent" />
+        android:id="@+id/textViewSelectContent"
+        android:paddingLeft="16dp"/>
 
     <AutoCompleteTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/autoCompleteTextViewSelectContent" />
+        android:id="@+id/autoCompleteTextViewSelectContent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
 
 </LinearLayout>

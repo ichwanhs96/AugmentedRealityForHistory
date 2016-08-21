@@ -41,6 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Reference here"
+                android:autoLink="web"
                 android:id="@+id/textViewReference"
                 android:visibility="gone"/>
         </LinearLayout>

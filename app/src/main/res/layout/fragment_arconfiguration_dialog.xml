@@ -5,7 +5,8 @@
     android:layout_width="match_parent">
     <LinearLayout
         android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="16dp">
 
         <TextView
             android:layout_marginTop="10dp"
@@ -14,14 +15,14 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Radius POI : 0"
             android:id="@+id/textViewRadiusPOI"
-            android:paddingLeft="10dp"/>
+            android:paddingLeft="12dp"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="10dp">
+            android:layout_marginTop="12dp"
+            android:paddingLeft="12dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -43,7 +44,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/seekBarRadiusPOI"
             android:layout_marginTop="10dp"
-            android:paddingLeft="10dp"/>
+            android:paddingLeft="12dp"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -51,8 +52,8 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Jarak POI : 0"
             android:id="@+id/textViewDistancePOI"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="10dp"/>
+            android:layout_marginTop="12dp"
+            android:paddingLeft="12dp"/>
 
         <TextView
             android:layout_marginTop="30dp"
@@ -61,15 +62,15 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Radius Lokasi Gambar : 0"
             android:id="@+id/textViewRadiusImage"
-            android:paddingLeft="10dp"
+            android:paddingLeft="12dp"
             android:visibility="gone"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="10dp">
+            android:layout_marginTop="12dp"
+            android:paddingLeft="12dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -93,8 +94,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/seekBarRadiusImage"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="10dp"
+            android:layout_marginTop="12dp"
+            android:paddingLeft="12dp"
             android:visibility="gone"/>
 
         <TextView
@@ -103,8 +104,8 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:text="Jarak Lokasi Gambar : 0"
             android:id="@+id/textViewDistanceImage"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="10dp"
+            android:layout_marginTop="12dp"
+            android:paddingLeft="12dp"
             android:visibility="gone"/>
 
         <Button
@@ -114,7 +115,7 @@
             android:text="tunjukkan lokasi gambar"
             android:background="@color/colorPrimary"
             android:textColor="#fff"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="12dp"
             android:id="@+id/buttonShowImageLocation"
             android:paddingLeft="5dp"
             android:paddingRight="5dp"
@@ -131,6 +132,6 @@
             android:paddingRight="10dp"
             android:background="@color/colorPrimary"
             android:textColor="#fff"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="12dp"/>
     </LinearLayout>
 </ScrollView>

@@ -68,6 +68,10 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     public int show_poi_distance_min = 100;
     private final int update_device_distance_threshold = 10;
     public int show_image_place_taken_threshold = 10;
+    private float imageWidthtThreshold = 300f;
+    private float imageHeightThreshold = 300f;
+    private int markerWidth = 75;
+    private int markerHeight = 75;
 
     private RelativeLayout overlayViewInsideRelativeLayout;
     private RelativeLayout.LayoutParams layoutParams;
@@ -159,7 +163,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         initTargetPosition();
 
         overlayViewInsideRelativeLayout = (RelativeLayout) findViewById(R.id.overlayViewInsideRelativeLayout);
-        layoutParams = new RelativeLayout.LayoutParams(50, 50);
+        layoutParams = new RelativeLayout.LayoutParams(markerWidth, markerHeight);
         for (Map.Entry<String, Content> entry : ResourceClass.arcontents.entrySet()) {
             ImageView iv = new ImageView(this);
             iv.setImageResource(R.drawable.marker);
@@ -346,6 +350,8 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
 
     private void showAndMoveMarker(float azimuth, float pitch, float roll){
         // Store the bearingTo in the bearTo variable
+//        System.out.println("device location");
+//        System.out.println("lat : "+ResourceClass.deviceLocation.getLatitude()+", lng : "+ResourceClass.deviceLocation.getLongitude());
         float bearTo = ResourceClass.deviceLocation.bearingTo(ResourceClass.targetLocation);
         distance = ResourceClass.deviceLocation.distanceTo(ResourceClass.targetLocation);
 
@@ -385,7 +391,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
             ResourceClass.markers.get(ResourceClass.currentContentId).setVisibility(View.VISIBLE);
             float absX = Math.abs(ResourceClass.markers.get(ResourceClass.currentContentId).getX() - x);
             float absY = Math.abs(ResourceClass.markers.get(ResourceClass.currentContentId).getY() - y);
-            if(absX > 10 && absY > 10){
+            if(absX > 25 && absY > 25){
                 layoutParams.leftMargin = (int) x;
                 layoutParams.topMargin = (int) y;
                 ResourceClass.markers.get(ResourceClass.currentContentId).setLayoutParams(layoutParams);
@@ -405,9 +411,9 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                         if (bitmapForMarker != null) {
                             float ratio = 0f;
                             if (bitmapForMarker.getHeight() >= bitmapForMarker.getWidth()) {
-                                ratio = 200.0f / bitmapForMarker.getHeight();
+                                ratio = imageHeightThreshold / bitmapForMarker.getHeight();
                             } else {
-                                ratio = 200.0f / bitmapForMarker.getWidth();
+                                ratio = imageWidthtThreshold / bitmapForMarker.getWidth();
                             }
                             int height = (int) (bitmapForMarker.getHeight() * ratio);
                             int width = (int) (bitmapForMarker.getWidth() * ratio);
@@ -429,9 +435,9 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                         if (bitmapForMarker != null) {
                             float ratio = 0f;
                             if (bitmapForMarker.getHeight() >= bitmapForMarker.getWidth()) {
-                                ratio = 200.0f / bitmapForMarker.getHeight();
+                                ratio = imageHeightThreshold / bitmapForMarker.getHeight();
                             } else {
-                                ratio = 200.0f / bitmapForMarker.getWidth();
+                                ratio = imageHeightThreshold / bitmapForMarker.getWidth();
                             }
                             int height = (int) (bitmapForMarker.getHeight() * ratio);
                             int width = (int) (bitmapForMarker.getWidth() * ratio);
@@ -449,20 +455,19 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
                         if (bitmapForMarker != null) {
                             float ratio = 0f;
                             if (bitmapForMarker.getHeight() >= bitmapForMarker.getWidth()) {
-                                ratio = 200.0f / bitmapForMarker.getHeight();
+                                ratio = imageHeightThreshold / bitmapForMarker.getHeight();
                             } else {
-                                ratio = 200.0f / bitmapForMarker.getWidth();
+                                ratio = imageWidthtThreshold / bitmapForMarker.getWidth();
                             }
                             int height = (int) (bitmapForMarker.getHeight() * ratio);
                             int width = (int) (bitmapForMarker.getWidth() * ratio);
-                            System.out.println("ratio : " + ratio + ", heigth : " + height + ", width :" + width);
                             layoutParams = new RelativeLayout.LayoutParams(height, width);
                             ResourceClass.markers.get(ResourceClass.currentContentId).setImageBitmap(bitmapForMarker);
                             ResourceClass.markers.get(ResourceClass.currentContentId).setLayoutParams(layoutParams);
                         }
                     } else {
                         Toast.makeText(OverlayActivity.this, "Terlalu jauh dari tempat pengambilan gambar", Toast.LENGTH_SHORT).show();
-                        layoutParams = new RelativeLayout.LayoutParams(50, 50);
+                        layoutParams = new RelativeLayout.LayoutParams(markerWidth, markerHeight);
                         ResourceClass.markers.get(ResourceClass.currentContentId).setImageResource(R.drawable.marker);
                         ResourceClass.markers.get(ResourceClass.currentContentId).setLayoutParams(layoutParams);
                     }
@@ -538,6 +543,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     }
 
     public void setNextTarget(String prevId, String nextId){
+        layoutParams = new RelativeLayout.LayoutParams(markerWidth, markerHeight);
         ResourceClass.markers.get(prevId).setVisibility(View.INVISIBLE);
         Location location = new Location("");
         location.setLatitude(ResourceClass.arcontents.get(nextId).pointOfInterest.location.getLat());

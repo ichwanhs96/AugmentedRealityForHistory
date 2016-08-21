@@ -23,7 +23,8 @@
                 android:id="@+id/textViewAddContent"
                 android:layout_marginBottom="50dp"
                 android:textSize="30dp"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -31,12 +32,15 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Nama konten"
                 android:id="@+id/textViewContentName"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="16dp"
+                android:paddingLeft="16dp"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editTextContentName" />
+                android:id="@+id/editTextContentName"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -44,13 +48,16 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Pilih Point of Interest"
                 android:id="@+id/textViewChoosePoi"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="16dp"
+                android:paddingLeft="16dp"/>
 
             <AutoCompleteTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/autoCompleteTextViewSelectPoi"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -58,7 +65,8 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Deskripsi Konten"
                 android:id="@+id/textViewContentDescription"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="16dp"
+                android:paddingLeft="16dp"/>
 
             <EditText
                 android:layout_width="match_parent"
@@ -66,7 +74,9 @@
                 android:inputType="textMultiLine"
                 android:ems="10"
                 android:id="@+id/editTextContentDescription"
-                android:layout_weight="0.5" />
+                android:layout_weight="0.5"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -74,12 +84,15 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Referensi"
                 android:id="@+id/textViewContentReference"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="16dp"
+                android:paddingLeft="16dp"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editTextContentReference" />
+                android:id="@+id/editTextContentReference"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -87,12 +100,15 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Tambah url video"
                 android:id="@+id/textViewContentVideo"
-                android:layout_marginTop="10dp"/>
+                android:layout_marginTop="16dp"
+                android:paddingLeft="16dp"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editTextContentVideo" />
+                android:id="@+id/editTextContentVideo"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
 
             <Button
                 style="?android:attr/buttonStyleSmall"
@@ -106,7 +122,8 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp"/>
+                android:paddingBottom="10dp"
+                android:layout_marginTop="16dp"/>
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>

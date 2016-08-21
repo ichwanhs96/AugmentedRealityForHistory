@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import informatika.com.augmentedrealityforhistory.R;
+import informatika.com.augmentedrealityforhistory.activities.MainMenuActivity;
 import informatika.com.augmentedrealityforhistory.adapters.ExpandableListHistoryAdapter;
 import informatika.com.augmentedrealityforhistory.models.ArrayWithId;
 import informatika.com.augmentedrealityforhistory.models.Content;
@@ -115,6 +116,11 @@ public class ListHistory extends Fragment {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("get histories response", "get histories response failed");
+                        if(progressDialog.isShowing()){
+                            progressDialog.dismiss();
+                        }
+                        ((MainMenuActivity)getActivity()).clearSharedPref();
+                        ((MainMenuActivity)getActivity()).nextLoginActivity();
                         Toast.makeText(activity, "histories cant be retrieved", Toast.LENGTH_SHORT).show();
                     }
                 }

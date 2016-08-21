@@ -44,7 +44,7 @@ public class ARConfigurationDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_arconfiguration_dialog, container ,false);
-
+        getDialog().setTitle("Konfigurasi AR");
         maximumRadiusPOI = ((OverlayActivity)getActivity()).show_poi_distance_min;
 
         textViewRadiusPOI = (TextView) v.findViewById(R.id.textViewRadiusPOI);
@@ -53,24 +53,23 @@ public class ARConfigurationDialog extends DialogFragment {
         editTextMaximumRadiusPOI = (EditText) v.findViewById(R.id.editTextMaximumRadiusPOI);
         buttonARConfigurationConfirm = (Button) v.findViewById(R.id.buttonARConfigurationConfirm);
 
-        maximumRadiusPOI = Integer.valueOf(editTextMaximumRadiusPOI.getText().toString());
-
         textViewRadiusPOI.setText("Radius POI : "+maximumRadiusPOI);
         textViewDistancePOI.setText("Jarak POI : "+((OverlayActivity)getActivity()).distance);
         seekBarRadiusPOI.setProgress(maximumRadiusPOI/100);
 
         if(((OverlayActivity)getActivity()).mode.matches("SHOW_IMAGE_PLACE_TAKEN")){
-            textViewRadiusImage = (TextView) v.findViewById(R.id.textViewDistancePOI);
+            textViewRadiusImage = (TextView) v.findViewById(R.id.textViewRadiusImage);
             textViewDistanceImage = (TextView) v.findViewById(R.id.textViewDistanceImage);
             seekBarRadiusImage = (SeekBar) v.findViewById(R.id.seekBarRadiusImage);
             editTextMaximumRadiusImage = (EditText) v.findViewById(R.id.editTextMaximumRadiusImage);
             textViewMaximumRadiusImage = (TextView) v.findViewById(R.id.textViewMaximumRadiusImage);
             buttonShowImageLocation = (Button) v.findViewById(R.id.buttonShowImageLocation);
-            maximumRadiusImage = Integer.valueOf(editTextMaximumRadiusImage.getText().toString());
 
-            textViewRadiusImage.setVisibility(View.VISIBLE);
             maximumRadiusImage = ((OverlayActivity)getActivity()).show_image_place_taken_threshold;
             textViewRadiusImage.setText("Radius Lokasi Gambar : "+maximumRadiusImage);
+            textViewRadiusImage.setVisibility(View.VISIBLE);
+
+            textViewMaximumRadiusImage.setVisibility(View.VISIBLE);
 
             if(((OverlayActivity)getActivity()).imagePlaceTakenLocation != null){
                 float distanceToImageLocation = ResourceClass.deviceLocation.distanceTo(((OverlayActivity)getActivity()).imagePlaceTakenLocation);
@@ -81,7 +80,6 @@ public class ARConfigurationDialog extends DialogFragment {
 
             seekBarRadiusImage.setVisibility(View.VISIBLE);
             seekBarRadiusImage.setProgress(maximumRadiusImage/100);
-            textViewMaximumRadiusImage.setVisibility(View.VISIBLE);
             editTextMaximumRadiusImage.setVisibility(View.VISIBLE);
             buttonShowImageLocation.setVisibility(View.VISIBLE);
 
@@ -172,6 +170,9 @@ public class ARConfigurationDialog extends DialogFragment {
         buttonARConfigurationConfirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(radiusPOI == 0){
+                    radiusPOI = maximumRadiusPOI;
+                }
                 ((OverlayActivity)getActivity()).show_image_place_taken_threshold = radiusImage;
                 ((OverlayActivity)getActivity()).show_poi_distance_min = radiusPOI;
                 ((OverlayActivity)getActivity()).updateRadius = true;

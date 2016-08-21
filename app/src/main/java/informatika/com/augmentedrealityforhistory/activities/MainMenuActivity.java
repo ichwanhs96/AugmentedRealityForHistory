@@ -167,20 +167,8 @@ public class MainMenuActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        System.out.println("main menu started");
-        System.out.println("token pas main menu start : "+ResourceClass.auth_key);
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
-        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.AugmentedRealityForHistory_sharedpreference),Context.MODE_PRIVATE);
-        ResourceClass.auth_key = sharedPref.getString(getString(R.string.AugmentedRealityForHistory_token), null);
-        ResourceClass.user_id = sharedPref.getString(getString(R.string.AugmentedRealityForHistory_user_id), null);
-        ResourceClass.user_email = sharedPref.getString(getString(R.string.AugmentedRealityForHistory_email), null);
-        ResourceClass.user_name = sharedPref.getString(getString(R.string.AugmentedRealityForHistory_username), null);
         if(ResourceClass.auth_key == null ||
                 ResourceClass.user_id == null ||
                 ResourceClass.user_email == null ||
@@ -197,7 +185,7 @@ public class MainMenuActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    private void nextLoginActivity(){
+    public void nextLoginActivity(){
         Intent intent = new Intent(this, LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -218,11 +206,7 @@ public class MainMenuActivity extends AppCompatActivity {
                         }
                         ResourceClass.auth_key = null;
                         ResourceClass.user_id = null;
-                        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.clear();
-                        editor.commit();
-
+                        clearSharedPref();
                         nextLoginActivity();
                     }
                 },
@@ -235,10 +219,7 @@ public class MainMenuActivity extends AppCompatActivity {
                         } else {
                             ResourceClass.auth_key = null;
                             ResourceClass.user_id = null;
-                            SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-                            SharedPreferences.Editor editor = sharedPref.edit();
-                            editor.clear();
-                            editor.commit();
+                            clearSharedPref();
                             nextLoginActivity();
                         }
                         if (dialog.isShowing()) {
@@ -259,5 +240,12 @@ public class MainMenuActivity extends AppCompatActivity {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mRequestQueue.add(myReq);
+    }
+
+    public void clearSharedPref(){
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.AugmentedRealityForHistory_sharedpreference), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.clear();
+        editor.commit();
     }
 }

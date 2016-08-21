@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -21,7 +20,8 @@
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textSize="30dp"
                 android:text="Form konten sejarah"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="16dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -29,51 +29,63 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Judul sejarah"
                 android:id="@+id/textViewHistoryName"
-                android:layout_marginTop="50dp"/>
+                android:layout_marginTop="52dp"
+                android:paddingLeft="16dp"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editTextHistoryName" />
+                android:id="@+id/editTextHistoryName"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
 
             <TextView
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Deskripsi singkat sejarah"
-                android:id="@+id/textViewHistoryDescription" />
+                android:id="@+id/textViewHistoryDescription"
+                android:paddingLeft="16dp"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editTextHistoryDescription" />
+                android:id="@+id/editTextHistoryDescription"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
 
             <TextView
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Tambah url gambar"
-                android:id="@+id/textViewHistoryImageLink" />
+                android:id="@+id/textViewHistoryImageLink"
+                android:paddingLeft="16dp"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editTextHistoryImageLink" />
+                android:id="@+id/editTextHistoryImageLink"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
 
             <TextView
-                android:layout_marginTop="10dp"
+                android:layout_marginTop="16dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Tambah url video"
-                android:id="@+id/textViewHistoryVideoLink" />
+                android:id="@+id/textViewHistoryVideoLink"
+                android:paddingLeft="16dp"/>
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/editTextHistoryVideoLink" />
+                android:id="@+id/editTextHistoryVideoLink"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"/>
 
             <Button
                 style="?android:attr/buttonStyleSmall"
@@ -82,8 +94,9 @@
                 android:text="Submit"
                 android:id="@+id/buttonHistorySubmit"
                 android:layout_gravity="center_horizontal"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp"
+                android:paddingBottom="16dp"
+                android:layout_marginTop="16dp"
+                android:paddingTop="16dp"
                 android:paddingRight="20dp"
                 android:paddingLeft="20dp"
                 android:background="@color/colorPrimary"

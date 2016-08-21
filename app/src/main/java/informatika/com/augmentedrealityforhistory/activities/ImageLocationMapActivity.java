@@ -37,7 +37,7 @@ public class ImageLocationMapActivity extends FragmentActivity implements OnMapR
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_poi_maps);
+        setContentView(R.layout.activity_image_location_maps);
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)

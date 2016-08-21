@@ -90,9 +90,8 @@ public class ExpandableListHistoryAdapter extends BaseExpandableListAdapter {
             convertView = inflater.inflate(R.layout.listrow_group, null);
         }
         Group group = (Group) getGroup(groupPosition);
-        CheckedTextView checkedTextView = (CheckedTextView) convertView.findViewById(R.id.textViewListrowGroup);
-        checkedTextView.setText(group.arrayWithId.getmText());
-        checkedTextView.setChecked(isExpanded);
+        TextView textViewListrowGroup = (TextView) convertView.findViewById(R.id.textViewListrowGroup);
+        textViewListrowGroup.setText(group.arrayWithId.getmText());
 
         textViewHistoryShortDescription = (TextView) convertView.findViewById(R.id.textViewHistoryShortDescription);
         textViewHistoryShortDescription.setText(group.arrayWithId.getmDescription());
@@ -146,13 +145,6 @@ public class ExpandableListHistoryAdapter extends BaseExpandableListAdapter {
         text = (TextView) convertView.findViewById(R.id.textViewListrowDetail);
         text.setText(children.getmText());
 
-        convertView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(activity, children.getmText() + " + " + groupPosition + " + " + childPosition,
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
         return convertView;
     }
 

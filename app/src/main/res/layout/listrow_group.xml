@@ -1,45 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
-    android:layout_width="match_parent"
-    android:orientation="horizontal">
+    android:layout_width="match_parent">
 
     <ImageView
         android:id="@+id/thumbImage"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginLeft="30dp"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
+        android:layout_marginLeft="32dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="5dp" />
+        android:layout_marginRight="8dp" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:id="@+id/linearLayoutListrowGroup">
+        android:id="@+id/linearLayoutListrowGroup"
+        android:layout_toRightOf="@id/thumbImage">
 
-        <CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
+        <TextView
             android:id="@+id/textViewListrowGroup"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Parent text"
             android:textSize="20sp"
+            android:paddingRight="24dp"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
             android:text="short description"
             android:id="@+id/textViewHistoryShortDescription"/>
     </LinearLayout>
 
     <ImageView
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:src="@drawable/ic_done_black_24dp"
         android:id="@+id/imageViewIsHistoryValid"
-        android:visibility="gone"/>
+        android:layout_alignParentEnd="true"/>
 
-</LinearLayout>
+</RelativeLayout>

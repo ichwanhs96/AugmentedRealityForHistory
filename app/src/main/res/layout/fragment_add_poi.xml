@@ -11,7 +11,8 @@
         android:layout_marginBottom="30dp"
         android:layout_gravity="center_horizontal"
         android:text="Tambah Point of Interest"
-        android:id="@+id/textViewAddPoi" />
+        android:id="@+id/textViewAddPoi"
+        android:layout_marginTop="16dp"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -19,26 +20,31 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Nama : "
         android:id="@+id/textViewPoiName"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp"
+        android:paddingLeft="16dp"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/editTextPoiName"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Lokasi"
-        android:id="@+id/textViewPoiLocation" />
+        android:id="@+id/textViewPoiLocation"
+        android:paddingLeft="16dp"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="16dp">
 
         <TextView
             android:layout_width="match_parent"
@@ -81,7 +87,8 @@
             android:textColor="#fff"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:background="@color/colorPrimary"/>
+            android:background="@color/colorPrimary"
+            android:layout_marginRight="16dp"/>
 
     </LinearLayout>
 
@@ -90,12 +97,15 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Tambah gambar"
-        android:id="@+id/textViewPoiImageLink" />
+        android:id="@+id/textViewPoiImageLink"
+        android:paddingLeft="16dp" />
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/editTextPoiImageLink" />
+        android:id="@+id/editTextPoiImageLink"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"/>
 
     <Button
         style="?android:attr/buttonStyleSmall"
@@ -104,9 +114,9 @@
         android:text="Submit"
         android:id="@+id/buttonPoiSubmit"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:layout_marginTop="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         android:paddingRight="20dp"
         android:paddingLeft="20dp"
         android:textColor="#fff"

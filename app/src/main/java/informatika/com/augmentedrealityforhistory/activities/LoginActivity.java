@@ -92,7 +92,6 @@ public class LoginActivity extends AppCompatActivity {
                 ResourceClass.user_email != null &&
                 ResourceClass.user_name != null){
             ResourceClass.isTeacher = sharedPref.getBoolean(getString(R.string.AugmentedRealityForHistory_isTeacher), false);
-            System.out.println("is token exist from login");
             return true;
         } else return false;
     }

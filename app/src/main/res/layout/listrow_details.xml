@@ -3,26 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:clickable="true"
-    android:orientation="vertical"
-    android:paddingLeft="40dp"
-    android:paddingTop="15dp"
-    android:paddingBottom="15dp">
+    android:background="@drawable/view_listchild_bg_rounded_corners"
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/textViewListrowDetail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:drawablePadding="5dp"
-        android:gravity="center_vertical"
-        android:text="hello~"
-        android:textSize="14sp"
-        android:textStyle="bold">
-    </TextView>
-
-    <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@android:color/black" />
+        android:layout_height="wrap_content"
+        android:text="hello~"
+        android:textSize="16dp"
+        android:paddingLeft="?android:expandableListPreferredChildPaddingLeft"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp">
+    </TextView>
 
 </LinearLayout>

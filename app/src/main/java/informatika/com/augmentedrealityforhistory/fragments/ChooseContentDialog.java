@@ -30,6 +30,7 @@ public class ChooseContentDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dialog_choose_content, container, false);
+        getDialog().setTitle("Pilih Content");
         listView = (ListView) view.findViewById(R.id.listViewDialogChooseContent);
         ArrayList<ArrayWithId> list = new ArrayList<>();
         for(Map.Entry<String, Content> entry : ResourceClass.arcontents.entrySet()){
@@ -38,7 +39,6 @@ public class ChooseContentDialog extends DialogFragment {
             arrayWithId.setmText(entry.getValue().title);
             list.add(arrayWithId);
         }
-        getDialog().setTitle("Select Content");
         ArrayWithIdAdapter adapter = new ArrayWithIdAdapter(getActivity(), list);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
