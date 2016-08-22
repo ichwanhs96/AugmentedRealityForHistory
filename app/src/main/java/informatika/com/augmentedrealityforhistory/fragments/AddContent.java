@@ -66,9 +66,9 @@ public class AddContent extends Fragment {
 
     private RequestQueue mRequestQueue;
     private List<PointOfInterest> poiArray;
-    private List<ArrayWithId> pois;
+    private List<PointOfInterest> pois;
 
-    private ArrayWithId selectedPoi;
+    private PointOfInterest selectedPoi;
 
     private ProgressDialog dialog;
 
@@ -124,6 +124,7 @@ public class AddContent extends Fragment {
                         if(!editTextImageUrl.getText().toString().matches("")) {
                             clickedImageUrlButtonPosition = position;
                             ResourceClass.imageMatchingUrl = editTextImageUrl.getText().toString();
+                            ResourceClass.selectedPoi = selectedPoi;
                             openAddARContentActivity();
                         } else {
                             Toast.makeText(getActivity(), "Url gambar tidak boleh kosong", Toast.LENGTH_SHORT).show();
@@ -169,12 +170,12 @@ public class AddContent extends Fragment {
     }
 
     private void addPoisOnAutoCompleteTextView(){
-        ArrayAdapter<ArrayWithId> adapter = new ArrayAdapter<ArrayWithId>(getActivity(), android.R.layout.simple_dropdown_item_1line, pois);
+        ArrayAdapter<PointOfInterest> adapter = new ArrayAdapter<PointOfInterest>(getActivity(), android.R.layout.simple_dropdown_item_1line, pois);
         autoCompleteTextViewSelectPoi.setAdapter(adapter);
         autoCompleteTextViewSelectPoi.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                selectedPoi = (ArrayWithId) parent.getItemAtPosition(position);
+                selectedPoi = (PointOfInterest) parent.getItemAtPosition(position);
             }
         });
     }
@@ -196,10 +197,7 @@ public class AddContent extends Fragment {
                     public void onResponse(PointOfInterest[] response) {
                         poiArray = Arrays.asList(response);
                         for(PointOfInterest result : poiArray){
-                            ArrayWithId arrayWithId = new ArrayWithId();
-                            arrayWithId.setmId(result.id);
-                            arrayWithId.setmText(result.title);
-                            pois.add(arrayWithId);
+                            pois.add(result);
                         }
                         if (dialog.isShowing()) {
                             dialog.dismiss();
@@ -269,7 +267,7 @@ public class AddContent extends Fragment {
             if (!editTextContentVideo.getText().toString().matches("")) {
                 jsonObject.put("videoLink", editTextContentVideo.getText());
             }
-            jsonObject.put("pointOfInterestId", selectedPoi.getmId());
+            jsonObject.put("pointOfInterestId", selectedPoi.id);
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -46,7 +46,6 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/textViewContentImageLinkLatitude"
-            android:text="1.0"
             android:layout_marginTop="16dp" />
 
     </LinearLayout>
@@ -69,8 +68,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:id="@+id/textViewContentImageLinkLongitude"
-            android:layout_marginTop="16dp"
-            android:text="1.0"/>
+            android:layout_marginTop="16dp" />
 
     </LinearLayout>
 

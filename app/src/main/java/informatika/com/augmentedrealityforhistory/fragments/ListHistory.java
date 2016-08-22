@@ -89,7 +89,6 @@ public class ListHistory extends Fragment {
     }
 
     private void loadHistories(){
-        System.out.println("token yg dipake get histories : " + ResourceClass.auth_key);
         String url = ResourceClass.url+"Histories/getHistories";
         mRequestQueue = Volley.newRequestQueue(getActivity());
         GsonRequest<ListHistoryResponseContainer> myReq = new GsonRequest<ListHistoryResponseContainer>(
@@ -115,7 +114,6 @@ public class ListHistory extends Fragment {
                 new com.android.volley.Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("get histories response", "get histories response failed");
                         if(progressDialog.isShowing()){
                             progressDialog.dismiss();
                         }

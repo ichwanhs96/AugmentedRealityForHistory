@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -44,6 +45,7 @@ public class AddPoi extends Fragment {
     private EditText editTextPoiLatitude;
     private EditText editTextPoiLongitude;
     private EditText editTextPoiImageLink;
+    private EditText editTextPoiRadius;
     private Button buttonPoiOpenMap;
     private Button buttonPoiSubmit;
 
@@ -61,6 +63,10 @@ public class AddPoi extends Fragment {
         editTextPoiImageLink = (EditText) v.findViewById(R.id.editTextPoiImageLink);
         buttonPoiOpenMap = (Button) v.findViewById(R.id.buttonPoiOpenMap);
         buttonPoiSubmit = (Button) v.findViewById(R.id.buttonPoiSubmit);
+        editTextPoiRadius = (EditText) v.findViewById(R.id.editTextPoiRadius);
+        editTextPoiLatitude.setEnabled(false);
+        editTextPoiLongitude.setEnabled(false);
+        editTextPoiRadius.setEnabled(false);
 
         dialog = new ProgressDialog(getActivity());
         dialog.setCanceledOnTouchOutside(false);
@@ -96,7 +102,9 @@ public class AddPoi extends Fragment {
         if(ResourceClass.poiLatLng != null){
             editTextPoiLatitude.setText(""+ResourceClass.poiLatLng.latitude);
             editTextPoiLongitude.setText(""+ResourceClass.poiLatLng.longitude);
+            editTextPoiRadius.setText(""+(int)ResourceClass.radius);
             ResourceClass.poiLatLng = null;
+            ResourceClass.radius = 100f;
         }
     }
 
@@ -126,6 +134,7 @@ public class AddPoi extends Fragment {
             jsonLocation.put("lng", editTextPoiLongitude.getText());
             jsonObject.put("location", jsonLocation);
             jsonObject.put("title", editTextPoiName.getText());
+            jsonObject.put("radius", editTextPoiRadius.getText());
             if(!editTextPoiImageLink.getText().toString().matches("")) {
                 jsonObject.put("imageLink", editTextPoiImageLink.getText());
             }

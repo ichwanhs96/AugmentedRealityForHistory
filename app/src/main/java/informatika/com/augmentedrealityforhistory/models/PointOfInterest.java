@@ -8,4 +8,10 @@ public class PointOfInterest {
     public String title;
     public String imageLink;
     public String id;
+    public int radius;
+
+    @Override
+    public String toString() {
+        return title;
+    }
 }

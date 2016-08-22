@@ -42,9 +42,10 @@ public class ResourceClass {
     public static int currentContentPosition = 0;
     public static String currentContentId;
     public static LatLng poiLatLng;
+    public static float radius = 100f;
 
     //for add content image matching
     public static String imageMatchingUrl;
-
+    public static PointOfInterest selectedPoi;
     public static Location imageLocation;
 }
