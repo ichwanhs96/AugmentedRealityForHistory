@@ -45,16 +45,13 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"/>
 
-    <TextView
+    <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="AR untuk Sejarah"
-        android:textSize="30dp"
-        android:id="@+id/textViewArForHistory"
+        android:src="@drawable/logo"
         android:layout_above="@+id/usernameEditText"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="75dp" />
+        android:layout_marginBottom="24dp"/>
 
     <CheckBox
         android:layout_marginTop="10dp"

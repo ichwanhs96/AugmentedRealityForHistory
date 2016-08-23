@@ -198,12 +198,21 @@ public class AddHistory extends Fragment {
         String url = ResourceClass.url+"Histories";
         if (editTextHistoryName.getText().toString().matches("")) {
             Toast.makeText(getActivity(), "nama tidak boleh kosong", Toast.LENGTH_SHORT).show();
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
             return;
         } else if (editTextHistoryDescription.getText().toString().matches("")) {
             Toast.makeText(getActivity(), "deskripsi tidak boleh kosong", Toast.LENGTH_SHORT).show();
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
             return;
         } else if (selectedContent == null) {
             Toast.makeText(getActivity(), "konten tidak boleh kosong", Toast.LENGTH_SHORT).show();
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
             return;
         }
 

@@ -233,12 +233,21 @@ public class AddContent extends Fragment {
         String url = ResourceClass.url+"Contents";
         if (editTextContentName.getText().toString().matches("")) {
             Toast.makeText(getActivity(), "nama konten tidak boleh kosong", Toast.LENGTH_SHORT).show();
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
             return;
         } else if (editTextContentDescription.getText().toString().matches("")) {
             Toast.makeText(getActivity(), "deskripsi konten tidak boleh kosong", Toast.LENGTH_SHORT).show();
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
             return;
         } else if (selectedPoi == null) {
             Toast.makeText(getActivity(), "point of interest konten tidak boleh kosong", Toast.LENGTH_SHORT).show();
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
             return;
         }
 
@@ -250,10 +259,16 @@ public class AddContent extends Fragment {
                 TextView textViewImageLng = (TextView) v.findViewById(R.id.textViewContentImageLinkLongitude);
                 if(editTextImageUrl.getText().toString().matches("")){
                     Toast.makeText(getActivity(), "url gambar tidak boleh kosong", Toast.LENGTH_SHORT).show();
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
                     return;
                 }
                 if(textViewImageLat.getText().toString().matches("") && textViewImageLng.getText().toString().matches("")){
                     Toast.makeText(getActivity(), "lokasi gambar tidak boleh kosong", Toast.LENGTH_SHORT).show();
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
                     return;
                 }
             }

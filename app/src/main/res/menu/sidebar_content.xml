@@ -5,26 +5,32 @@
         <item
             android:id="@+id/history"
             android:checked="false"
-            android:icon="@drawable/ic_android_black_24dp"
+            android:icon="@drawable/ic_list"
             android:title="Daftar Sejarah" />
+
+        <item
+            android:id="@+id/listPoi"
+            android:checked="false"
+            android:icon="@drawable/ic_list"
+            android:title="Daftar POI" />
 
         <item
             android:id="@+id/addHistory"
             android:checked="false"
-            android:icon="@drawable/ic_android_black_24dp"
+            android:icon="@drawable/ic_list"
             android:title="Tambah Sejarah" />
-
-        <item
-            android:id="@+id/addPoi"
-            android:checked="false"
-            android:icon="@drawable/ic_android_black_24dp"
-            android:title="Tambah Point Of interest" />
 
         <item
             android:id="@+id/addContent"
             android:checked="false"
-            android:icon="@drawable/ic_android_black_24dp"
+            android:icon="@drawable/ic_list"
             android:title="Tambah Konten" />
+
+        <item
+            android:id="@+id/addPoi"
+            android:checked="false"
+            android:icon="@drawable/ic_list"
+            android:title="Tambah Point Of interest" />
 
     </group>
 </menu>

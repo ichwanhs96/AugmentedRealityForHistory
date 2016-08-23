@@ -118,11 +118,17 @@ public class AddPoi extends Fragment {
 
         if(editTextPoiName.getText().toString().matches("")){
             Toast.makeText(getActivity(), "nama konten tidak boleh kosong", Toast.LENGTH_SHORT).show();
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
             return;
         }
         if(editTextPoiLongitude.getText().toString().matches("")
                 && editTextPoiLatitude.getText().toString().matches("")){
             Toast.makeText(getActivity(), "lokasi tidak boleh kosong", Toast.LENGTH_SHORT).show();
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
             return;
         }
 

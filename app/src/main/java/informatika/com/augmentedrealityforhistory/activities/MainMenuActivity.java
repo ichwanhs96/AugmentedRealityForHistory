@@ -38,6 +38,7 @@ import informatika.com.augmentedrealityforhistory.fragments.AddContent;
 import informatika.com.augmentedrealityforhistory.fragments.AddHistory;
 import informatika.com.augmentedrealityforhistory.fragments.AddPoi;
 import informatika.com.augmentedrealityforhistory.fragments.ListHistory;
+import informatika.com.augmentedrealityforhistory.fragments.ListPoi;
 import informatika.com.augmentedrealityforhistory.resources.ResourceClass;
 
 /**
@@ -105,6 +106,12 @@ public class MainMenuActivity extends AppCompatActivity {
                         AddContent addContentFragment = new AddContent();
                         fragmentTransaction = getSupportFragmentManager().beginTransaction();
                         fragmentTransaction.replace(R.id.frame, addContentFragment);
+                        fragmentTransaction.commit();
+                        return true;
+                    case R.id.listPoi:
+                        ListPoi listPoi = new ListPoi();
+                        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                        fragmentTransaction.replace(R.id.frame, listPoi);
                         fragmentTransaction.commit();
                         return true;
                     default:
