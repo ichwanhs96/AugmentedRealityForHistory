@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -34,6 +35,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import informatika.com.augmentedrealityforhistory.R;
 import informatika.com.augmentedrealityforhistory.resources.ResourceClass;
@@ -163,13 +167,14 @@ public class AddARContentActivity extends AppCompatActivity implements LocationL
     }
 
     private void getImage(String url) {
-        mRequestQueue = Volley.newRequestQueue(this);
-        ImageRequest request = new ImageRequest(url, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap response) {
-                imageViewFromContent.setImageBitmap(response);
-            }
-        }, 0, 0, null,
+        if(url.contains("http://94.177.249.173:3000/api")){
+            mRequestQueue = Volley.newRequestQueue(this);
+            ImageRequest request = new ImageRequest(url, new Response.Listener<Bitmap>() {
+                @Override
+                public void onResponse(Bitmap response) {
+                    imageViewFromContent.setImageBitmap(response);
+                }
+            }, 0, 0, null,
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
@@ -177,11 +182,39 @@ public class AddARContentActivity extends AppCompatActivity implements LocationL
                         Toast.makeText(AddARContentActivity.this, "Can't retrieve image", Toast.LENGTH_SHORT).show();
                         AddARContentActivity.this.finish();
                     }
-                });
-        request.setRetryPolicy(new DefaultRetryPolicy(5000,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        mRequestQueue.add(request);
+                }){
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        HashMap<String, String> headers = new HashMap<String, String>();
+                        headers.put("Authorization", ResourceClass.auth_key);
+                        return headers;
+                    }
+            };
+            request.setRetryPolicy(new DefaultRetryPolicy(60000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            mRequestQueue.add(request);
+        } else {
+            mRequestQueue = Volley.newRequestQueue(this);
+            ImageRequest request = new ImageRequest(url, new Response.Listener<Bitmap>() {
+                @Override
+                public void onResponse(Bitmap response) {
+                    imageViewFromContent.setImageBitmap(response);
+                }
+            }, 0, 0, null,
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            System.out.println("failed to retrieve image in add ar content activity");
+                            Toast.makeText(AddARContentActivity.this, "Can't retrieve image", Toast.LENGTH_SHORT).show();
+                            AddARContentActivity.this.finish();
+                        }
+                    });
+            request.setRetryPolicy(new DefaultRetryPolicy(60000,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            mRequestQueue.add(request);
+        }
     }
 
     @Override

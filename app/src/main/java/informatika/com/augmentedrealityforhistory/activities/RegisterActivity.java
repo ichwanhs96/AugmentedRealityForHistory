@@ -62,11 +62,6 @@ public class RegisterActivity extends AppCompatActivity {
                 if(confirmPasswordEditText.getText().toString().equals(passwordEditText.getText().toString())) {
                     dialog.setMessage("Registering...");
                     dialog.show();
-                    System.out.println("username : " + usernameEditText.getText());
-                    System.out.println("email : " + emailEditText.getText());
-                    System.out.println("password : " + passwordEditText.getText());
-                    System.out.println("confim password : " + confirmPasswordEditText.getText());
-                    System.out.println("is teacher : " + checkBoxIsTeacher.isEnabled());
                     postRegisterData();
                 } else {
                     Toast.makeText(RegisterActivity.this, "confirm password harus sama dengan password", Toast.LENGTH_SHORT).show();
@@ -125,7 +120,7 @@ public class RegisterActivity extends AppCompatActivity {
                 return headers;
             }
         };
-        myReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+        myReq.setRetryPolicy(new DefaultRetryPolicy(60000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mRequestQueue.add(myReq);

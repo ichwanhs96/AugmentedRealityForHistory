@@ -2,7 +2,9 @@ package informatika.com.augmentedrealityforhistory.fragments;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -32,6 +34,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -45,6 +53,7 @@ import informatika.com.augmentedrealityforhistory.activities.PoiMapActivity;
 import informatika.com.augmentedrealityforhistory.models.ArrayWithId;
 import informatika.com.augmentedrealityforhistory.models.PointOfInterest;
 import informatika.com.augmentedrealityforhistory.resources.ResourceClass;
+import informatika.com.augmentedrealityforhistory.util.FileUtils;
 import informatika.com.augmentedrealityforhistory.util.GsonRequest;
 
 /**
@@ -57,12 +66,14 @@ public class AddContent extends Fragment {
     private EditText editTextContentReference;
     private AutoCompleteTextView autoCompleteTextViewSelectPoi;
     private Button buttonContentSubmit;
+    private Button buttonChooseFileText;
     private FloatingActionButton fabAddImageLinkUrl;
     private FloatingActionButton fabRemoveImageLinkUrl;
     private HashMap<Integer, View> addContentImageUrlViews;
 
     private int imageUrlCounter = 0;
     private int clickedImageUrlButtonPosition = 0;
+    private int clickedUploadImageButtonPosition = 0;
 
     private RequestQueue mRequestQueue;
     private List<PointOfInterest> poiArray;
@@ -73,6 +84,9 @@ public class AddContent extends Fragment {
     private ProgressDialog dialog;
 
     private String contentCreatedId;
+
+    private int PICK_TEXT_RESULT_CODE = 1;
+    private Uri filePath;
 
     @Nullable
     @Override
@@ -97,12 +111,14 @@ public class AddContent extends Fragment {
         editTextContentReference = (EditText) v.findViewById(R.id.editTextContentReference);
         autoCompleteTextViewSelectPoi = (AutoCompleteTextView) v.findViewById(R.id.autoCompleteTextViewSelectPoi);
         buttonContentSubmit = (Button) v.findViewById(R.id.buttonContentSubmit);
+        buttonChooseFileText = (Button) v.findViewById(R.id.buttonChooseFileText);
         fabAddImageLinkUrl = (FloatingActionButton) v.findViewById(R.id.fabAddImageLinkUrl);
         fabRemoveImageLinkUrl = (FloatingActionButton) v.findViewById(R.id.fabRemoveImageLinkUrl);
 
         autoCompleteTextViewSelectPoi.setThreshold(0);
 
         addPoisOnAutoCompleteTextView();
+
         buttonContentSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -111,11 +127,20 @@ public class AddContent extends Fragment {
                 submitPoi();
             }
         });
+
+        buttonChooseFileText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showFileTextChooser();
+            }
+        });
+
         fabAddImageLinkUrl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 View childView = inflater.inflate(R.layout.view_add_content_image_link, null);
                 Button buttonAddContentImageLink = (Button) childView.findViewById(R.id.buttonContentImageLinkOpenMap);
+                Button buttonContentUploadImage = (Button) childView.findViewById(R.id.buttonContentUploadImage);
                 final EditText editTextImageUrl = (EditText) childView.findViewById(R.id.editTextAddContentImageLink);
                 buttonAddContentImageLink.setOnClickListener(new View.OnClickListener() {
                     private int position = imageUrlCounter;
@@ -129,6 +154,17 @@ public class AddContent extends Fragment {
                         } else {
                             Toast.makeText(getActivity(), "Url gambar tidak boleh kosong", Toast.LENGTH_SHORT).show();
                         }
+                    }
+                });
+
+                buttonContentUploadImage.setOnClickListener(new View.OnClickListener() {
+                    private int position = imageUrlCounter;
+                    @Override
+                    public void onClick(View v) {
+                        clickedUploadImageButtonPosition = position;
+                        UploadImage uploadImage = new UploadImage();
+                        uploadImage.setTargetFragment(AddContent.this, 0);
+                        uploadImage.show(getFragmentManager(), "fragment_upload_image");
                     }
                 });
 
@@ -166,6 +202,24 @@ public class AddContent extends Fragment {
             textViewImageLat.setText("" + ResourceClass.deviceLocation.getLatitude());
             textViewImageLng.setText("" + ResourceClass.deviceLocation.getLongitude());
             ResourceClass.deviceLocation = null;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_TEXT_RESULT_CODE && resultCode == getActivity().RESULT_OK && data != null && data.getData() != null) {
+            filePath = data.getData();
+                readFile();
+        }
+    }
+
+    public void changeEditTextImageUrl(String url){
+        if(!addContentImageUrlViews.isEmpty() && url != null){
+            View v = addContentImageUrlViews.get(clickedUploadImageButtonPosition);
+            EditText editTextImageUrl = (EditText) v.findViewById(R.id.editTextAddContentImageLink);
+            editTextImageUrl.setText(url);
+            editTextImageUrl.setEnabled(false);
         }
     }
 
@@ -433,5 +487,32 @@ public class AddContent extends Fragment {
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mRequestQueue.add(myReq);
+    }
+
+    private void showFileTextChooser() {
+        Intent intent = new Intent();
+        intent.setType("*/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Text"), PICK_TEXT_RESULT_CODE);
+    }
+
+    private void readFile(){
+        if(filePath != null){
+            try {
+                File file = new File(FileUtils.getPath(getActivity(),filePath));
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String text = "";
+                String line;
+                while((line = br.readLine()) != null){
+                    text += line;
+                }
+                editTextContentDescription.setEnabled(false);
+                editTextContentDescription.setText(text);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

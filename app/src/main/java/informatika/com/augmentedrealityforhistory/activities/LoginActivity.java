@@ -166,7 +166,7 @@ public class LoginActivity extends AppCompatActivity {
                 return headers;
             }
         };
-        myReq.setRetryPolicy(new DefaultRetryPolicy(5000,
+        myReq.setRetryPolicy(new DefaultRetryPolicy(30000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         mRequestQueue.add(myReq);
