@@ -1,11 +1,8 @@
 package informatika.com.augmentedrealityforhistory.activities;
 
 import android.Manifest;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -21,8 +18,6 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -34,7 +29,6 @@ import java.util.Map;
 import informatika.com.augmentedrealityforhistory.R;
 import informatika.com.augmentedrealityforhistory.models.Content;
 import informatika.com.augmentedrealityforhistory.models.DirectionsResult;
-import informatika.com.augmentedrealityforhistory.models.Response;
 import informatika.com.augmentedrealityforhistory.resources.ResourceClass;
 import informatika.com.augmentedrealityforhistory.util.GsonRequest;
 

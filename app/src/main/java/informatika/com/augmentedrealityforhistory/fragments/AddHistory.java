@@ -98,6 +98,8 @@ public class AddHistory extends Fragment {
             @Override
             public void onClick(View v) {
                 //call add history
+                dialog.setMessage("menambahkan sejarah...");
+                dialog.show();
                 submitHistory();
             }
         });

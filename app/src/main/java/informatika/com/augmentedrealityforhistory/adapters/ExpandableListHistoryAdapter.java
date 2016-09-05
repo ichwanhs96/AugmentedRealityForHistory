@@ -40,7 +40,6 @@ public class ExpandableListHistoryAdapter extends BaseExpandableListAdapter {
     public LayoutInflater inflater;
     public Activity activity;
     private RequestQueue mRequestQueue;
-    private HashMap<Integer, ImageView> imageViewThumbImages = new HashMap<>();
     private TextView textViewHistoryShortDescription;
 
     public ExpandableListHistoryAdapter(Activity activity, SparseArray<Group> groups){
@@ -86,36 +85,36 @@ public class ExpandableListHistoryAdapter extends BaseExpandableListAdapter {
 
     @Override
     public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
+        View view;
         if (convertView == null) {
-            convertView = inflater.inflate(R.layout.listrow_group, null);
+            view = inflater.inflate(R.layout.listrow_group, parent, false);
+        } else {
+            view = convertView;
         }
         Group group = (Group) getGroup(groupPosition);
-        TextView textViewListrowGroup = (TextView) convertView.findViewById(R.id.textViewListrowGroup);
+        TextView textViewListrowGroup = (TextView) view.findViewById(R.id.textViewListrowGroup);
         textViewListrowGroup.setText(group.arrayWithId.getmText());
 
-        textViewHistoryShortDescription = (TextView) convertView.findViewById(R.id.textViewHistoryShortDescription);
+        textViewHistoryShortDescription = (TextView) view.findViewById(R.id.textViewHistoryShortDescription);
         textViewHistoryShortDescription.setText(group.arrayWithId.getmDescription());
 
         if(group.arrayWithId.getmIsTeacher()){
-            ImageView imageViewIsHistoryValid = (ImageView) convertView.findViewById(R.id.imageViewIsHistoryValid);
+            ImageView imageViewIsHistoryValid = (ImageView) view.findViewById(R.id.imageViewIsHistoryValid);
             imageViewIsHistoryValid.setVisibility(View.VISIBLE);
         }else{
-            ImageView imageViewIsHistoryValid = (ImageView) convertView.findViewById(R.id.imageViewIsHistoryValid);
+            ImageView imageViewIsHistoryValid = (ImageView) view.findViewById(R.id.imageViewIsHistoryValid);
             imageViewIsHistoryValid.setVisibility(View.VISIBLE);
         }
 
-        if(!imageViewThumbImages.containsKey(groupPosition)){
-            ImageView imageViewThumbImage = (ImageView) convertView.findViewById(R.id.thumbImage);
-            imageViewThumbImages.put(groupPosition, imageViewThumbImage);
-        }
+        ImageView imageViewThumbImage = (ImageView) view.findViewById(R.id.thumbImage);
 
         if(group.arrayWithId.getmImageLink() != null){
-            getImageForGroup(group.arrayWithId.getmImageLink(), groupPosition);
+            getImageForGroup(group.arrayWithId.getmImageLink(), imageViewThumbImage);
         } else {
-            imageViewThumbImages.get(groupPosition).setImageResource(R.drawable.imagenotfound);
+            imageViewThumbImage.setImageResource(R.drawable.imagenotfound);
         }
 
-        LinearLayout linearLayout = (LinearLayout) convertView.findViewById(R.id.linearLayoutListrowGroup);
+        LinearLayout linearLayout = (LinearLayout) view.findViewById(R.id.linearLayoutListrowGroup);
         linearLayout.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,7 +130,7 @@ public class ExpandableListHistoryAdapter extends BaseExpandableListAdapter {
                 }
             }
         });
-        return convertView;
+        return view;
     }
 
     @Override
@@ -158,19 +157,19 @@ public class ExpandableListHistoryAdapter extends BaseExpandableListAdapter {
         activity.startActivity(intent);
     }
 
-    private void getImageForGroup(String url, final int groupPosition) {
+    private void getImageForGroup(String url, final ImageView imageView) {
         mRequestQueue = Volley.newRequestQueue(activity);
         ImageRequest request = new ImageRequest(url, new Response.Listener<Bitmap>() {
             @Override
             public void onResponse(Bitmap response) {
-                imageViewThumbImages.get(groupPosition).setImageBitmap(response);
+                imageView.setImageBitmap(response);
             }
         }, 0, 0, null,
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         System.out.println("failed to retrieve icon");
-                        imageViewThumbImages.get(groupPosition).setImageResource(R.drawable.imagenotfound);
+                        imageView.setImageResource(R.drawable.imagenotfound);
                     }
                 });
         request.setRetryPolicy(new DefaultRetryPolicy(5000,

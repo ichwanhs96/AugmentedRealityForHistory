@@ -19,6 +19,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -106,9 +107,19 @@ public class ImageLocationMapActivity extends FragmentActivity implements OnMapR
             if(ResourceClass.imageLocation != null) {
                 LatLng latLng = new LatLng(ResourceClass.imageLocation.getLatitude(), ResourceClass.imageLocation.getLongitude());
                 mMap.addMarker(new MarkerOptions().position(latLng)
-                        .title("lat : " + latLng.latitude + ", lng : " + latLng.longitude));
+                        .title("Lokasi Gambar lat : " + latLng.latitude + ", lng : " + latLng.longitude)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
             } else {
                 Toast.makeText(ImageLocationMapActivity.this, "image location can't be null", Toast.LENGTH_SHORT).show();
+                this.finish();
+            }
+            if(ResourceClass.currentContentId != null && ResourceClass.arcontents.size() > 0){
+                LatLng latLng = new LatLng(ResourceClass.arcontents.get(ResourceClass.currentContentId).pointOfInterest.location.getLat(),
+                        ResourceClass.arcontents.get(ResourceClass.currentContentId).pointOfInterest.location.getLng());
+                mMap.addMarker(new MarkerOptions().position(latLng)
+                        .title("Lokasi POI lat : " + latLng.latitude + ", lng : " + latLng.longitude));
+            } else {
+                Toast.makeText(ImageLocationMapActivity.this, "POI location can't be null", Toast.LENGTH_SHORT).show();
                 this.finish();
             }
         }

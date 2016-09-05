@@ -5,12 +5,9 @@ import android.app.FragmentManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Point;
-import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -30,7 +27,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -44,7 +40,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationListener;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import informatika.com.augmentedrealityforhistory.fragments.ARConfigurationDialog;
@@ -128,9 +123,16 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     //image view
     private ImageView navArrow;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setMessage("Mencari lokasi perangkat...");
+        progressDialog.show();
 
         //screen width and height
         if (Build.VERSION.SDK_INT >= 11) {
@@ -303,20 +305,10 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
     @Override
     protected void onResume() {
         super.onResume();
-        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.AugmentedRealityForHistory_sharedpreference),Context.MODE_PRIVATE);
-        ResourceClass.auth_key = sharedPref.getString(getString(R.string.AugmentedRealityForHistory_token), null);
-        ResourceClass.user_id = sharedPref.getString(getString(R.string.AugmentedRealityForHistory_user_id), null);
-        ResourceClass.user_email = sharedPref.getString(getString(R.string.AugmentedRealityForHistory_email), null);
-        ResourceClass.user_name = sharedPref.getString(getString(R.string.AugmentedRealityForHistory_username), null);
         if(ResourceClass.auth_key == null ||
                 ResourceClass.user_id == null ||
                 ResourceClass.user_email == null ||
                 ResourceClass.user_name == null) {
-            System.out.println("next login activity called from main menu");
-            System.out.println("next token : "+ResourceClass.auth_key);
-            System.out.println("next userid : "+ResourceClass.user_id);
-            System.out.println("next username : "+ResourceClass.user_name);
-            System.out.println("next user email : "+ResourceClass.user_email);
             nextLoginActivity();
         }
         initSensorListener();
@@ -567,6 +559,7 @@ public class OverlayActivity extends AppCompatActivity implements SensorEventLis
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if(mLastLocation != null){
             ResourceClass.deviceLocation = mLastLocation;
+            if(progressDialog.isShowing()) progressDialog.dismiss();
             new loadDeviceElevation(this).execute("");
         }
         mLocationRequest = LocationRequest.create();

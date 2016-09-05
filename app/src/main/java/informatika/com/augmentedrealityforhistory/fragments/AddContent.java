@@ -385,6 +385,10 @@ public class AddContent extends Fragment {
     }
 
     private void addImage(){
+        if(!dialog.isShowing()){
+            dialog.setMessage("menambahkan gambar...");
+            dialog.show();
+        }
         String url = ResourceClass.url+"Images/addImages";
         mRequestQueue = Volley.newRequestQueue(getActivity());
         JSONArray jsonArray = new JSONArray();
@@ -408,6 +412,9 @@ public class AddContent extends Fragment {
                 }
             }
         } else {
+            if(dialog.isShowing()) dialog.dismiss();
+            ((MainMenuActivity)getActivity()).goToMainFragment();
+            Toast.makeText(getActivity(), "berhasil membuat konten", Toast.LENGTH_SHORT).show();
             return;
         }
 
