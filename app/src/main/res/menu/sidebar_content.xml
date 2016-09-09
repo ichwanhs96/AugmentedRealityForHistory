@@ -32,5 +32,11 @@
             android:icon="@drawable/ic_list"
             android:title="Tambah Point Of interest" />
 
+        <item
+            android:id="@+id/help"
+            android:checked="false"
+            android:icon="@drawable/ic_list"
+            android:title="Bantuan" />
+
     </group>
 </menu>
